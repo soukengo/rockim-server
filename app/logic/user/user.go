@@ -4,7 +4,7 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"rockim"
-	"rockim/internal/business/user/conf"
+	"rockim/app/logic/user/conf"
 	"rockim/pkg/log"
 )
 

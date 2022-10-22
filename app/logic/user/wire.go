@@ -8,11 +8,11 @@ package user
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
-	"rockim/internal/business/user/biz"
-	"rockim/internal/business/user/conf"
-	"rockim/internal/business/user/data"
-	"rockim/internal/business/user/server"
-	"rockim/internal/business/user/service"
+	"rockim/app/logic/user/biz"
+	"rockim/app/logic/user/conf"
+	"rockim/app/logic/user/data"
+	"rockim/app/logic/user/server"
+	"rockim/app/logic/user/service"
 )
 
 // wireApp init kratos application.

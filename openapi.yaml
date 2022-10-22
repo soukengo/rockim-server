@@ -3,20 +3,30 @@
 
 openapi: 3.0.3
 info:
-    title: Greeter API
-    description: The greeting service definition.
+    title: User API
+    description: 用户接口定义
     version: 0.0.1
 paths:
-    /helloworld/{name}:
-        get:
+    /user/register:
+        post:
             tags:
-                - Greeter
-            description: Sends a greeting
-            operationId: Greeter_SayHello
+                - User
+            operationId: User_Register
             parameters:
+                - name: appId
+                  in: query
+                  schema:
+                    type: string
+                - name: channelId
+                  in: query
+                  schema:
+                    type: string
+                - name: account
+                  in: query
+                  schema:
+                    type: string
                 - name: name
-                  in: path
-                  required: true
+                  in: query
                   schema:
                     type: string
             responses:
@@ -25,14 +35,13 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/HelloReply'
+                                $ref: '#/components/schemas/UserRegisterResponse'
 components:
     schemas:
-        HelloReply:
+        UserRegisterResponse:
             type: object
             properties:
-                message:
+                uid:
                     type: string
-            description: The response message containing the greetings
 tags:
-    - name: Greeter
+    - name: User

@@ -8,11 +8,11 @@ package user
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"rockim/internal/business/user/biz"
-	"rockim/internal/business/user/conf"
-	"rockim/internal/business/user/data"
-	"rockim/internal/business/user/server"
-	"rockim/internal/business/user/service"
+	"rockim/app/logic/user/biz"
+	"rockim/app/logic/user/conf"
+	"rockim/app/logic/user/data"
+	"rockim/app/logic/user/server"
+	"rockim/app/logic/user/service"
 )
 
 // Injectors from wire.go:
@@ -23,9 +23,9 @@ func wireApp(env *conf.Env, confServer *conf.Server) (*kratos.App, error) {
 	if err != nil {
 		return nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataData)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo)
-	greeterService := service.NewGreeterService(greeterUsecase)
+	greeterRepo := data.NewUserRepo(dataData)
+	greeterUsecase := biz.NewUserUseCase(greeterRepo)
+	greeterService := service.NewUserService(greeterUsecase)
 	grpcServer := server.NewGRPCServer(confServer, greeterService)
 	app := newApp(env, grpcServer)
 	return app, nil

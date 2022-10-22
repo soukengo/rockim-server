@@ -13,7 +13,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&configPath, "conf", "configs/business/user/user.yaml", "config path, eg: -conf config.yaml")
+	flag.StringVar(&configPath, "conf", "configs/logic/user/user.yaml", "config path, eg: -conf config.yaml")
 }
 
 func Load() (conf *Config, err error) {
