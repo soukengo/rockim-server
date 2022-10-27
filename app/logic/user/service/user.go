@@ -8,7 +8,7 @@ import (
 )
 
 type UserService struct {
-	v1.UnimplementedUserServer
+	v1.UnimplementedUserAPIServer
 	uc *biz.UserUseCase
 }
 

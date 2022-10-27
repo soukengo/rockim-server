@@ -1,13 +1,11 @@
 package server
 
 import (
+	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/transport/grpc"
 	v1 "rockim/api/logic/user/v1"
 	"rockim/app/logic/user/conf"
 	"rockim/app/logic/user/service"
-	"rockim/pkg/log"
-
-	"github.com/go-kratos/kratos/v2/middleware/recovery"
-	"github.com/go-kratos/kratos/v2/transport/grpc"
 )
 
 // NewGRPCServer new a gRPC server.
@@ -27,9 +25,6 @@ func NewGRPCServer(c *conf.Server, user *service.UserService) *grpc.Server {
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterUserServer(srv, user)
-	log.Infof("NewGRPCServer: %v", c.Grpc.Addr)
-
-	log.Use("grpc").Infof("NewGRPCServer: %v", c.Grpc.Addr)
+	v1.RegisterUserAPIServer(srv, user)
 	return srv
 }

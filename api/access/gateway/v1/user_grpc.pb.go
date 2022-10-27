@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.20.0
-// source: api/logic/user/v1/user.proto
+// source: api/access/gateway/v1/user.proto
 
 package v1
 
@@ -35,7 +35,7 @@ func NewUserAPIClient(cc grpc.ClientConnInterface) UserAPIClient {
 
 func (c *userAPIClient) Register(ctx context.Context, in *UserRegisterRequest, opts ...grpc.CallOption) (*UserRegisterResponse, error) {
 	out := new(UserRegisterResponse)
-	err := c.cc.Invoke(ctx, "/logic.user.v1.UserAPI/Register", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/access.gateway.v1.UserAPI/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func _UserAPI_Register_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/logic.user.v1.UserAPI/Register",
+		FullMethod: "/access.gateway.v1.UserAPI/Register",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserAPIServer).Register(ctx, req.(*UserRegisterRequest))
@@ -92,7 +92,7 @@ func _UserAPI_Register_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var UserAPI_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "logic.user.v1.UserAPI",
+	ServiceName: "access.gateway.v1.UserAPI",
 	HandlerType: (*UserAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -101,5 +101,5 @@ var UserAPI_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/logic/user/v1/user.proto",
+	Metadata: "api/access/gateway/v1/user.proto",
 }

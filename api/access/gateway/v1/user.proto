@@ -1,12 +1,19 @@
 syntax = "proto3";
 
-package logic.user.v1;
+package access.gateway.v1;
 
-option go_package = "rocrockim/api/logic/user/v1;v1";
+import "google/api/annotations.proto";
+
+option go_package = "rocrockim/api/access/gateway/v1;v1";
 
 // 用户接口定义
 service UserAPI {
-  rpc Register (UserRegisterRequest) returns (UserRegisterResponse);
+  rpc Register (UserRegisterRequest) returns (UserRegisterResponse){
+    option (google.api.http) = {
+      post: "/user/register",
+      body: "*"
+    };
+  }
 }
 
 message UserRegisterRequest {

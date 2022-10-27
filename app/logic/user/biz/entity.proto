@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package rockim.app.logic.user.biz;
+package logic.user.biz;
 
 option go_package = "rockim/app/logic/user/biz;biz";
 
