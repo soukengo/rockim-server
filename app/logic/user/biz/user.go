@@ -60,7 +60,6 @@ func (uc *UserUseCase) existsAccount(ctx context.Context, appId string, account 
 	if err != nil {
 		if errors.IsNotFound(err) {
 			err = nil
-			return
 		}
 		return
 	}

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package logic.user.v1;
 
-option go_package = "rocrockim/api/logic/user/v1;v1";
+option go_package = "rockim/api/logic/user/v1;v1";
 
 // 授权接口定义
 service AuthAPI {

@@ -13,9 +13,10 @@ import (
 	"rockim/app/access/gateway/data"
 	"rockim/app/access/gateway/server"
 	"rockim/app/access/gateway/service"
+	"rockim/pkg/component/discovery"
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Env, *conf.Server) (*kratos.App, error) {
+func wireApp(*conf.Env, *discovery.Config, *conf.Server) (*kratos.App, error) {
 	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
 }

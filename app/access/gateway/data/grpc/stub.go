@@ -5,10 +5,11 @@ import (
 	"github.com/google/wire"
 	"rockim/api"
 	userV1 "rockim/api/logic/user/v1"
+	"rockim/pkg/component/discovery"
 )
 
 // ProviderSet is grpc providers.
-var ProviderSet = wire.NewSet(NewUserClient)
+var ProviderSet = wire.NewSet(discovery.NewDiscovery, NewUserClient)
 
 func NewUserClient(r registry.Discovery) (userV1.UserAPIClient, error) {
 	conn, err := api.NewGrpcClient(api.AppUser, r)

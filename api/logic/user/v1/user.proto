@@ -2,7 +2,9 @@ syntax = "proto3";
 
 package logic.user.v1;
 
-option go_package = "rocrockim/api/logic/user/v1;v1";
+option go_package = "rockim/api/logic/user/v1;v1";
+
+import "api/logic/user/v1/types/user.proto";
 
 // 用户接口定义
 service UserAPI {
@@ -18,5 +20,5 @@ message UserRegisterRequest {
 }
 
 message UserRegisterResponse {
-  string uid = 1;
+  types.User user = 1;
 }

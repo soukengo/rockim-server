@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	v1 "rockim/api/access/gateway/v1"
+	v1 "rockim/api/access/gateway/client/v1"
 	"rockim/app/access/gateway/biz"
 )
 
