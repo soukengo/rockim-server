@@ -10,6 +10,9 @@ type Error struct {
 	stack *stack
 }
 
+func NewCode(code int) *Error {
+	return &Error{err: errors.New(code, "", "")}
+}
 func New(code int, reason, message string) *Error {
 	return &Error{err: errors.New(code, reason, message)}
 }

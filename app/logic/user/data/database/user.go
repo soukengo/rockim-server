@@ -34,8 +34,12 @@ func (d *UserData) GenID(ctx context.Context) (string, error) {
 }
 
 func (d *UserData) FindByID(ctx context.Context, appId string, id string) (user *types.User, err error) {
+	objId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
 	var record entity.ImUser
-	err = d.mgo.FindOne(ctx, entity.TableImUser, bson.M{"appId": appId, entity.MongoFieldId: id}, &record, options.FindOne())
+	err = d.mgo.FindOne(ctx, entity.TableImUser, bson.M{"appId": appId, entity.MongoFieldId: objId}, &record, options.FindOne())
 	if err != nil {
 		return
 	}
@@ -52,21 +56,26 @@ func (d *UserData) FindByAccount(ctx context.Context, appId string, account stri
 }
 
 func (d *UserData) Create(ctx context.Context, user *types.User) (err error) {
-	record, err := convert.UserEntity(user)
+	objId, err := primitive.ObjectIDFromHex(user.Id)
 	if err != nil {
 		return
 	}
-	c := d.collection()
-	_, err = c.InsertOne(ctx, record)
+	record := convert.UserEntity(user)
+	record.Id = objId
+	if err != nil {
+		return
+	}
+	_, err = d.collection().InsertOne(ctx, record)
 	return
 }
 
 func (d *UserData) Update(ctx context.Context, user *types.User) (err error) {
-	record, err := convert.UserEntity(user)
+	objId, err := primitive.ObjectIDFromHex(user.Id)
 	if err != nil {
 		return
 	}
-	c := d.collection()
-	_, err = c.UpdateByID(ctx, record.Id, record)
+	record := convert.UserEntity(user)
+	record.Id = objId
+	_, err = d.collection().UpdateByID(ctx, record.Id, record)
 	return
 }

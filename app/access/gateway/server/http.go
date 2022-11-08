@@ -8,6 +8,7 @@ import (
 	"rockim/app/access/gateway/conf"
 	"rockim/app/access/gateway/server/middleware"
 	"rockim/app/access/gateway/service"
+	_ "rockim/pkg/encoding/proto"
 )
 
 // NewHTTPServer new a HTTP server.

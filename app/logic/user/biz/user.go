@@ -13,7 +13,7 @@ import (
 var (
 	// ErrUserNotFound is user not found.
 	ErrUserNotFound      = errors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
-	ErrAccountRegistered = errors.NotFound(v1.ErrorReason_ACCOUNT_REGISTERED.String(), "account already registered")
+	ErrAccountRegistered = errors.Conflict(v1.ErrorReason_ACCOUNT_REGISTERED.String(), "account already registered")
 )
 
 // UserRepo is a User repo.

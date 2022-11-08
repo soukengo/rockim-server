@@ -17,3 +17,15 @@ func Unmarshal(data []byte, v any) error {
 func Marshal(v any) ([]byte, error) {
 	return json.Marshal(v)
 }
+
+func ToJSONString(v interface{}) (result string, err error) {
+	if v == nil {
+		return
+	}
+	result, err = json.MarshalToString(v)
+	return
+}
+func TryToJSONString(v interface{}) (result string) {
+	result, _ = ToJSONString(v)
+	return
+}
