@@ -39,9 +39,19 @@ func Error(a ...interface{}) {
 func Errorf(format string, a ...interface{}) {
 	global.root.Errorf(format, a...)
 }
-func Use(name string) Helper {
-	return global.use(name)
-}
+
 func Default() Helper {
 	return global.root
+}
+
+func IsEnabled(name string) bool {
+	return global.has(name)
+}
+
+func Std() Helper {
+	return stdProxy
+}
+func Use(loggerName string) Helper {
+	l := global.use(loggerName)
+	return l
 }

@@ -1,7 +1,12 @@
 package biz
 
+import (
+	"context"
+	"rockim/api/logic/user/v1/types"
+)
+
 type UserRepo interface {
-	Register() error
+	Register(ctx context.Context, user *types.User) (*types.User, error)
 }
 
 type UserUseCase struct {
@@ -12,6 +17,6 @@ func NewUserUseCase(repo UserRepo) *UserUseCase {
 	return &UserUseCase{repo: repo}
 }
 
-func (uc *UserUseCase) Register() {
-
+func (uc *UserUseCase) RegisterUser(ctx context.Context, user *types.User) (*types.User, error) {
+	return uc.repo.Register(ctx, user)
 }

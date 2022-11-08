@@ -27,7 +27,7 @@ type UserAPIHTTPServer interface {
 
 func RegisterUserAPIHTTPServer(s *http.Server, srv UserAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/user/register", _UserAPI_Register0_HTTP_Handler(srv))
+	r.POST("/api/v1/user/register", _UserAPI_Register0_HTTP_Handler(srv))
 }
 
 func _UserAPI_Register0_HTTP_Handler(srv UserAPIHTTPServer) func(ctx http.Context) error {
@@ -63,7 +63,7 @@ func NewUserAPIHTTPClient(client *http.Client) UserAPIHTTPClient {
 
 func (c *UserAPIHTTPClientImpl) Register(ctx context.Context, in *UserRegisterRequest, opts ...http.CallOption) (*UserRegisterResponse, error) {
 	var out UserRegisterResponse
-	pattern := "/user/register"
+	pattern := "/api/v1/user/register"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserAPIRegister))
 	opts = append(opts, http.PathTemplate(pattern))

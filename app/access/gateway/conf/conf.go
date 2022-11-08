@@ -19,7 +19,7 @@ func init() {
 
 func Load() (conf *Config, err error) {
 	conf = &Config{
-		Env: &Env{AppId: api.AppUser},
+		Env: &Env{AppId: api.AppGateway},
 		Log: &log.Config{
 			LoggerConfig: log.LoggerConfig{
 				Level: "info",

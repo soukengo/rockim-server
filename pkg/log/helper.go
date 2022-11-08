@@ -108,9 +108,7 @@ func (p proxyHelper) Errorf(format string, args ...interface{}) {
 }
 
 func (p proxyHelper) WithContext(ctx context.Context) Helper {
-	return &proxyHelper{
-		hpl: p.hpl.WithContext(ctx),
-	}
+	return proxy(proxy(p.hpl.WithContext(ctx)))
 }
 
 type emptyHelper struct {

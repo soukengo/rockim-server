@@ -3,11 +3,12 @@ package log
 import "sync"
 
 var (
-	rootLogger = newHelper(newAdapter(LevelInfo, nil))
+	std      = newHelper(newAdapter(LevelInfo, nil))
+	stdProxy = proxy(proxy(std))
 )
 var global = &loggerContainer{
-	root:      rootLogger,
-	rootProxy: proxy(rootLogger),
+	root:      std,
+	rootProxy: proxy(std),
 	loggers:   map[string]Helper{},
 	empty:     &emptyHelper{}}
 
@@ -38,4 +39,13 @@ func (c *loggerContainer) use(name string) Helper {
 		return l
 	}
 	return c.empty
+}
+
+func (c *loggerContainer) has(name string) bool {
+	c.lock.RLock()
+	defer c.lock.RUnlock()
+	if _, ok := c.loggers[name]; ok {
+		return true
+	}
+	return false
 }

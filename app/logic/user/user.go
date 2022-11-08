@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/go-kratos/kratos/v2"
+	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"rockim"
 	"rockim/app/logic/user/conf"
@@ -20,7 +21,7 @@ func New(version string) (app *kratos.App, err error) {
 	if err != nil {
 		return
 	}
-	app, err = wireApp(cfg.Env, cfg.Server)
+	app, err = wireApp(cfg.Env, cfg.Discovery, cfg.Server)
 	if err != nil {
 		//err = errors.New(errors.UnknownCode, "", "wireApp error")
 		return
@@ -37,11 +38,12 @@ func configure(cfg *conf.Config) (err error) {
 	}
 	return
 }
-func newApp(env *conf.Env, gs *grpc.Server) *kratos.App {
+func newApp(env *conf.Env, gs *grpc.Server, registrar registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.ID(env.AppId),
 		kratos.Name(env.AppId),
 		kratos.Version(env.Version),
+		kratos.Registrar(registrar),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(
 			gs,

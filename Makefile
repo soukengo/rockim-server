@@ -34,6 +34,8 @@ config:
 
 .PHONY: api
 # generate api proto
+
+
 api:
 	protoc --proto_path=./api \
 	       --proto_path=./third_party \

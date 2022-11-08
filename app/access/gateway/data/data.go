@@ -1,8 +1,10 @@
 package data
 
 import (
+	"context"
 	"github.com/google/wire"
 	userV1 "rockim/api/logic/user/v1"
+	"rockim/api/logic/user/v1/types"
 	"rockim/app/access/gateway/biz"
 	"rockim/app/access/gateway/data/grpc"
 )
@@ -18,6 +20,16 @@ func NewUserRepo(uac userV1.UserAPIClient) biz.UserRepo {
 	return &userRepo{uac: uac}
 }
 
-func (r *userRepo) Register() error {
-	return nil
+func (r *userRepo) Register(ctx context.Context, user *types.User) (*types.User, error) {
+	ret, err := r.uac.Register(ctx, &userV1.UserRegisterRequest{
+		AppId:     user.AppId,
+		ChannelId: user.ChannelId,
+		Account:   user.Account,
+		Name:      user.Name,
+		Fields:    user.Fields,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return ret.User, nil
 }

@@ -1,3 +1,8 @@
+discovery:
+  engine: etcd
+  etcd:
+    nodes:
+      - 127.0.0.1:2379
 server:
   grpc:
     addr: 0.0.0.0:9000

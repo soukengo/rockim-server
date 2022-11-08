@@ -4,6 +4,7 @@ import (
 	"flag"
 	"rockim/api"
 	"rockim/pkg/component/config"
+	"rockim/pkg/component/discovery"
 	"rockim/pkg/log"
 	"time"
 )
@@ -36,9 +37,10 @@ func Load() (conf *Config, err error) {
 }
 
 type Config struct {
-	Env    *Env
-	Server *Server
-	Log    *log.Config
+	Env       *Env
+	Server    *Server
+	Discovery *discovery.Config
+	Log       *log.Config
 }
 
 type Env struct {

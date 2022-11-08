@@ -19,7 +19,7 @@ var (
 type UserRepo interface {
 	FindByID(ctx context.Context, appId string, id string) (*User, error)
 	FindByAccount(ctx context.Context, appId string, account string) (uid string, err error)
-	GenID() (string, error)
+	GenID(ctx context.Context) (string, error)
 	Save(context.Context, *User) (*User, error)
 }
 

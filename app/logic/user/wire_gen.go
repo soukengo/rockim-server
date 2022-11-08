@@ -13,20 +13,25 @@ import (
 	"rockim/app/logic/user/data"
 	"rockim/app/logic/user/server"
 	"rockim/app/logic/user/service"
+	"rockim/pkg/component/discovery"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(env *conf.Env, confServer *conf.Server) (*kratos.App, error) {
+func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server) (*kratos.App, error) {
 	dataData, err := data.NewData()
 	if err != nil {
 		return nil, err
 	}
-	greeterRepo := data.NewUserRepo(dataData)
-	greeterUsecase := biz.NewUserUseCase(greeterRepo)
-	greeterService := service.NewUserService(greeterUsecase)
-	grpcServer := server.NewGRPCServer(confServer, greeterService)
-	app := newApp(env, grpcServer)
+	userRepo := data.NewUserRepo(dataData)
+	userUseCase := biz.NewUserUseCase(userRepo)
+	userService := service.NewUserService(userUseCase)
+	grpcServer := server.NewGRPCServer(confServer, userService)
+	registrar, err := discovery.NewRegistrar(config)
+	if err != nil {
+		return nil, err
+	}
+	app := newApp(env, grpcServer, registrar)
 	return app, nil
 }
