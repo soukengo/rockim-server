@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+	"rockim/api/logic/user/v1/types"
 	"time"
 
 	v1 "rockim/api/logic/user/v1"
@@ -17,10 +18,11 @@ var (
 
 // UserRepo is a User repo.
 type UserRepo interface {
-	FindByID(ctx context.Context, appId string, id string) (*User, error)
+	FindByID(ctx context.Context, appId string, id string) (*types.User, error)
 	FindByAccount(ctx context.Context, appId string, account string) (uid string, err error)
 	GenID(ctx context.Context) (string, error)
-	Save(context.Context, *User) (*User, error)
+	Create(context.Context, *types.User) error
+	Update(context.Context, *types.User) error
 }
 
 // UserUseCase is a User use case.
@@ -34,7 +36,7 @@ func NewUserUseCase(repo UserRepo) *UserUseCase {
 }
 
 // Register register a new user
-func (uc *UserUseCase) Register(ctx context.Context, u *User) (*User, error) {
+func (uc *UserUseCase) Register(ctx context.Context, u *types.User) (*types.User, error) {
 	// TODO: 分布式锁
 	// 检查是否已经注册
 	exists, err := uc.existsAccount(ctx, u.AppId, u.Account)
@@ -45,14 +47,18 @@ func (uc *UserUseCase) Register(ctx context.Context, u *User) (*User, error) {
 	if exists {
 		return nil, ErrAccountRegistered
 	}
-	uid, err := uc.repo.GenID()
+	uid, err := uc.repo.GenID(ctx)
 	if err != nil {
 		return nil, err
 	}
 	u.Id = uid
 	u.CreateTime = time.Now().UnixMilli()
-	u.Status = UserStatus_USER_STATUS_NORMAL
-	return uc.repo.Save(ctx, u)
+	u.Status = types.UserStatus_USER_STATUS_NORMAL
+	err = uc.repo.Create(ctx, u)
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
 }
 
 func (uc *UserUseCase) existsAccount(ctx context.Context, appId string, account string) (exists bool, err error) {

@@ -22,11 +22,11 @@ func NewUserRepo(uac userV1.UserAPIClient) biz.UserRepo {
 
 func (r *userRepo) Register(ctx context.Context, user *types.User) (*types.User, error) {
 	ret, err := r.uac.Register(ctx, &userV1.UserRegisterRequest{
-		AppId:     user.AppId,
-		ChannelId: user.ChannelId,
-		Account:   user.Account,
-		Name:      user.Name,
-		Fields:    user.Fields,
+		AppId:   user.AppId,
+		Bucket:  user.Bucket,
+		Account: user.Account,
+		Name:    user.Name,
+		Fields:  user.Fields,
 	})
 	if err != nil {
 		return nil, err

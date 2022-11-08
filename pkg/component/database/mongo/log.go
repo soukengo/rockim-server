@@ -30,7 +30,7 @@ func (l *logger) Succeeded(ctx context.Context, event *event.CommandSucceededEve
 	if !log.IsEnabled(loggerName) {
 		return
 	}
-	log.Use(loggerName).WithContext(ctx).Infof("exec[%v] succeeded command: %s,reply: %s", event.RequestID, event.CommandName)
+	log.Use(loggerName).WithContext(ctx).Infof("exec[%v] succeeded command: %s,reply: %s", event.RequestID, event.CommandName, event.Reply)
 }
 
 func (l *logger) Failed(ctx context.Context, event *event.CommandFailedEvent) {

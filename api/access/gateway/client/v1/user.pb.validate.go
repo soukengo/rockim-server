@@ -68,7 +68,7 @@ func (m *UserRegisterRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	// no validation rules for ChannelId
+	// no validation rules for Bucket
 
 	if utf8.RuneCountInString(m.GetAccount()) < 1 {
 		err := UserRegisterRequestValidationError{

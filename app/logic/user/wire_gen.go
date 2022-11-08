@@ -11,20 +11,20 @@ import (
 	"rockim/app/logic/user/biz"
 	"rockim/app/logic/user/conf"
 	"rockim/app/logic/user/data"
+	"rockim/app/logic/user/data/database"
 	"rockim/app/logic/user/server"
 	"rockim/app/logic/user/service"
+	"rockim/pkg/component/database/mongo"
 	"rockim/pkg/component/discovery"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server) (*kratos.App, error) {
-	dataData, err := data.NewData()
-	if err != nil {
-		return nil, err
-	}
-	userRepo := data.NewUserRepo(dataData)
+func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, mongoConfig *mongo.Config) (*kratos.App, error) {
+	client := mongo.NewClient(mongoConfig)
+	userData := database.NewUserData(client)
+	userRepo := data.NewUserRepo(userData)
 	userUseCase := biz.NewUserUseCase(userRepo)
 	userService := service.NewUserService(userUseCase)
 	grpcServer := server.NewGRPCServer(confServer, userService)

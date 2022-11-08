@@ -19,24 +19,15 @@ func NewUserService(uc *biz.UserUseCase) *UserService {
 }
 
 func (s *UserService) Register(ctx context.Context, in *v1.UserRegisterRequest) (*v1.UserRegisterResponse, error) {
-	user, err := s.uc.Register(ctx, &biz.User{
-		AppId:     in.AppId,
-		ChannelId: in.ChannelId,
-		Account:   in.Account,
-		Name:      in.Name,
-		Fields:    in.Fields,
+	user, err := s.uc.Register(ctx, &types.User{
+		AppId:   in.AppId,
+		Bucket:  in.Bucket,
+		Account: in.Account,
+		Name:    in.Name,
+		Fields:  in.Fields,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &v1.UserRegisterResponse{User: &types.User{
-		Id:         user.Id,
-		CreateTime: user.CreateTime,
-		AppId:      user.AppId,
-		ChannelId:  user.ChannelId,
-		Account:    user.Account,
-		Name:       user.Name,
-		Fields:     user.Fields,
-		Status:     types.UserStatus(user.Status),
-	}}, nil
+	return &v1.UserRegisterResponse{User: user}, nil
 }

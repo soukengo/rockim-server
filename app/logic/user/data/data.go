@@ -5,5 +5,5 @@ import (
 	"rockim/app/logic/user/data/database"
 )
 
-// ProviderSet is data providers.
+// ProviderSet is db providers.
 var ProviderSet = wire.NewSet(database.ProviderSet, NewUserRepo)

@@ -2,36 +2,38 @@ package data
 
 import (
 	"context"
+	"rockim/api/logic/user/v1/types"
 	"rockim/app/logic/user/data/database"
 
 	"rockim/app/logic/user/biz"
 )
 
 type userRepo struct {
-	data *database.UserData
+	db *database.UserData
 }
 
 // NewUserRepo .
-func NewUserRepo(data *database.UserData) biz.UserRepo {
+func NewUserRepo(db *database.UserData) biz.UserRepo {
 	return &userRepo{
-		data: data,
+		db: db,
 	}
 }
 
-func (u *userRepo) FindByID(ctx context.Context, appId string, id string) (*biz.User, error) {
-	//TODO implement me
-	panic("implement me")
+func (r *userRepo) FindByID(ctx context.Context, appId string, id string) (*types.User, error) {
+	return r.db.FindByID(ctx, appId, id)
 }
 
-func (u *userRepo) FindByAccount(ctx context.Context, appId string, account string) (uid string, err error) {
-	return u.data.FindByAccount(ctx, appId, account)
+func (r *userRepo) FindByAccount(ctx context.Context, appId string, account string) (uid string, err error) {
+	return r.db.FindByAccount(ctx, appId, account)
 }
 
-func (u *userRepo) GenID(ctx context.Context) (string, error) {
-	return u.data.GenID(ctx)
+func (r *userRepo) GenID(ctx context.Context) (string, error) {
+	return r.db.GenID(ctx)
 }
 
-func (u *userRepo) Save(ctx context.Context, user *biz.User) (*biz.User, error) {
-	//TODO implement me
-	panic("implement me")
+func (r *userRepo) Create(ctx context.Context, user *types.User) error {
+	return r.db.Create(ctx, user)
+}
+func (r *userRepo) Update(ctx context.Context, user *types.User) error {
+	return r.db.Update(ctx, user)
 }

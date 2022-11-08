@@ -4,6 +4,7 @@ import (
 	"flag"
 	"rockim/api"
 	"rockim/pkg/component/config"
+	"rockim/pkg/component/database/mongo"
 	"rockim/pkg/component/discovery"
 	"rockim/pkg/log"
 	"time"
@@ -23,9 +24,9 @@ func Load() (conf *Config, err error) {
 		Log: &log.Config{
 			LoggerConfig: log.LoggerConfig{
 				Level: "info",
-				//Appender: &log.AppenderConfig{
-				//	FileName: "../../log/app.log",
-				//},
+			},
+			Loggers: []log.LoggerConfig{
+				{Name: "mongo", Level: "info"},
 			},
 		},
 	}
@@ -41,6 +42,7 @@ type Config struct {
 	Server    *Server
 	Discovery *discovery.Config
 	Log       *log.Config
+	Database  *Database
 }
 
 type Env struct {
@@ -57,4 +59,8 @@ type Grpc struct {
 	Network string
 	Addr    string
 	Timeout time.Duration
+}
+
+type Database struct {
+	Mongodb *mongo.Config
 }
