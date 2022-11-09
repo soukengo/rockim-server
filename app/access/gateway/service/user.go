@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	v1 "rockim/api/access/gateway/client/v1"
-	v1Types "rockim/api/access/gateway/client/v1/types"
+	v1 "rockim/api/access/gateway/csdk/v1"
+	v1Types "rockim/api/access/gateway/csdk/v1/types"
 	"rockim/api/logic/user/v1/types"
 	"rockim/app/access/gateway/biz"
 )

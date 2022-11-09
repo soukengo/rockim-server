@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.5.2
 // - protoc             v3.20.0
-// source: client/v1/user.proto
+// source: csdk/v1/user.proto
 
 package v1
 
@@ -19,7 +19,7 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationUserAPIRegister = "/rockim.client.v1.UserAPI/Register"
+const OperationUserAPIRegister = "/rockim.csdk.v1.UserAPI/Register"
 
 type UserAPIHTTPServer interface {
 	Register(context.Context, *UserRegisterRequest) (*UserRegisterResponse, error)

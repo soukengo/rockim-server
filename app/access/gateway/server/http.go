@@ -4,7 +4,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	v1 "rockim/api/access/gateway/client/v1"
+	v1 "rockim/api/access/gateway/csdk/v1"
 	"rockim/app/access/gateway/conf"
 	"rockim/app/access/gateway/server/middleware"
 	"rockim/app/access/gateway/service"

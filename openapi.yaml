@@ -16,7 +16,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/rockim.client.v1.UserRegisterRequest'
+                            $ref: '#/components/schemas/rockim.csdk.v1.UserRegisterRequest'
                 required: true
             responses:
                 "200":
@@ -24,10 +24,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/rockim.client.v1.UserRegisterResponse'
+                                $ref: '#/components/schemas/rockim.csdk.v1.UserRegisterResponse'
 components:
     schemas:
-        rockim.client.v1.UserRegisterRequest:
+        rockim.csdk.v1.UserRegisterRequest:
             type: object
             properties:
                 appId:
@@ -48,13 +48,13 @@ components:
                         type: string
                     description: 用户自定义字段
             description: UserRegisterRequest 注册用户请求
-        rockim.client.v1.UserRegisterResponse:
+        rockim.csdk.v1.UserRegisterResponse:
             type: object
             properties:
                 user:
-                    $ref: '#/components/schemas/rockim.client.v1.types.User'
+                    $ref: '#/components/schemas/rockim.csdk.v1.types.User'
             description: UserRegisterResponse 注册用户响应
-        rockim.client.v1.types.User:
+        rockim.csdk.v1.types.User:
             type: object
             properties:
                 id:
