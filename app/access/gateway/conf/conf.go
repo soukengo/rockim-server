@@ -14,7 +14,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&configPath, "conf", "configs/access/gateway/gateway.yaml", "config path, eg: -conf config.yaml")
+	flag.StringVar(&configPath, "conf", "configs/access/gateway.yaml", "config path, eg: -conf config.yaml")
 }
 
 func Load() (conf *Config, err error) {

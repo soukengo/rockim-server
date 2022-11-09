@@ -73,14 +73,22 @@ type User struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id         string            `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                                                                                 // 用户ID
-	CreateTime int64             `protobuf:"varint,2,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`                                                              // 创建时间
-	AppId      string            `protobuf:"bytes,3,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`                                                                              // 所属应用
-	Bucket     string            `protobuf:"bytes,4,opt,name=bucket,proto3" json:"bucket,omitempty"`                                                                                         // 用户所属分桶（可选）
-	Account    string            `protobuf:"bytes,5,opt,name=account,proto3" json:"account,omitempty"`                                                                                       // 用户账户名，由接入方指定
-	Name       string            `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`                                                                                             // 用户名称
-	Status     UserStatus        `protobuf:"varint,7,opt,name=status,proto3,enum=rockim.client.v1.types.UserStatus" json:"status,omitempty"`                                                 // 状态
-	Fields     map[string]string `protobuf:"bytes,8,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // 客户自定义字段
+	// 用户ID
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// 创建时间
+	CreateTime int64 `protobuf:"varint,2,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
+	// 所属应用
+	AppId string `protobuf:"bytes,3,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	// 用户所属分桶（可选）
+	Bucket string `protobuf:"bytes,4,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	// 用户账户名，由接入方指定
+	Account string `protobuf:"bytes,5,opt,name=account,proto3" json:"account,omitempty"`
+	// 用户名称
+	Name string `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
+	// 状态
+	Status UserStatus `protobuf:"varint,7,opt,name=status,proto3,enum=rockim.client.v1.types.UserStatus" json:"status,omitempty"`
+	// 客户自定义字段
+	Fields map[string]string `protobuf:"bytes,8,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *User) Reset() {

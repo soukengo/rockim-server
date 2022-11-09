@@ -32,16 +32,21 @@ components:
             properties:
                 appId:
                     type: string
+                    description: 所属应用
                 bucket:
                     type: string
+                    description: 用户所属分桶（可选）
                 account:
                     type: string
+                    description: 用户账户名，由接入方指定
                 name:
                     type: string
+                    description: 用户名称
                 fields:
                     type: object
                     additionalProperties:
                         type: string
+                    description: 用户自定义字段
             description: UserRegisterRequest 注册用户请求
         rockim.client.v1.UserRegisterResponse:
             type: object
@@ -54,24 +59,32 @@ components:
             properties:
                 id:
                     type: string
+                    description: 用户ID
                 createTime:
                     type: integer
+                    description: 创建时间
                     format: int64
                 appId:
                     type: string
+                    description: 所属应用
                 bucket:
                     type: string
+                    description: 用户所属分桶（可选）
                 account:
                     type: string
+                    description: 用户账户名，由接入方指定
                 name:
                     type: string
+                    description: 用户名称
                 status:
                     type: integer
+                    description: 状态
                     format: enum
                 fields:
                     type: object
                     additionalProperties:
                         type: string
+                    description: 客户自定义字段
             description: 用户
 tags:
     - name: UserAPI
