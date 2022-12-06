@@ -2,7 +2,7 @@ package biz
 
 import (
 	"context"
-	"rockim/api/logic/user/v1/types"
+	"rockim/api/rockim/service/user/v1/types"
 )
 
 type UserRepo interface {

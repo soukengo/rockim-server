@@ -3,8 +3,8 @@ package data
 import (
 	"context"
 	"github.com/google/wire"
-	userV1 "rockim/api/logic/user/v1"
-	"rockim/api/logic/user/v1/types"
+	"rockim/api/rockim/service/user/v1"
+	"rockim/api/rockim/service/user/v1/types"
 	"rockim/app/access/gateway/biz"
 	"rockim/app/access/gateway/data/grpc"
 )
@@ -13,15 +13,15 @@ import (
 var ProviderSet = wire.NewSet(grpc.ProviderSet, NewUserRepo)
 
 type userRepo struct {
-	uac userV1.UserAPIClient
+	uac v1.UserAPIClient
 }
 
-func NewUserRepo(uac userV1.UserAPIClient) biz.UserRepo {
+func NewUserRepo(uac v1.UserAPIClient) biz.UserRepo {
 	return &userRepo{uac: uac}
 }
 
 func (r *userRepo) Register(ctx context.Context, user *types.User) (*types.User, error) {
-	ret, err := r.uac.Register(ctx, &userV1.UserRegisterRequest{
+	ret, err := r.uac.Register(ctx, &v1.UserRegisterRequest{
 		AppId:   user.AppId,
 		Bucket:  user.Bucket,
 		Account: user.Account,

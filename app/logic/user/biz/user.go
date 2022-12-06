@@ -2,12 +2,12 @@ package biz
 
 import (
 	"context"
-	"rockim/api/logic/user/v1/types"
 	"time"
 
-	v1 "rockim/api/logic/user/v1"
-
 	"github.com/go-kratos/kratos/v2/errors"
+	"rockim/api/rockim/service/user/v1"
+	"rockim/api/rockim/service/user/v1/types"
+	v1enums "rockim/api/rockim/shared/enums/v1"
 )
 
 var (
@@ -53,7 +53,7 @@ func (uc *UserUseCase) Register(ctx context.Context, u *types.User) (*types.User
 	}
 	u.Id = uid
 	u.CreateTime = time.Now().UnixMilli()
-	u.Status = types.UserStatus_USER_STATUS_NORMAL
+	u.Status = v1enums.UserStatus_USER_STATUS_NORMAL
 	err = uc.repo.Create(ctx, u)
 	if err != nil {
 		return nil, err

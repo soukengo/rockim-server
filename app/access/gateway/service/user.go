@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	v1 "rockim/api/access/gateway/csdk/v1"
-	v1Types "rockim/api/access/gateway/csdk/v1/types"
-	"rockim/api/logic/user/v1/types"
+	"rockim/api/rockim/client/v1"
+	clienttypes "rockim/api/rockim/client/v1/types"
+	"rockim/api/rockim/service/user/v1/types"
 	"rockim/app/access/gateway/biz"
 )
 
@@ -27,7 +27,7 @@ func (s *UserService) Register(ctx context.Context, req *v1.UserRegisterRequest)
 	if err != nil {
 		return nil, err
 	}
-	return &v1.UserRegisterResponse{User: &v1Types.User{
+	return &v1.UserRegisterResponse{User: &clienttypes.User{
 		Id:         user.Id,
 		CreateTime: user.CreateTime,
 		AppId:      user.AppId,
@@ -35,6 +35,6 @@ func (s *UserService) Register(ctx context.Context, req *v1.UserRegisterRequest)
 		Account:    user.Account,
 		Name:       user.Name,
 		Fields:     user.Fields,
-		Status:     v1Types.UserStatus(user.Status),
+		Status:     user.Status,
 	}}, nil
 }

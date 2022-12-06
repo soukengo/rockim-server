@@ -40,7 +40,7 @@ func configure(cfg *conf.Config) (err error) {
 }
 func newApp(env *conf.Env, gs *grpc.Server, registrar registry.Registrar) *kratos.App {
 	return kratos.New(
-		kratos.ID(env.AppId),
+		//kratos.ID(env.AppId),
 		kratos.Name(env.AppId),
 		kratos.Version(env.Version),
 		kratos.Registrar(registrar),

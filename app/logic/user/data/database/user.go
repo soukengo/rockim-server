@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"rockim/api/logic/user/v1/types"
+	"rockim/api/rockim/service/user/v1/types"
 	"rockim/app/logic/user/data/database/convert"
 	"rockim/app/logic/user/data/database/entity"
 	"rockim/pkg/component/database/mongo"

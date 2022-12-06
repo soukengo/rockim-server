@@ -7,7 +7,7 @@ require (
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20221009085009-468630cc4bf6
 	github.com/go-kratos/kratos/contrib/registry/etcd/v2 v2.0.0-20221026062414-3c65f16737e3
 	github.com/go-kratos/kratos/contrib/registry/zookeeper/v2 v2.0.0-20221026062414-3c65f16737e3
-	github.com/go-kratos/kratos/v2 v2.5.2
+	github.com/go-kratos/kratos/v2 v2.5.3
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-zookeeper/zk v1.0.3
 	github.com/golang/protobuf v1.5.2
@@ -73,3 +73,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/go-kratos/kratos/v2 => /Users/sergewu/go/src/github.com/soukengo/kratos
+
+replace github.com/go-kratos/kratos/contrib/registry/zookeeper/v2 => /Users/sergewu/go/src/github.com/soukengo/kratos/contrib/registry/zookeeper

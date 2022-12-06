@@ -2,7 +2,7 @@ package conf
 
 import (
 	"flag"
-	"rockim/api"
+	"rockim/api/rockim/service"
 	"rockim/pkg/component/config"
 	"rockim/pkg/component/discovery"
 	"rockim/pkg/log"
@@ -14,12 +14,12 @@ var (
 )
 
 func init() {
-	flag.StringVar(&configPath, "conf", "configs/access/gateway.yaml", "config path, eg: -conf config.yaml")
+	flag.StringVar(&configPath, "conf", "config/access/gateway.yaml", "config path, eg: -conf config.yaml")
 }
 
 func Load() (conf *Config, err error) {
 	conf = &Config{
-		Env: &Env{AppId: api.AppGateway},
+		Env: &Env{AppId: service.AppGateway},
 		Log: &log.Config{
 			LoggerConfig: log.LoggerConfig{
 				Level: "info",

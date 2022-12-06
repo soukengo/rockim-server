@@ -2,10 +2,9 @@ package data
 
 import (
 	"context"
-	"rockim/api/logic/user/v1/types"
-	"rockim/app/logic/user/data/database"
-
+	"rockim/api/rockim/service/user/v1/types"
 	"rockim/app/logic/user/biz"
+	"rockim/app/logic/user/data/database"
 )
 
 type userRepo struct {

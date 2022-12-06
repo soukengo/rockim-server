@@ -2,7 +2,7 @@ package conf
 
 import (
 	"flag"
-	"rockim/api"
+	"rockim/api/rockim/service"
 	"rockim/pkg/component/config"
 	"rockim/pkg/component/database/mongo"
 	"rockim/pkg/component/discovery"
@@ -15,12 +15,12 @@ var (
 )
 
 func init() {
-	flag.StringVar(&configPath, "conf", "configs/logic/user.yaml", "config path, eg: -conf config.yaml")
+	flag.StringVar(&configPath, "conf", "../../../config/logic/user.yaml", "config path, eg: -conf config.yaml")
 }
 
 func Load() (conf *Config, err error) {
 	conf = &Config{
-		Env: &Env{AppId: api.AppUser},
+		Env: &Env{AppId: service.AppUser},
 		Log: &log.Config{
 			LoggerConfig: log.LoggerConfig{
 				Level: "info",

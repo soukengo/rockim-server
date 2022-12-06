@@ -1,7 +1,8 @@
 package convert
 
 import (
-	"rockim/api/logic/user/v1/types"
+	"rockim/api/rockim/service/user/v1/types"
+	v1enums "rockim/api/rockim/shared/enums/v1"
 	"rockim/app/logic/user/data/database/entity"
 )
 
@@ -14,7 +15,7 @@ func UserProto(source *entity.ImUser) *types.User {
 		Account:    source.Account,
 		Name:       source.Name,
 		Fields:     source.Fields,
-		Status:     types.UserStatus(source.Status),
+		Status:     v1enums.UserStatus(source.Status),
 	}
 }
 func UserEntity(source *types.User) *entity.ImUser {
