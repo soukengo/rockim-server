@@ -5,4 +5,5 @@ const (
 	AppUser     = "rockim.user"
 	AppMessage  = "rockim.message"
 	AppGateway  = "rockim.gateway"
+	AppAdmin    = "rockim.admin"
 )

@@ -6,5 +6,5 @@ discovery:
 
 server:
   http:
-    addr: :6002
+    addr: :6001
     timeout: "10s"

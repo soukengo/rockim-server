@@ -1,11 +1,11 @@
 discovery:
-  engine: zookeeper
-  zookeeper:
+  engine: etcd
+  etcd:
     nodes:
-      - 127.0.0.1:2181
+      - 127.0.0.1:2379
 server:
   grpc:
-    addr: 0.0.0.0:9002
+    addr: :6101
     timeout: "10s"
 database:
   mongodb:
