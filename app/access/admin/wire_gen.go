@@ -33,10 +33,12 @@ func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, a
 	platUserRepo := data.NewPlatUserRepo(platUserAPIClient)
 	authUseCase := manager.NewAuthUseCase(auth, platUserRepo)
 	authService := manager2.NewAuthService(authUseCase)
-	managerServiceGroup := server.NewManagerServiceGroup(authService)
+	sessionUseCase := manager.NewSessionUseCase(platUserRepo)
+	sessionService := manager2.NewSessionService(sessionUseCase)
+	managerServiceGroup := server.NewManagerServiceGroup(auth, authService, sessionService)
 	tenantAuthService := tenant.NewAuthService(authUseCase)
 	tenantServiceGroup := server.NewTenantServiceGroup(tenantAuthService)
-	httpServer := server.NewHTTPServer(confServer, auth, managerServiceGroup, tenantServiceGroup)
+	httpServer := server.NewHTTPServer(confServer, managerServiceGroup, tenantServiceGroup)
 	app := newApp(env, httpServer)
 	return app, nil
 }

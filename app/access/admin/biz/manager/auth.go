@@ -31,7 +31,7 @@ func (uc *AuthUseCase) Login(ctx context.Context, account string, password strin
 		err = ErrPasswordIncorrect
 		return
 	}
-	var session = SessionUser{Name: user.Name, AvatarUrl: user.AvatarUrl}
+	var session = &SessionUser{ID: user.Id, Name: user.Name, AvatarUrl: user.AvatarUrl}
 	claims := jwt.NewWithClaims(
 		jwt.SigningMethodHS256,
 		Claims{RegisteredClaims: jwt.RegisteredClaims{

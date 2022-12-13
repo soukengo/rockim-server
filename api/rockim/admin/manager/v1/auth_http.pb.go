@@ -19,7 +19,7 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationAuthAPILogin = "/rockim.admin.manage.v1.AuthAPI/Login"
+const OperationAuthAPILogin = "/rockim.admin.manager.v1.AuthAPI/Login"
 
 type AuthAPIHTTPServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
