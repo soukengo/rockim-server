@@ -8,12 +8,12 @@ package admin
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"rockim/app/access/admin/biz"
+	"rockim/app/access/admin/biz/manager"
 	"rockim/app/access/admin/conf"
 	"rockim/app/access/admin/data"
 	"rockim/app/access/admin/data/grpc"
 	"rockim/app/access/admin/server"
-	"rockim/app/access/admin/service/manager"
+	manager2 "rockim/app/access/admin/service/manager"
 	"rockim/app/access/admin/service/tenant"
 	"rockim/pkg/component/discovery"
 )
@@ -21,22 +21,22 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server) (*kratos.App, error) {
+func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, auth *conf.Auth) (*kratos.App, error) {
 	registryDiscovery, err := discovery.NewDiscovery(config)
 	if err != nil {
 		return nil, err
 	}
-	userAPIClient, err := grpc.NewUserClient(registryDiscovery)
+	platUserAPIClient, err := grpc.NewPlatUserClient(registryDiscovery)
 	if err != nil {
 		return nil, err
 	}
-	userRepo := data.NewUserRepo(userAPIClient)
-	authUseCase := biz.NewAuthUseCase(userRepo)
-	authService := manager.NewAuthService(authUseCase)
+	platUserRepo := data.NewPlatUserRepo(platUserAPIClient)
+	authUseCase := manager.NewAuthUseCase(auth, platUserRepo)
+	authService := manager2.NewAuthService(authUseCase)
 	managerServiceGroup := server.NewManagerServiceGroup(authService)
 	tenantAuthService := tenant.NewAuthService(authUseCase)
 	tenantServiceGroup := server.NewTenantServiceGroup(tenantAuthService)
-	httpServer := server.NewHTTPServer(confServer, managerServiceGroup, tenantServiceGroup)
+	httpServer := server.NewHTTPServer(confServer, auth, managerServiceGroup, tenantServiceGroup)
 	app := newApp(env, httpServer)
 	return app, nil
 }

@@ -8,3 +8,8 @@ server:
   http:
     addr: :6001
     timeout: "10s"
+
+auth:
+  jwt:
+    apiKey: "rockim2022"
+    expires: "24h"

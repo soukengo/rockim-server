@@ -4,6 +4,7 @@ import (
 	"flag"
 	"rockim/api/rockim/service"
 	"rockim/pkg/component/config"
+	"rockim/pkg/component/database/mongo"
 	"rockim/pkg/component/discovery"
 	"rockim/pkg/log"
 	"time"
@@ -14,16 +15,18 @@ var (
 )
 
 func init() {
-	flag.StringVar(&configPath, "conf", "config/access/admin.yaml", "config path, eg: -conf config.yaml")
+	flag.StringVar(&configPath, "conf", "../../../config/logic/platform.yaml", "config path, eg: -conf config.yaml")
 }
 
 func Load() (conf *Config, err error) {
 	conf = &Config{
-		Env: &Env{AppId: service.AppAdmin},
+		Env: &Env{AppId: service.AppPlatform},
 		Log: &log.Config{
 			LoggerConfig: log.LoggerConfig{
 				Level: "info",
-				Split: true,
+			},
+			Loggers: []log.LoggerConfig{
+				{Name: "mongo", Level: "info"},
 			},
 		},
 	}
@@ -36,10 +39,10 @@ func Load() (conf *Config, err error) {
 
 type Config struct {
 	Env       *Env
+	Server    *Server
 	Discovery *discovery.Config
 	Log       *log.Config
-	Server    *Server
-	Auth      *Auth
+	Database  *Database
 }
 
 type Env struct {
@@ -49,20 +52,15 @@ type Env struct {
 }
 
 type Server struct {
-	Http *Http
+	Grpc *Grpc
 }
 
-type Http struct {
+type Grpc struct {
 	Network string
 	Addr    string
 	Timeout time.Duration
 }
 
-type Auth struct {
-	Jwt *Jwt
-}
-
-type Jwt struct {
-	AppKey  string
-	Expires time.Duration
+type Database struct {
+	Mongodb *mongo.Config
 }

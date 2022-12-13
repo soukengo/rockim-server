@@ -3,18 +3,21 @@ package manager
 import (
 	"context"
 	v1 "rockim/api/rockim/admin/manager/v1"
-	"rockim/app/access/admin/biz"
+	"rockim/app/access/admin/biz/manager"
 )
 
 type AuthService struct {
-	uc *biz.AuthUseCase
+	uc *manager.AuthUseCase
 }
 
-func (s *AuthService) Login(ctx context.Context, request *v1.LoginRequest) (*v1.LoginResponse, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func NewAuthService(uc *biz.AuthUseCase) *AuthService {
+func NewAuthService(uc *manager.AuthUseCase) *AuthService {
 	return &AuthService{uc: uc}
+}
+
+func (s *AuthService) Login(ctx context.Context, request *v1.LoginRequest) (reply *v1.LoginResponse, err error) {
+	token, err := s.uc.Login(ctx, request.Account, request.Password)
+	if err != nil {
+		return
+	}
+	return &v1.LoginResponse{Token: token}, nil
 }
