@@ -23,11 +23,19 @@ import (
 // wireApp init kratos application.
 func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, mongoConfig *mongo.Config) (*kratos.App, error) {
 	client := mongo.NewClient(mongoConfig)
-	userData := database.NewUserData(client)
-	platUserRepo := data.NewUserRepo(userData)
+	platUserData := database.NewPlatUserData(client)
+	platUserRepo := data.NewPlatUserRepo(platUserData)
 	platUserUseCase := biz.NewPlatUserUseCase(platUserRepo)
 	platUserService := service.NewPlatUserService(platUserUseCase)
-	grpcServer := server.NewGRPCServer(confServer, platUserService)
+	platRoleData := database.NewPlatRoleData(client)
+	platRoleRepo := data.NewPlatRoleRepo(platRoleData)
+	platRoleUseCase := biz.NewPlatRoleUseCase(platRoleRepo)
+	platRoleService := service.NewPlatRoleService(platRoleUseCase)
+	platResourceData := database.NewPlatResourceData(client)
+	platResourceRepo := data.NewPlatResourceRepo(platResourceData)
+	platResourceUseCase := biz.NewPlatResourceUseCase(platResourceRepo)
+	platResourceService := service.NewPlatResourceService(platResourceUseCase)
+	grpcServer := server.NewGRPCServer(confServer, platUserService, platRoleService, platResourceService)
 	registrar, err := discovery.NewRegistrar(config)
 	if err != nil {
 		return nil, err

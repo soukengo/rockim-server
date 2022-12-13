@@ -6,4 +6,4 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(grpc.ProviderSet, NewPlatUserRepo)
+var ProviderSet = wire.NewSet(grpc.ProviderSet, NewPlatUserRepo, NewPlatRoleRepo, NewPlatResourceRepo)

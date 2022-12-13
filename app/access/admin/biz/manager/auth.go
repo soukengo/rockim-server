@@ -3,15 +3,10 @@ package manager
 import (
 	"context"
 	"github.com/golang-jwt/jwt/v4"
-	"rockim/api/rockim/service/platform/v1/types"
 	"rockim/app/access/admin/conf"
 	"rockim/pkg/util/encrypt"
 	"time"
 )
-
-type PlatUserRepo interface {
-	FindByAccount(ctx context.Context, account string) (*types.PlatUser, error)
-}
 
 type AuthUseCase struct {
 	authCfg *conf.Auth

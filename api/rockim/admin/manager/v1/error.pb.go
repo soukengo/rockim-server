@@ -23,10 +23,14 @@ const (
 type ErrorReason int32
 
 const (
-	ErrorReason_UN_SPECIFIED          ErrorReason = 0 // 未知错误
-	ErrorReason_ACCOUNT_NOT_FOUND     ErrorReason = 1 // 账号不存在
-	ErrorReason_PASSWORD_INCORRECT    ErrorReason = 2 // 密码不正确
-	ErrorReason_AUTHORIZATION_INVALID ErrorReason = 3 // 授权无效
+	// 未知错误
+	ErrorReason_UN_SPECIFIED ErrorReason = 0
+	// 账号不存在
+	ErrorReason_ACCOUNT_NOT_FOUND ErrorReason = 1
+	// 密码不正确
+	ErrorReason_PASSWORD_INCORRECT ErrorReason = 2
+	// 授权无效
+	ErrorReason_AUTHORIZATION_INVALID ErrorReason = 3
 )
 
 // Enum value maps for ErrorReason.

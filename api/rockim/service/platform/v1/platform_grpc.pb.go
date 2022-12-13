@@ -24,6 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type PlatUserAPIClient interface {
 	// 查找平台用户
 	Find(ctx context.Context, in *PlatUserFindRequest, opts ...grpc.CallOption) (*PlatUserFindResponse, error)
+	// 获取用户角色ID列表
+	ListRoleId(ctx context.Context, in *PlatUserRoleIdListRequest, opts ...grpc.CallOption) (*PlatUserRoleIdListResponse, error)
 }
 
 type platUserAPIClient struct {
@@ -43,12 +45,23 @@ func (c *platUserAPIClient) Find(ctx context.Context, in *PlatUserFindRequest, o
 	return out, nil
 }
 
+func (c *platUserAPIClient) ListRoleId(ctx context.Context, in *PlatUserRoleIdListRequest, opts ...grpc.CallOption) (*PlatUserRoleIdListResponse, error) {
+	out := new(PlatUserRoleIdListResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.platform.v1.PlatUserAPI/ListRoleId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PlatUserAPIServer is the server API for PlatUserAPI service.
 // All implementations must embed UnimplementedPlatUserAPIServer
 // for forward compatibility
 type PlatUserAPIServer interface {
 	// 查找平台用户
 	Find(context.Context, *PlatUserFindRequest) (*PlatUserFindResponse, error)
+	// 获取用户角色ID列表
+	ListRoleId(context.Context, *PlatUserRoleIdListRequest) (*PlatUserRoleIdListResponse, error)
 	mustEmbedUnimplementedPlatUserAPIServer()
 }
 
@@ -58,6 +71,9 @@ type UnimplementedPlatUserAPIServer struct {
 
 func (UnimplementedPlatUserAPIServer) Find(context.Context, *PlatUserFindRequest) (*PlatUserFindResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
+}
+func (UnimplementedPlatUserAPIServer) ListRoleId(context.Context, *PlatUserRoleIdListRequest) (*PlatUserRoleIdListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListRoleId not implemented")
 }
 func (UnimplementedPlatUserAPIServer) mustEmbedUnimplementedPlatUserAPIServer() {}
 
@@ -90,6 +106,24 @@ func _PlatUserAPI_Find_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PlatUserAPI_ListRoleId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PlatUserRoleIdListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatUserAPIServer).ListRoleId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.platform.v1.PlatUserAPI/ListRoleId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatUserAPIServer).ListRoleId(ctx, req.(*PlatUserRoleIdListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PlatUserAPI_ServiceDesc is the grpc.ServiceDesc for PlatUserAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +134,224 @@ var PlatUserAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Find",
 			Handler:    _PlatUserAPI_Find_Handler,
+		},
+		{
+			MethodName: "ListRoleId",
+			Handler:    _PlatUserAPI_ListRoleId_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "api/rockim/service/platform/v1/platform.proto",
+}
+
+// PlatRoleAPIClient is the client API for PlatRoleAPI service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type PlatRoleAPIClient interface {
+	// 获取角色资源ID列表
+	ListResourceId(ctx context.Context, in *PlatRoleResourceIdListRequest, opts ...grpc.CallOption) (*PlatRoleResourceIdListResponse, error)
+}
+
+type platRoleAPIClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewPlatRoleAPIClient(cc grpc.ClientConnInterface) PlatRoleAPIClient {
+	return &platRoleAPIClient{cc}
+}
+
+func (c *platRoleAPIClient) ListResourceId(ctx context.Context, in *PlatRoleResourceIdListRequest, opts ...grpc.CallOption) (*PlatRoleResourceIdListResponse, error) {
+	out := new(PlatRoleResourceIdListResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.platform.v1.PlatRoleAPI/ListResourceId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// PlatRoleAPIServer is the server API for PlatRoleAPI service.
+// All implementations must embed UnimplementedPlatRoleAPIServer
+// for forward compatibility
+type PlatRoleAPIServer interface {
+	// 获取角色资源ID列表
+	ListResourceId(context.Context, *PlatRoleResourceIdListRequest) (*PlatRoleResourceIdListResponse, error)
+	mustEmbedUnimplementedPlatRoleAPIServer()
+}
+
+// UnimplementedPlatRoleAPIServer must be embedded to have forward compatible implementations.
+type UnimplementedPlatRoleAPIServer struct {
+}
+
+func (UnimplementedPlatRoleAPIServer) ListResourceId(context.Context, *PlatRoleResourceIdListRequest) (*PlatRoleResourceIdListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListResourceId not implemented")
+}
+func (UnimplementedPlatRoleAPIServer) mustEmbedUnimplementedPlatRoleAPIServer() {}
+
+// UnsafePlatRoleAPIServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PlatRoleAPIServer will
+// result in compilation errors.
+type UnsafePlatRoleAPIServer interface {
+	mustEmbedUnimplementedPlatRoleAPIServer()
+}
+
+func RegisterPlatRoleAPIServer(s grpc.ServiceRegistrar, srv PlatRoleAPIServer) {
+	s.RegisterService(&PlatRoleAPI_ServiceDesc, srv)
+}
+
+func _PlatRoleAPI_ListResourceId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PlatRoleResourceIdListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatRoleAPIServer).ListResourceId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.platform.v1.PlatRoleAPI/ListResourceId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatRoleAPIServer).ListResourceId(ctx, req.(*PlatRoleResourceIdListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// PlatRoleAPI_ServiceDesc is the grpc.ServiceDesc for PlatRoleAPI service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var PlatRoleAPI_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "rockim.service.platform.v1.PlatRoleAPI",
+	HandlerType: (*PlatRoleAPIServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListResourceId",
+			Handler:    _PlatRoleAPI_ListResourceId_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "api/rockim/service/platform/v1/platform.proto",
+}
+
+// PlatResourceAPIClient is the client API for PlatResourceAPI service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type PlatResourceAPIClient interface {
+	// 获取平台资源列表
+	List(ctx context.Context, in *PlatResourceListRequest, opts ...grpc.CallOption) (*PlatResourceListResponse, error)
+	// 获取平台资源列表 (指定id列表)
+	ListByIds(ctx context.Context, in *PlatResourceListByIdsRequest, opts ...grpc.CallOption) (*PlatResourceListByIdsResponse, error)
+}
+
+type platResourceAPIClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewPlatResourceAPIClient(cc grpc.ClientConnInterface) PlatResourceAPIClient {
+	return &platResourceAPIClient{cc}
+}
+
+func (c *platResourceAPIClient) List(ctx context.Context, in *PlatResourceListRequest, opts ...grpc.CallOption) (*PlatResourceListResponse, error) {
+	out := new(PlatResourceListResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.platform.v1.PlatResourceAPI/List", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *platResourceAPIClient) ListByIds(ctx context.Context, in *PlatResourceListByIdsRequest, opts ...grpc.CallOption) (*PlatResourceListByIdsResponse, error) {
+	out := new(PlatResourceListByIdsResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.platform.v1.PlatResourceAPI/ListByIds", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// PlatResourceAPIServer is the server API for PlatResourceAPI service.
+// All implementations must embed UnimplementedPlatResourceAPIServer
+// for forward compatibility
+type PlatResourceAPIServer interface {
+	// 获取平台资源列表
+	List(context.Context, *PlatResourceListRequest) (*PlatResourceListResponse, error)
+	// 获取平台资源列表 (指定id列表)
+	ListByIds(context.Context, *PlatResourceListByIdsRequest) (*PlatResourceListByIdsResponse, error)
+	mustEmbedUnimplementedPlatResourceAPIServer()
+}
+
+// UnimplementedPlatResourceAPIServer must be embedded to have forward compatible implementations.
+type UnimplementedPlatResourceAPIServer struct {
+}
+
+func (UnimplementedPlatResourceAPIServer) List(context.Context, *PlatResourceListRequest) (*PlatResourceListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
+}
+func (UnimplementedPlatResourceAPIServer) ListByIds(context.Context, *PlatResourceListByIdsRequest) (*PlatResourceListByIdsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListByIds not implemented")
+}
+func (UnimplementedPlatResourceAPIServer) mustEmbedUnimplementedPlatResourceAPIServer() {}
+
+// UnsafePlatResourceAPIServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PlatResourceAPIServer will
+// result in compilation errors.
+type UnsafePlatResourceAPIServer interface {
+	mustEmbedUnimplementedPlatResourceAPIServer()
+}
+
+func RegisterPlatResourceAPIServer(s grpc.ServiceRegistrar, srv PlatResourceAPIServer) {
+	s.RegisterService(&PlatResourceAPI_ServiceDesc, srv)
+}
+
+func _PlatResourceAPI_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PlatResourceListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatResourceAPIServer).List(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.platform.v1.PlatResourceAPI/List",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatResourceAPIServer).List(ctx, req.(*PlatResourceListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PlatResourceAPI_ListByIds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PlatResourceListByIdsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatResourceAPIServer).ListByIds(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.platform.v1.PlatResourceAPI/ListByIds",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatResourceAPIServer).ListByIds(ctx, req.(*PlatResourceListByIdsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// PlatResourceAPI_ServiceDesc is the grpc.ServiceDesc for PlatResourceAPI service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var PlatResourceAPI_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "rockim.service.platform.v1.PlatResourceAPI",
+	HandlerType: (*PlatResourceAPIServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "List",
+			Handler:    _PlatResourceAPI_List_Handler,
+		},
+		{
+			MethodName: "ListByIds",
+			Handler:    _PlatResourceAPI_ListByIds_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

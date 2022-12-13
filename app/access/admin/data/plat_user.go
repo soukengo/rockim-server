@@ -22,3 +22,13 @@ func (r *platUserRepo) FindByAccount(ctx context.Context, account string) (*type
 	}
 	return ret.User, nil
 }
+
+func (r *platUserRepo) ListRoleId(ctx context.Context, userId string) ([]string, error) {
+	ret, err := r.uac.ListRoleId(ctx, &v1.PlatUserRoleIdListRequest{
+		UserIds: []string{userId},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return ret.List, nil
+}

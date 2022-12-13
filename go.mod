@@ -3,6 +3,7 @@ module rockim
 go 1.18
 
 require (
+	github.com/emirpasic/gods v1.18.1
 	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20221009085009-468630cc4bf6
 	github.com/go-kratos/kratos/contrib/registry/etcd/v2 v2.0.0-20221026062414-3c65f16737e3
@@ -14,6 +15,7 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/google/wire v0.5.0
 	github.com/gorilla/handlers v1.5.1
+	github.com/jinzhu/copier v0.3.5
 	github.com/json-iterator/go v1.1.12
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/spf13/viper v1.13.0

@@ -25,3 +25,26 @@ func (s *SessionService) Check(ctx context.Context, request *v1.SessionCheckRequ
 	}
 	return
 }
+
+func (s *SessionService) ListResource(ctx context.Context, request *v1.SessionListResourceRequest) (reply *v1.SessionListResourceResponse, err error) {
+	list, err := s.uc.ListResources(ctx)
+	resources := make([]*types.PlatResource, len(list))
+	for i, item := range list {
+		resources[i] = &types.PlatResource{
+			Id:         item.Id,
+			CreateTime: item.CreateTime,
+			Category:   item.Category,
+			Name:       item.Name,
+			ParentId:   item.ParentId,
+			Url:        item.Url,
+			Icon:       item.Icon,
+			Level:      item.Level,
+			Leaf:       item.Leaf,
+			Order:      item.Order,
+		}
+	}
+	reply = &v1.SessionListResourceResponse{
+		List: buildResourceTree(resources),
+	}
+	return
+}

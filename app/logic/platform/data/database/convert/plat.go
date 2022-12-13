@@ -26,3 +26,46 @@ func UserEntity(source *types.PlatUser) *entity.PlatUser {
 		AvatarUrl:  source.AvatarUrl,
 	}
 }
+func ResourceProto(source *entity.PlatResource) *types.PlatResource {
+	return &types.PlatResource{
+		Id:         source.Id.Hex(),
+		CreateTime: source.CreateTime,
+		UpdateTime: source.UpdateTime,
+		ParentId:   source.ParentId,
+		Name:       source.Name,
+		Url:        source.Url,
+		Icon:       source.Icon,
+		Level:      source.Level,
+		Leaf:       source.Leaf,
+		Order:      source.Order,
+	}
+}
+func ResourceEntity(source *types.PlatResource) *entity.PlatResource {
+	return &entity.PlatResource{
+		CreateTime: source.CreateTime,
+		UpdateTime: source.UpdateTime,
+		ParentId:   source.ParentId,
+		Name:       source.Name,
+		Url:        source.Url,
+		Icon:       source.Icon,
+		Level:      source.Level,
+		Leaf:       source.Leaf,
+		Order:      source.Order,
+	}
+}
+
+func RoleProto(source *entity.PlatRole) *types.PlatRole {
+	return &types.PlatRole{
+		Id:         source.Id.Hex(),
+		CreateTime: source.CreateTime,
+		UpdateTime: source.UpdateTime,
+		Name:       source.Name,
+	}
+}
+func RoleEntity(source *types.PlatRole) *entity.PlatRole {
+	return &entity.PlatRole{
+		CreateTime: source.CreateTime,
+		UpdateTime: source.UpdateTime,
+		Name:       source.Name,
+	}
+}

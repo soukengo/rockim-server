@@ -12,19 +12,19 @@ import (
 	"rockim/pkg/component/database/mongo"
 )
 
-type UserData struct {
+type PlatUserData struct {
 	mgo *mongo.Client
 }
 
-func NewUserData(mgo *mongo.Client) *UserData {
-	return &UserData{mgo: mgo}
+func NewPlatUserData(mgo *mongo.Client) *PlatUserData {
+	return &PlatUserData{mgo: mgo}
 }
 
-func (d *UserData) collection() *mgo.Collection {
+func (d *PlatUserData) collection() *mgo.Collection {
 	return d.mgo.Collection(entity.TablePlatUser)
 }
 
-func (d *UserData) FindByID(ctx context.Context, id string) (user *types.PlatUser, err error) {
+func (d *PlatUserData) FindByID(ctx context.Context, id string) (user *types.PlatUser, err error) {
 	objId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (d *UserData) FindByID(ctx context.Context, id string) (user *types.PlatUse
 	return convert.UserProto(&record), nil
 }
 
-func (d *UserData) FindByAccount(ctx context.Context, account string) (id string, err error) {
+func (d *PlatUserData) FindByAccount(ctx context.Context, account string) (id string, err error) {
 	projection := bson.M{entity.MongoFieldId: 1}
 	var record entity.PlatUser
 	err = d.mgo.FindOne(ctx, entity.TablePlatUser, bson.M{"account": account}, &record, options.FindOne().SetProjection(projection))
@@ -47,7 +47,7 @@ func (d *UserData) FindByAccount(ctx context.Context, account string) (id string
 	return record.Id.Hex(), nil
 }
 
-func (d *UserData) Create(ctx context.Context, user *types.PlatUser) (err error) {
+func (d *PlatUserData) Create(ctx context.Context, user *types.PlatUser) (err error) {
 	objId, err := primitive.ObjectIDFromHex(user.Id)
 	if err != nil {
 		return
@@ -61,7 +61,7 @@ func (d *UserData) Create(ctx context.Context, user *types.PlatUser) (err error)
 	return
 }
 
-func (d *UserData) Update(ctx context.Context, user *types.PlatUser) (err error) {
+func (d *PlatUserData) Update(ctx context.Context, user *types.PlatUser) (err error) {
 	objId, err := primitive.ObjectIDFromHex(user.Id)
 	if err != nil {
 		return
@@ -69,5 +69,26 @@ func (d *UserData) Update(ctx context.Context, user *types.PlatUser) (err error)
 	record := convert.UserEntity(user)
 	record.Id = objId
 	_, err = d.collection().UpdateByID(ctx, record.Id, record)
+	return
+}
+
+func (d *PlatUserData) ListRoleId(ctx context.Context, userIds []string) (results []string, err error) {
+	var objIdList []primitive.ObjectID
+	for _, id := range userIds {
+		var objId primitive.ObjectID
+		objId, err = primitive.ObjectIDFromHex(id)
+		if err != nil {
+			return nil, err
+		}
+		objIdList = append(objIdList, objId)
+	}
+	var records []*entity.PlatRoleResource
+	err = d.mgo.FindList(ctx, entity.TablePlatUserRole, bson.M{"user_id": bson.M{"$in": objIdList}}, &records, options.Find())
+	if err != nil {
+		return
+	}
+	for _, record := range records {
+		results = append(results, record.ResourceId)
+	}
 	return
 }

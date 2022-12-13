@@ -20,14 +20,17 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 const OperationSessionAPICheck = "/rockim.admin.manager.v1.SessionAPI/Check"
+const OperationSessionAPIListResource = "/rockim.admin.manager.v1.SessionAPI/ListResource"
 
 type SessionAPIHTTPServer interface {
 	Check(context.Context, *SessionCheckRequest) (*SessionCheckResponse, error)
+	ListResource(context.Context, *SessionListResourceRequest) (*SessionListResourceResponse, error)
 }
 
 func RegisterSessionAPIHTTPServer(s *http.Server, srv SessionAPIHTTPServer) {
 	r := s.Route("/")
 	r.POST("/api/manager/v1/session/check", _SessionAPI_Check0_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/session/resources", _SessionAPI_ListResource0_HTTP_Handler(srv))
 }
 
 func _SessionAPI_Check0_HTTP_Handler(srv SessionAPIHTTPServer) func(ctx http.Context) error {
@@ -49,8 +52,28 @@ func _SessionAPI_Check0_HTTP_Handler(srv SessionAPIHTTPServer) func(ctx http.Con
 	}
 }
 
+func _SessionAPI_ListResource0_HTTP_Handler(srv SessionAPIHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in SessionListResourceRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationSessionAPIListResource)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ListResource(ctx, req.(*SessionListResourceRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*SessionListResourceResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type SessionAPIHTTPClient interface {
 	Check(ctx context.Context, req *SessionCheckRequest, opts ...http.CallOption) (rsp *SessionCheckResponse, err error)
+	ListResource(ctx context.Context, req *SessionListResourceRequest, opts ...http.CallOption) (rsp *SessionListResourceResponse, err error)
 }
 
 type SessionAPIHTTPClientImpl struct {
@@ -66,6 +89,19 @@ func (c *SessionAPIHTTPClientImpl) Check(ctx context.Context, in *SessionCheckRe
 	pattern := "/api/manager/v1/session/check"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSessionAPICheck))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *SessionAPIHTTPClientImpl) ListResource(ctx context.Context, in *SessionListResourceRequest, opts ...http.CallOption) (*SessionListResourceResponse, error) {
+	var out SessionListResourceResponse
+	pattern := "/api/manager/v1/session/resources"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationSessionAPIListResource))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

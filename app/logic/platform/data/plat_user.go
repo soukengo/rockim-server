@@ -8,14 +8,21 @@ import (
 )
 
 type platUserRepo struct {
-	db *database.UserData
+	db *database.PlatUserData
 }
 
-// NewUserRepo .
-func NewUserRepo(db *database.UserData) biz.PlatUserRepo {
+// NewPlatUserRepo .
+func NewPlatUserRepo(db *database.PlatUserData) biz.PlatUserRepo {
 	return &platUserRepo{
 		db: db,
 	}
+}
+
+func (r *platUserRepo) Create(ctx context.Context, user *types.PlatUser) error {
+	return r.db.Create(ctx, user)
+}
+func (r *platUserRepo) Update(ctx context.Context, user *types.PlatUser) error {
+	return r.db.Update(ctx, user)
 }
 
 func (r *platUserRepo) FindById(ctx context.Context, id string) (*types.PlatUser, error) {
@@ -26,9 +33,6 @@ func (r *platUserRepo) FindIdByAccount(ctx context.Context, account string) (uid
 	return r.db.FindByAccount(ctx, account)
 }
 
-func (r *platUserRepo) Create(ctx context.Context, user *types.PlatUser) error {
-	return r.db.Create(ctx, user)
-}
-func (r *platUserRepo) Update(ctx context.Context, user *types.PlatUser) error {
-	return r.db.Update(ctx, user)
+func (r *platUserRepo) ListRoleId(ctx context.Context, ids []string) ([]string, error) {
+	return r.db.ListRoleId(ctx, ids)
 }

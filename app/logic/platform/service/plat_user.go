@@ -23,3 +23,11 @@ func (s *PlatUserService) Find(ctx context.Context, req *v1.PlatUserFindRequest)
 	}
 	return &v1.PlatUserFindResponse{User: u}, nil
 }
+
+func (s *PlatUserService) ListRoleId(ctx context.Context, request *v1.PlatUserRoleIdListRequest) (*v1.PlatUserRoleIdListResponse, error) {
+	list, err := s.uc.ListRoleId(ctx, request.UserIds)
+	if err != nil {
+		return nil, err
+	}
+	return &v1.PlatUserRoleIdListResponse{List: list}, nil
+}
