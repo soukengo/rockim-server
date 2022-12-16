@@ -14,19 +14,25 @@ import (
 )
 
 type ManagerServiceGroup struct {
-	authCfg    *conf.Auth
-	authSrv    *manager.AuthService
-	sessionSrv *manager.SessionService
+	authCfg         *conf.Auth
+	authSrv         *manager.AuthService
+	sessionSrv      *manager.SessionService
+	platUserSrv     *manager.PlatUserService
+	platRoleSrv     *manager.PlatRoleService
+	platResourceSrv *manager.PlatResourceService
 }
 
-func NewManagerServiceGroup(authCfg *conf.Auth, authSrv *manager.AuthService, sessionSrv *manager.SessionService) *ManagerServiceGroup {
-	return &ManagerServiceGroup{authCfg: authCfg, authSrv: authSrv, sessionSrv: sessionSrv}
+func NewManagerServiceGroup(authCfg *conf.Auth, authSrv *manager.AuthService, sessionSrv *manager.SessionService, platUserSrv *manager.PlatUserService, platRoleSrv *manager.PlatRoleService, platResourceSrv *manager.PlatResourceService) *ManagerServiceGroup {
+	return &ManagerServiceGroup{authCfg: authCfg, authSrv: authSrv, sessionSrv: sessionSrv, platUserSrv: platUserSrv, platRoleSrv: platRoleSrv, platResourceSrv: platResourceSrv}
 }
 
 func (g *ManagerServiceGroup) Register(srv *http.Server) {
 	srv.Use("/rockim.admin.manager.v1.*", checkAuth(g.authCfg))
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	v1.RegisterSessionAPIHTTPServer(srv, g.sessionSrv)
+	v1.RegisterPlatUserAPIHTTPServer(srv, g.platUserSrv)
+	v1.RegisterPlatRoleAPIHTTPServer(srv, g.platRoleSrv)
+	v1.RegisterPlatResourceAPIHTTPServer(srv, g.platResourceSrv)
 }
 
 func checkAuth(authCfg *conf.Auth) middleware.Middleware {

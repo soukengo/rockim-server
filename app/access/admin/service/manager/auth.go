@@ -14,8 +14,8 @@ func NewAuthService(uc *manager.AuthUseCase) *AuthService {
 	return &AuthService{uc: uc}
 }
 
-func (s *AuthService) Login(ctx context.Context, request *v1.LoginRequest) (reply *v1.LoginResponse, err error) {
-	token, err := s.uc.Login(ctx, request.Account, request.Password)
+func (s *AuthService) Login(ctx context.Context, in *v1.LoginRequest) (reply *v1.LoginResponse, err error) {
+	token, err := s.uc.Login(ctx, in.Account, in.Password)
 	if err != nil {
 		return
 	}

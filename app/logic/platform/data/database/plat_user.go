@@ -7,6 +7,7 @@ import (
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"rockim/api/rockim/service/platform/v1/types"
+	"rockim/app/logic/platform/biz"
 	"rockim/app/logic/platform/data/database/convert"
 	"rockim/app/logic/platform/data/database/entity"
 	"rockim/pkg/component/database/mongo"
@@ -67,8 +68,37 @@ func (d *PlatUserData) Update(ctx context.Context, user *types.PlatUser) (err er
 		return
 	}
 	record := convert.UserEntity(user)
-	record.Id = objId
-	_, err = d.collection().UpdateByID(ctx, record.Id, record)
+	_, err = d.collection().UpdateByID(ctx, objId, bson.M{"$set": record})
+	return
+}
+
+func (d *PlatUserData) Delete(ctx context.Context, id string) (err error) {
+	objId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return
+	}
+	_, err = d.collection().DeleteOne(ctx, bson.M{entity.MongoFieldId: objId})
+	return
+}
+
+func (d *PlatUserData) Paging(ctx context.Context, req *biz.PlatUserPagingRequest) (res *biz.PlatUserPagingResponse, err error) {
+	query := bson.M{}
+	cursor, p, err := d.mgo.Paginate(ctx, entity.TablePlatUser, query, req.Paginate)
+	if err != nil {
+		return
+	}
+	defer cursor.Close(ctx)
+	//var records []*entity.PlatUser
+	records, err := mongo.ScanCursor[entity.PlatUser](ctx, cursor)
+	//err = cursor.All(ctx, &records)
+	if err != nil {
+		return
+	}
+	var list = make([]*types.PlatUser, len(records))
+	for i, record := range records {
+		list[i] = convert.UserProto(record)
+	}
+	res = &biz.PlatUserPagingResponse{List: list, Paginate: p}
 	return
 }
 
@@ -82,13 +112,13 @@ func (d *PlatUserData) ListRoleId(ctx context.Context, userIds []string) (result
 		}
 		objIdList = append(objIdList, objId)
 	}
-	var records []*entity.PlatRoleResource
+	var records []*entity.PlatUserRole
 	err = d.mgo.FindList(ctx, entity.TablePlatUserRole, bson.M{"user_id": bson.M{"$in": objIdList}}, &records, options.Find())
 	if err != nil {
 		return
 	}
 	for _, record := range records {
-		results = append(results, record.ResourceId)
+		results = append(results, record.RoleId)
 	}
 	return
 }

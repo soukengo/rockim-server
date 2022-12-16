@@ -4,7 +4,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"reflect"
+	"rockim/api/rockim/shared/types"
 	"rockim/pkg/errors"
 )
 
@@ -27,41 +27,33 @@ func (c *Client) FindList(ctx context.Context, collection string, filter any, re
 		return
 	}
 	defer cursor.Close(ctx)
-	return c.scanCursor(ctx, cursor, result)
+	return cursor.All(ctx, result)
 }
-func (c *Client) scanCursor(ctx context.Context, cursor *mongo.Cursor, result interface{}) (err error) {
-	resultv := reflect.ValueOf(result)
-	if resultv.Kind() != reflect.Ptr {
-		return errors.InternalServer(reason, "result argument must be a slice address")
-	}
 
-	slicev := resultv.Elem()
-
-	if slicev.Kind() == reflect.Interface {
-		slicev = slicev.Elem()
+func (c *Client) Paginate(ctx context.Context, collection string, query interface{}, paginate *types.Paginating, opts ...*options.FindOptions) (cursor *mongo.Cursor, p *types.Paginated, err error) {
+	offset := paginate.Offset()
+	limit := paginate.Limit()
+	opts = append(opts, &options.FindOptions{
+		Limit: &limit,
+		Skip:  &offset,
+	})
+	co := c.Collection(collection)
+	total, err := co.CountDocuments(ctx, query)
+	if err != nil {
+		return nil, nil, err
 	}
-	if slicev.Kind() != reflect.Slice {
-		return errors.InternalServer(reason, "result argument must be a slice address")
-	}
+	p = &types.Paginated{Total: total}
+	cursor, err = co.Find(ctx, query, opts...)
+	return
+}
 
-	slicev = slicev.Slice(0, slicev.Cap())
-	elemt := slicev.Type().Elem()
-	i := 0
+func ScanCursor[T any](ctx context.Context, cursor *mongo.Cursor) (results []*T, err error) {
 	for cursor.Next(ctx) {
-		if slicev.Len() == i {
-			elemp := reflect.New(elemt)
-			if err = cursor.Decode(elemp.Interface()); err != nil {
-				break
-			}
-			slicev = reflect.Append(slicev, elemp.Elem())
-			slicev = slicev.Slice(0, slicev.Cap())
-		} else {
-			if err = cursor.Decode(slicev.Index(i).Addr().Interface()); err != nil {
-				break
-			}
+		var record = new(T)
+		if err = cursor.Decode(record); err != nil {
+			return
 		}
-		i++
+		results = append(results, record)
 	}
-	resultv.Elem().Set(slicev.Slice(0, i))
 	return
 }

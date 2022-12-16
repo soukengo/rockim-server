@@ -4,6 +4,7 @@ import (
 	"context"
 	"rockim/api/rockim/service/platform/v1"
 	"rockim/app/logic/platform/biz"
+	"rockim/pkg/util/copier"
 )
 
 type PlatUserService struct {
@@ -14,6 +15,58 @@ type PlatUserService struct {
 // NewPlatUserService new a plat user service.
 func NewPlatUserService(uc *biz.PlatUserUseCase) *PlatUserService {
 	return &PlatUserService{uc: uc}
+}
+
+func (s *PlatUserService) Create(ctx context.Context, in *v1.PlatUserCreateRequest) (reply *v1.PlatUserCreateResponse, err error) {
+	req := &biz.PlatUserCreateRequest{}
+	err = copier.Copy(req, in)
+	if err != nil {
+		return
+	}
+	err = s.uc.Create(ctx, req)
+	if err != nil {
+		return
+	}
+	reply = &v1.PlatUserCreateResponse{}
+	return
+}
+
+func (s *PlatUserService) Update(ctx context.Context, in *v1.PlatUserUpdateRequest) (reply *v1.PlatUserUpdateResponse, err error) {
+	req := &biz.PlatUserUpdateRequest{}
+	err = copier.Copy(req, in)
+	if err != nil {
+		return
+	}
+	err = s.uc.Update(ctx, req)
+	if err != nil {
+		return
+	}
+	reply = &v1.PlatUserUpdateResponse{}
+	return
+}
+
+func (s *PlatUserService) Delete(ctx context.Context, in *v1.PlatUserDeleteRequest) (reply *v1.PlatUserDeleteResponse, err error) {
+	req := &biz.PlatUserDeleteRequest{Id: in.Id}
+	err = s.uc.Delete(ctx, req)
+	if err != nil {
+		return
+	}
+	reply = &v1.PlatUserDeleteResponse{}
+	return
+}
+
+func (s *PlatUserService) Paging(ctx context.Context, in *v1.PlatUserPagingRequest) (reply *v1.PlatUserPagingResponse, err error) {
+	req := &biz.PlatUserPagingRequest{}
+	err = copier.Copy(req, in)
+	if err != nil {
+		return
+	}
+	res, err := s.uc.Paging(ctx, req)
+	if err != nil {
+		return
+	}
+	reply = &v1.PlatUserPagingResponse{List: res.List, Paginate: res.Paginate}
+	return
 }
 
 func (s *PlatUserService) Find(ctx context.Context, req *v1.PlatUserFindRequest) (*v1.PlatUserFindResponse, error) {

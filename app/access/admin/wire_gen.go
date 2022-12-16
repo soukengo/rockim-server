@@ -33,9 +33,25 @@ func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, a
 	platUserRepo := data.NewPlatUserRepo(platUserAPIClient)
 	authUseCase := manager.NewAuthUseCase(auth, platUserRepo)
 	authService := manager2.NewAuthService(authUseCase)
-	sessionUseCase := manager.NewSessionUseCase(platUserRepo)
+	platRoleAPIClient, err := grpc.NewPlatRoleClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	platRoleRepo := data.NewPlatRoleRepo(platRoleAPIClient)
+	platResourceAPIClient, err := grpc.NewPlatResourceClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	platResourceRepo := data.NewPlatResourceRepo(platResourceAPIClient)
+	sessionUseCase := manager.NewSessionUseCase(platUserRepo, platRoleRepo, platResourceRepo)
 	sessionService := manager2.NewSessionService(sessionUseCase)
-	managerServiceGroup := server.NewManagerServiceGroup(auth, authService, sessionService)
+	platUserUseCase := manager.NewPlatUserUseCase(platUserRepo)
+	platUserService := manager2.NewPlatUserService(platUserUseCase)
+	platRoleUseCase := manager.NewPlatRoleUseCase(platRoleRepo)
+	platRoleService := manager2.NewPlatRoleService(platRoleUseCase)
+	platResourceUseCase := manager.NewPlatResourceUseCase(platResourceRepo)
+	platResourceService := manager2.NewPlatResourceService(platResourceUseCase)
+	managerServiceGroup := server.NewManagerServiceGroup(auth, authService, sessionService, platUserService, platRoleService, platResourceService)
 	tenantAuthService := tenant.NewAuthService(authUseCase)
 	tenantServiceGroup := server.NewTenantServiceGroup(tenantAuthService)
 	httpServer := server.NewHTTPServer(confServer, managerServiceGroup, tenantServiceGroup)

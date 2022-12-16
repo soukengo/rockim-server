@@ -7,6 +7,7 @@ import (
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"rockim/api/rockim/service/platform/v1/types"
+	"rockim/app/logic/platform/biz"
 	"rockim/app/logic/platform/data/database/convert"
 	"rockim/app/logic/platform/data/database/entity"
 	"rockim/pkg/component/database/mongo"
@@ -77,8 +78,35 @@ func (d *PlatRoleData) Update(ctx context.Context, resource *types.PlatRole) (er
 		return
 	}
 	record := convert.RoleEntity(resource)
-	record.Id = objId
-	_, err = d.collection().UpdateByID(ctx, record.Id, record)
+	_, err = d.collection().UpdateByID(ctx, objId, bson.M{"$set": record})
+	return
+}
+
+func (d *PlatRoleData) Delete(ctx context.Context, id string) (err error) {
+	objId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return
+	}
+	_, err = d.collection().DeleteOne(ctx, bson.M{entity.MongoFieldId: objId})
+	return
+}
+
+func (d *PlatRoleData) Paging(ctx context.Context, req *biz.PlatRolePagingRequest) (res *biz.PlatRolePagingResponse, err error) {
+	query := bson.M{}
+	cursor, p, err := d.mgo.Paginate(ctx, entity.TablePlatRole, query, req.Paginate)
+	if err != nil {
+		return
+	}
+	defer cursor.Close(ctx)
+	records, err := mongo.ScanCursor[entity.PlatRole](ctx, cursor)
+	if err != nil {
+		return
+	}
+	var list = make([]*types.PlatRole, len(records))
+	for i, record := range records {
+		list[i] = convert.RoleProto(record)
+	}
+	res = &biz.PlatRolePagingResponse{List: list, Paginate: p}
 	return
 }
 

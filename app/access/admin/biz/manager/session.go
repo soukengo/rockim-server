@@ -24,8 +24,8 @@ type SessionUseCase struct {
 	resourceRepo PlatResourceRepo
 }
 
-func NewSessionUseCase(repo PlatUserRepo) *SessionUseCase {
-	return &SessionUseCase{repo: repo}
+func NewSessionUseCase(repo PlatUserRepo, roleRepo PlatRoleRepo, resourceRepo PlatResourceRepo) *SessionUseCase {
+	return &SessionUseCase{repo: repo, roleRepo: roleRepo, resourceRepo: resourceRepo}
 }
 
 func (uc *SessionUseCase) Check(ctx context.Context) (u *SessionUser, err error) {

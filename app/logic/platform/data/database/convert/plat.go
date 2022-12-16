@@ -2,6 +2,7 @@ package convert
 
 import (
 	"rockim/api/rockim/service/platform/v1/types"
+	v1enums "rockim/api/rockim/shared/enums/v1"
 	"rockim/app/logic/platform/data/database/entity"
 )
 
@@ -13,7 +14,6 @@ func UserProto(source *entity.PlatUser) *types.PlatUser {
 		Account:    source.Account,
 		Password:   source.Password,
 		Name:       source.Name,
-		AvatarUrl:  source.AvatarUrl,
 	}
 }
 func UserEntity(source *types.PlatUser) *entity.PlatUser {
@@ -23,7 +23,6 @@ func UserEntity(source *types.PlatUser) *entity.PlatUser {
 		Account:    source.Account,
 		Password:   source.Password,
 		Name:       source.Name,
-		AvatarUrl:  source.AvatarUrl,
 	}
 }
 func ResourceProto(source *entity.PlatResource) *types.PlatResource {
@@ -31,6 +30,7 @@ func ResourceProto(source *entity.PlatResource) *types.PlatResource {
 		Id:         source.Id.Hex(),
 		CreateTime: source.CreateTime,
 		UpdateTime: source.UpdateTime,
+		Category:   v1enums.PlatResourceCategory(source.Category),
 		ParentId:   source.ParentId,
 		Name:       source.Name,
 		Url:        source.Url,
@@ -45,6 +45,7 @@ func ResourceEntity(source *types.PlatResource) *entity.PlatResource {
 		CreateTime: source.CreateTime,
 		UpdateTime: source.UpdateTime,
 		ParentId:   source.ParentId,
+		Category:   int32(source.Category),
 		Name:       source.Name,
 		Url:        source.Url,
 		Icon:       source.Icon,

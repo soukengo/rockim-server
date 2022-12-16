@@ -9,7 +9,6 @@ type PlatUser struct {
 	Account    string             `bson:"account,omitempty"`     // 登录名
 	Password   string             `bson:"password,omitempty"`    // 密码
 	Name       string             `bson:"name,omitempty"`        // 用户名称
-	AvatarUrl  string             `bson:"avatar_url,omitempty"`  // 头像
 }
 
 func (*PlatUser) TableName() string {
@@ -35,7 +34,7 @@ type PlatResource struct {
 	Name       string             `bson:"name,omitempty"`        // 资源名称
 	Icon       string             `bson:"icon,omitempty"`        // ICON
 	Url        string             `bson:"url,omitempty"`         // 资源URL
-	Category   int                `bson:"category,omitempty"`    // 类型 1：菜单，2：页面，3：功能
+	Category   int32              `bson:"category,omitempty"`    // 类型 1：菜单，2：页面，3：功能
 	Leaf       bool               `bson:"leaf,omitempty"`        // 是否叶子节点
 	Order      int32              `bson:"order,omitempty"`       // 序号
 	Level      int32              `bson:"level,omitempty"`       // 层级
