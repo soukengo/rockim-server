@@ -23,6 +23,7 @@ const OperationPlatRoleAPICreate = "/rockim.admin.manager.v1.PlatRoleAPI/Create"
 const OperationPlatRoleAPIDelete = "/rockim.admin.manager.v1.PlatRoleAPI/Delete"
 const OperationPlatRoleAPIListResourceId = "/rockim.admin.manager.v1.PlatRoleAPI/ListResourceId"
 const OperationPlatRoleAPIPaging = "/rockim.admin.manager.v1.PlatRoleAPI/Paging"
+const OperationPlatRoleAPISaveResourceId = "/rockim.admin.manager.v1.PlatRoleAPI/SaveResourceId"
 const OperationPlatRoleAPIUpdate = "/rockim.admin.manager.v1.PlatRoleAPI/Update"
 
 type PlatRoleAPIHTTPServer interface {
@@ -30,6 +31,7 @@ type PlatRoleAPIHTTPServer interface {
 	Delete(context.Context, *PlatRoleDeleteRequest) (*PlatRoleDeleteResponse, error)
 	ListResourceId(context.Context, *PlatRoleResourceIdListRequest) (*PlatRoleResourceIdListResponse, error)
 	Paging(context.Context, *PlatRolePagingRequest) (*PlatRolePagingResponse, error)
+	SaveResourceId(context.Context, *PlatRoleResourceIdSaveRequest) (*PlatRoleResourceIdSaveResponse, error)
 	Update(context.Context, *PlatRoleUpdateRequest) (*PlatRoleUpdateResponse, error)
 }
 
@@ -40,6 +42,7 @@ func RegisterPlatRoleAPIHTTPServer(s *http.Server, srv PlatRoleAPIHTTPServer) {
 	r.POST("/api/manager/v1/platform/role/delete", _PlatRoleAPI_Delete0_HTTP_Handler(srv))
 	r.POST("/api/manager/v1/platform/role/paging", _PlatRoleAPI_Paging0_HTTP_Handler(srv))
 	r.POST("/api/manager/v1/platform/role/resource_id/list", _PlatRoleAPI_ListResourceId0_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/platform/role/resource_id/save", _PlatRoleAPI_SaveResourceId0_HTTP_Handler(srv))
 }
 
 func _PlatRoleAPI_Create0_HTTP_Handler(srv PlatRoleAPIHTTPServer) func(ctx http.Context) error {
@@ -137,11 +140,31 @@ func _PlatRoleAPI_ListResourceId0_HTTP_Handler(srv PlatRoleAPIHTTPServer) func(c
 	}
 }
 
+func _PlatRoleAPI_SaveResourceId0_HTTP_Handler(srv PlatRoleAPIHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in PlatRoleResourceIdSaveRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationPlatRoleAPISaveResourceId)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SaveResourceId(ctx, req.(*PlatRoleResourceIdSaveRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*PlatRoleResourceIdSaveResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type PlatRoleAPIHTTPClient interface {
 	Create(ctx context.Context, req *PlatRoleCreateRequest, opts ...http.CallOption) (rsp *PlatRoleCreateResponse, err error)
 	Delete(ctx context.Context, req *PlatRoleDeleteRequest, opts ...http.CallOption) (rsp *PlatRoleDeleteResponse, err error)
 	ListResourceId(ctx context.Context, req *PlatRoleResourceIdListRequest, opts ...http.CallOption) (rsp *PlatRoleResourceIdListResponse, err error)
 	Paging(ctx context.Context, req *PlatRolePagingRequest, opts ...http.CallOption) (rsp *PlatRolePagingResponse, err error)
+	SaveResourceId(ctx context.Context, req *PlatRoleResourceIdSaveRequest, opts ...http.CallOption) (rsp *PlatRoleResourceIdSaveResponse, err error)
 	Update(ctx context.Context, req *PlatRoleUpdateRequest, opts ...http.CallOption) (rsp *PlatRoleUpdateResponse, err error)
 }
 
@@ -197,6 +220,19 @@ func (c *PlatRoleAPIHTTPClientImpl) Paging(ctx context.Context, in *PlatRolePagi
 	pattern := "/api/manager/v1/platform/role/paging"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationPlatRoleAPIPaging))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *PlatRoleAPIHTTPClientImpl) SaveResourceId(ctx context.Context, in *PlatRoleResourceIdSaveRequest, opts ...http.CallOption) (*PlatRoleResourceIdSaveResponse, error) {
+	var out PlatRoleResourceIdSaveResponse
+	pattern := "/api/manager/v1/platform/role/resource_id/save"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationPlatRoleAPISaveResourceId))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

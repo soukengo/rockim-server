@@ -42,3 +42,11 @@ func (r *platRoleRepo) ListResourceId(ctx context.Context, roleIds []string) ([]
 	}
 	return ret.List, nil
 }
+
+func (r *platRoleRepo) SaveResourceId(ctx context.Context, roleId string, resourceIds []string) (err error) {
+	_, err = r.ac.SaveResourceId(ctx, &v1.PlatRoleResourceIdSaveRequest{
+		RoleId:      roleId,
+		ResourceIds: resourceIds,
+	})
+	return
+}

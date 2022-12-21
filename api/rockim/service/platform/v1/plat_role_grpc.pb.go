@@ -32,6 +32,8 @@ type PlatRoleAPIClient interface {
 	Paging(ctx context.Context, in *PlatRolePagingRequest, opts ...grpc.CallOption) (*PlatRolePagingResponse, error)
 	// 获取角色角色ID列表
 	ListResourceId(ctx context.Context, in *PlatRoleResourceIdListRequest, opts ...grpc.CallOption) (*PlatRoleResourceIdListResponse, error)
+	// 保存角色资源ID
+	SaveResourceId(ctx context.Context, in *PlatRoleResourceIdSaveRequest, opts ...grpc.CallOption) (*PlatRoleResourceIdSaveResponse, error)
 }
 
 type platRoleAPIClient struct {
@@ -87,6 +89,15 @@ func (c *platRoleAPIClient) ListResourceId(ctx context.Context, in *PlatRoleReso
 	return out, nil
 }
 
+func (c *platRoleAPIClient) SaveResourceId(ctx context.Context, in *PlatRoleResourceIdSaveRequest, opts ...grpc.CallOption) (*PlatRoleResourceIdSaveResponse, error) {
+	out := new(PlatRoleResourceIdSaveResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.platform.v1.PlatRoleAPI/SaveResourceId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PlatRoleAPIServer is the server API for PlatRoleAPI service.
 // All implementations must embed UnimplementedPlatRoleAPIServer
 // for forward compatibility
@@ -101,6 +112,8 @@ type PlatRoleAPIServer interface {
 	Paging(context.Context, *PlatRolePagingRequest) (*PlatRolePagingResponse, error)
 	// 获取角色角色ID列表
 	ListResourceId(context.Context, *PlatRoleResourceIdListRequest) (*PlatRoleResourceIdListResponse, error)
+	// 保存角色资源ID
+	SaveResourceId(context.Context, *PlatRoleResourceIdSaveRequest) (*PlatRoleResourceIdSaveResponse, error)
 	mustEmbedUnimplementedPlatRoleAPIServer()
 }
 
@@ -122,6 +135,9 @@ func (UnimplementedPlatRoleAPIServer) Paging(context.Context, *PlatRolePagingReq
 }
 func (UnimplementedPlatRoleAPIServer) ListResourceId(context.Context, *PlatRoleResourceIdListRequest) (*PlatRoleResourceIdListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListResourceId not implemented")
+}
+func (UnimplementedPlatRoleAPIServer) SaveResourceId(context.Context, *PlatRoleResourceIdSaveRequest) (*PlatRoleResourceIdSaveResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SaveResourceId not implemented")
 }
 func (UnimplementedPlatRoleAPIServer) mustEmbedUnimplementedPlatRoleAPIServer() {}
 
@@ -226,6 +242,24 @@ func _PlatRoleAPI_ListResourceId_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PlatRoleAPI_SaveResourceId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PlatRoleResourceIdSaveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatRoleAPIServer).SaveResourceId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.platform.v1.PlatRoleAPI/SaveResourceId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatRoleAPIServer).SaveResourceId(ctx, req.(*PlatRoleResourceIdSaveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PlatRoleAPI_ServiceDesc is the grpc.ServiceDesc for PlatRoleAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -252,6 +286,10 @@ var PlatRoleAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListResourceId",
 			Handler:    _PlatRoleAPI_ListResourceId_Handler,
+		},
+		{
+			MethodName: "SaveResourceId",
+			Handler:    _PlatRoleAPI_SaveResourceId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

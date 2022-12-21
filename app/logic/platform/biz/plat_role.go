@@ -19,7 +19,8 @@ type PlatRoleRepo interface {
 	ListByIds(ctx context.Context, ids []string) ([]*types.PlatRole, error)
 	Paging(ctx context.Context, req *PlatRolePagingRequest) (res *PlatRolePagingResponse, err error)
 
-	ListResourceId(ctx context.Context, ids []string) ([]string, error)
+	ListResourceId(ctx context.Context, roleId []string) ([]string, error)
+	SaveResourceId(ctx context.Context, roleId string, resourceIds []string) error
 }
 
 // PlatRoleUseCase is a PlatRole use case.
@@ -86,4 +87,7 @@ func (uc *PlatRoleUseCase) ListByIds(ctx context.Context, ids []string) (res []*
 }
 func (uc *PlatRoleUseCase) ListResourceId(ctx context.Context, ids []string) ([]string, error) {
 	return uc.repo.ListResourceId(ctx, ids)
+}
+func (uc *PlatRoleUseCase) SaveResourceId(ctx context.Context, roleId string, resourceIds []string) error {
+	return uc.repo.SaveResourceId(ctx, roleId, resourceIds)
 }

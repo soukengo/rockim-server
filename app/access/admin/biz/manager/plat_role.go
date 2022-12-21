@@ -12,6 +12,7 @@ type PlatRoleRepo interface {
 
 	Paging(context.Context, *v1.PlatRolePagingRequest) (*v1.PlatRolePagingResponse, error)
 	ListResourceId(ctx context.Context, roleIds []string) ([]string, error)
+	SaveResourceId(ctx context.Context, roleId string, resourceIds []string) error
 }
 
 type PlatRoleUseCase struct {
@@ -36,4 +37,7 @@ func (uc *PlatRoleUseCase) Paging(ctx context.Context, req *v1.PlatRolePagingReq
 }
 func (uc *PlatRoleUseCase) ListResourceId(ctx context.Context, roleId string) ([]string, error) {
 	return uc.repo.ListResourceId(ctx, []string{roleId})
+}
+func (uc *PlatRoleUseCase) SaveResourceId(ctx context.Context, roleId string, resourceIds []string) error {
+	return uc.repo.SaveResourceId(ctx, roleId, resourceIds)
 }

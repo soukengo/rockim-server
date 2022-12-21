@@ -80,6 +80,13 @@ func (s *PlatRoleService) ListResourceId(ctx context.Context, in *adminV1.PlatRo
 	}
 	return &adminV1.PlatRoleResourceIdListResponse{List: list}, nil
 }
+func (s *PlatRoleService) SaveResourceId(ctx context.Context, in *adminV1.PlatRoleResourceIdSaveRequest) (reply *adminV1.PlatRoleResourceIdSaveResponse, err error) {
+	err = s.uc.SaveResourceId(ctx, in.RoleId, in.ResourceIds)
+	if err != nil {
+		return
+	}
+	return &adminV1.PlatRoleResourceIdSaveResponse{}, nil
+}
 
 func convertRole(source *types.PlatRole) *adminTypes.PlatRole {
 	return &adminTypes.PlatRole{

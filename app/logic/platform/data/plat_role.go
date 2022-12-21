@@ -39,3 +39,7 @@ func (r *platRoleRepo) Paging(ctx context.Context, req *biz.PlatRolePagingReques
 func (r *platRoleRepo) ListResourceId(ctx context.Context, ids []string) ([]string, error) {
 	return r.db.ListResourceId(ctx, ids)
 }
+
+func (r *platRoleRepo) SaveResourceId(ctx context.Context, roleId string, resourceIds []string) (err error) {
+	return r.db.SaveResourceId(ctx, roleId, resourceIds)
+}

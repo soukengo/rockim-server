@@ -7,6 +7,16 @@ import (
 	"rockim/api/rockim/service/platform/v1/types"
 )
 
+type SessionUseCase struct {
+	repo         PlatUserRepo
+	roleRepo     PlatRoleRepo
+	resourceRepo PlatResourceRepo
+}
+
+func NewSessionUseCase(repo PlatUserRepo, roleRepo PlatRoleRepo, resourceRepo PlatResourceRepo) *SessionUseCase {
+	return &SessionUseCase{repo: repo, roleRepo: roleRepo, resourceRepo: resourceRepo}
+}
+
 type Claims struct {
 	jwt.RegisteredClaims
 	User *SessionUser `json:"user"`
@@ -16,16 +26,11 @@ type SessionUser struct {
 	ID        string `json:"id"`
 	Name      string `json:"name"`
 	AvatarUrl string `json:"avatarUrl"`
+	IsAdmin   bool   `json:"isAdmin"`
 }
 
-type SessionUseCase struct {
-	repo         PlatUserRepo
-	roleRepo     PlatRoleRepo
-	resourceRepo PlatResourceRepo
-}
-
-func NewSessionUseCase(repo PlatUserRepo, roleRepo PlatRoleRepo, resourceRepo PlatResourceRepo) *SessionUseCase {
-	return &SessionUseCase{repo: repo, roleRepo: roleRepo, resourceRepo: resourceRepo}
+func NewSessionUser(id string, name string, avatarUrl string, isAdmin bool) *SessionUser {
+	return &SessionUser{ID: id, Name: name, AvatarUrl: avatarUrl, IsAdmin: isAdmin}
 }
 
 func (uc *SessionUseCase) Check(ctx context.Context) (u *SessionUser, err error) {
@@ -46,6 +51,9 @@ func (uc *SessionUseCase) ListResources(ctx context.Context) (res []*types.PlatR
 	u, err := uc.Check(ctx)
 	if err != nil {
 		return
+	}
+	if u.IsAdmin {
+		return uc.resourceRepo.List(ctx)
 	}
 	roleIds, err := uc.repo.ListRoleId(ctx, u.ID)
 	if err != nil {

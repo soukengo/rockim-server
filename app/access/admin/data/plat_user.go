@@ -44,10 +44,17 @@ func (r *platUserRepo) FindByAccount(ctx context.Context, account string) (*type
 
 func (r *platUserRepo) ListRoleId(ctx context.Context, userId string) ([]string, error) {
 	ret, err := r.ac.ListRoleId(ctx, &v1.PlatUserRoleIdListRequest{
-		UserIds: []string{userId},
+		UserId: userId,
 	})
 	if err != nil {
 		return nil, err
 	}
 	return ret.List, nil
+}
+func (r *platUserRepo) SaveRoleId(ctx context.Context, userId string, roleIds []string) (err error) {
+	_, err = r.ac.SaveRoleId(ctx, &v1.PlatUserRoleIdSaveRequest{
+		UserId:  userId,
+		RoleIds: roleIds,
+	})
+	return
 }

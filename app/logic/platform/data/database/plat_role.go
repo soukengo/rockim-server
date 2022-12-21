@@ -11,6 +11,7 @@ import (
 	"rockim/app/logic/platform/data/database/convert"
 	"rockim/app/logic/platform/data/database/entity"
 	"rockim/pkg/component/database/mongo"
+	"time"
 )
 
 type PlatRoleData struct {
@@ -126,7 +127,23 @@ func (d *PlatRoleData) ListResourceId(ctx context.Context, roleIds []string) (re
 		return
 	}
 	for _, record := range records {
-		results = append(results, record.ResourceId)
+		results = append(results, record.ResourceId.Hex())
 	}
+	return
+}
+
+func (d *PlatRoleData) SaveResourceId(ctx context.Context, roleId string, resourceIds []string) (err error) {
+	roleObjId, err := primitive.ObjectIDFromHex(roleId)
+	var records []any
+	for _, resourceId := range resourceIds {
+		var resourceObjId primitive.ObjectID
+		resourceObjId, err = primitive.ObjectIDFromHex(resourceId)
+		if err != nil {
+			return
+		}
+		record := &entity.PlatRoleResource{RoleId: roleObjId, ResourceId: resourceObjId, CreateTime: time.Now().UnixMilli()}
+		records = append(records, record)
+	}
+	_, err = d.mgo.Collection(entity.TablePlatRoleResource).InsertMany(ctx, records)
 	return
 }

@@ -11,6 +11,7 @@ import (
 	"rockim/app/logic/platform/data/database/convert"
 	"rockim/app/logic/platform/data/database/entity"
 	"rockim/pkg/component/database/mongo"
+	"time"
 )
 
 type PlatUserData struct {
@@ -82,7 +83,7 @@ func (d *PlatUserData) Delete(ctx context.Context, id string) (err error) {
 }
 
 func (d *PlatUserData) Paging(ctx context.Context, req *biz.PlatUserPagingRequest) (res *biz.PlatUserPagingResponse, err error) {
-	query := bson.M{}
+	query := bson.M{"is_admin": bson.M{"$ne": true}}
 	cursor, p, err := d.mgo.Paginate(ctx, entity.TablePlatUser, query, req.Paginate)
 	if err != nil {
 		return
@@ -102,23 +103,30 @@ func (d *PlatUserData) Paging(ctx context.Context, req *biz.PlatUserPagingReques
 	return
 }
 
-func (d *PlatUserData) ListRoleId(ctx context.Context, userIds []string) (results []string, err error) {
-	var objIdList []primitive.ObjectID
-	for _, id := range userIds {
-		var objId primitive.ObjectID
-		objId, err = primitive.ObjectIDFromHex(id)
-		if err != nil {
-			return nil, err
-		}
-		objIdList = append(objIdList, objId)
-	}
+func (d *PlatUserData) ListRoleId(ctx context.Context, userId string) (results []string, err error) {
+	objId, err := primitive.ObjectIDFromHex(userId)
 	var records []*entity.PlatUserRole
-	err = d.mgo.FindList(ctx, entity.TablePlatUserRole, bson.M{"user_id": bson.M{"$in": objIdList}}, &records, options.Find())
+	err = d.mgo.FindList(ctx, entity.TablePlatUserRole, bson.M{"user_id": objId}, &records, options.Find())
 	if err != nil {
 		return
 	}
 	for _, record := range records {
-		results = append(results, record.RoleId)
+		results = append(results, record.RoleId.Hex())
 	}
+	return
+}
+func (d *PlatUserData) SaveRoleId(ctx context.Context, userId string, roleIds []string) (err error) {
+	userObjId, err := primitive.ObjectIDFromHex(userId)
+	var records []any
+	for _, roleId := range roleIds {
+		var roleObjId primitive.ObjectID
+		roleObjId, err = primitive.ObjectIDFromHex(roleId)
+		if err != nil {
+			return
+		}
+		record := &entity.PlatUserRole{UserId: userObjId, RoleId: roleObjId, CreateTime: time.Now().UnixMilli()}
+		records = append(records, record)
+	}
+	_, err = d.mgo.Collection(entity.TablePlatUserRole).InsertMany(ctx, records)
 	return
 }

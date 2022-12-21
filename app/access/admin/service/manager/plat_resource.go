@@ -78,8 +78,6 @@ func convertResource(source *types.PlatResource) *adminTypes.PlatResource {
 		ParentId:   source.ParentId,
 		Url:        source.Url,
 		Icon:       source.Icon,
-		Level:      source.Level,
-		Leaf:       source.Leaf,
 		Order:      source.Order,
 	}
 }

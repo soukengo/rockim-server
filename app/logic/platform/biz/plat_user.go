@@ -9,11 +9,17 @@ import (
 	sharedTypes "rockim/api/rockim/shared/types"
 	"rockim/pkg/log"
 	"rockim/pkg/util/copier"
+	"rockim/pkg/util/encrypt"
 	"time"
 )
 
+const (
+	defaultPassword = "123456"
+)
+
 var (
-	ErrPlatUserNotFound = errors.NotFound(v1.ErrorReason_PLAT_USER_NOT_FOUND.String(), "plat account not found")
+	ErrPlatUserNotFound = errors.NotFound(v1.ErrorReason_PLAT_USER_NOT_FOUND.String(), "账号不存在")
+	ErrAccountDuplicate = errors.Conflict(v1.ErrorReason_ACCOUNT_DUPLICATE.String(), "不能重复创建")
 )
 
 // PlatUserRepo is a PlatUser repo.
@@ -26,7 +32,8 @@ type PlatUserRepo interface {
 	FindIdByAccount(ctx context.Context, account string) (uid string, err error)
 	Paging(ctx context.Context, req *PlatUserPagingRequest) (res *PlatUserPagingResponse, err error)
 
-	ListRoleId(ctx context.Context, ids []string) ([]string, error)
+	ListRoleId(ctx context.Context, userId string) ([]string, error)
+	SaveRoleId(ctx context.Context, userId string, roleIds []string) (err error)
 }
 
 // PlatUserUseCase is a PlatUser use case.
@@ -35,12 +42,13 @@ type PlatUserUseCase struct {
 }
 
 type PlatUserOptions struct {
-	Account string
-	Name    string
+	Name string
 }
 
 type PlatUserCreateRequest struct {
-	Options *PlatUserOptions
+	Options  *PlatUserOptions
+	Account  string
+	Password string
 }
 type PlatUserUpdateRequest struct {
 	Id      string
@@ -65,7 +73,19 @@ func NewPlatUserUseCase(repo PlatUserRepo) *PlatUserUseCase {
 }
 
 func (uc *PlatUserUseCase) Create(ctx context.Context, req *PlatUserCreateRequest) (err error) {
-	record := &types.PlatUser{Name: req.Options.Name}
+	uid, err := uc.repo.FindIdByAccount(ctx, req.Account)
+	if err != nil && !errors.IsNotFound(err) {
+		return
+	}
+	if len(uid) > 0 {
+		return ErrAccountDuplicate
+	}
+	record := &types.PlatUser{Name: req.Options.Name, Account: req.Account, Password: req.Password}
+	plainPwd := req.Password
+	if len(plainPwd) == 0 {
+		plainPwd = defaultPassword
+	}
+	record.Password = encrypt.MD5(plainPwd)
 	record.Id = primitive.NewObjectID().Hex()
 	record.CreateTime = time.Now().UnixMilli()
 	return uc.repo.Create(ctx, record)
@@ -100,6 +120,10 @@ func (uc *PlatUserUseCase) Paging(ctx context.Context, req *PlatUserPagingReques
 	return uc.repo.Paging(ctx, req)
 }
 
-func (uc *PlatUserUseCase) ListRoleId(ctx context.Context, ids []string) (res []string, err error) {
-	return uc.repo.ListRoleId(ctx, ids)
+func (uc *PlatUserUseCase) ListRoleId(ctx context.Context, userId string) (res []string, err error) {
+	return uc.repo.ListRoleId(ctx, userId)
+}
+
+func (uc *PlatUserUseCase) SaveRoleId(ctx context.Context, userId string, roleIds []string) (err error) {
+	return uc.repo.SaveRoleId(ctx, userId, roleIds)
 }

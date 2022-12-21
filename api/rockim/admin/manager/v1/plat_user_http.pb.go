@@ -23,6 +23,7 @@ const OperationPlatUserAPICreate = "/rockim.admin.manager.v1.PlatUserAPI/Create"
 const OperationPlatUserAPIDelete = "/rockim.admin.manager.v1.PlatUserAPI/Delete"
 const OperationPlatUserAPIListRoleId = "/rockim.admin.manager.v1.PlatUserAPI/ListRoleId"
 const OperationPlatUserAPIPaging = "/rockim.admin.manager.v1.PlatUserAPI/Paging"
+const OperationPlatUserAPISaveRoleId = "/rockim.admin.manager.v1.PlatUserAPI/SaveRoleId"
 const OperationPlatUserAPIUpdate = "/rockim.admin.manager.v1.PlatUserAPI/Update"
 
 type PlatUserAPIHTTPServer interface {
@@ -30,6 +31,7 @@ type PlatUserAPIHTTPServer interface {
 	Delete(context.Context, *PlatUserDeleteRequest) (*PlatUserDeleteResponse, error)
 	ListRoleId(context.Context, *PlatUserRoleIdListRequest) (*PlatUserRoleIdListResponse, error)
 	Paging(context.Context, *PlatUserPagingRequest) (*PlatUserPagingResponse, error)
+	SaveRoleId(context.Context, *PlatUserRoleIdSaveRequest) (*PlatUserRoleIdSaveResponse, error)
 	Update(context.Context, *PlatUserUpdateRequest) (*PlatUserUpdateResponse, error)
 }
 
@@ -40,6 +42,7 @@ func RegisterPlatUserAPIHTTPServer(s *http.Server, srv PlatUserAPIHTTPServer) {
 	r.POST("/api/manager/v1/platform/user/delete", _PlatUserAPI_Delete0_HTTP_Handler(srv))
 	r.POST("/api/manager/v1/platform/user/paging", _PlatUserAPI_Paging0_HTTP_Handler(srv))
 	r.POST("/api/manager/v1/platform/user/role_id/list", _PlatUserAPI_ListRoleId0_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/platform/user/role_id/save", _PlatUserAPI_SaveRoleId0_HTTP_Handler(srv))
 }
 
 func _PlatUserAPI_Create0_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.Context) error {
@@ -137,11 +140,31 @@ func _PlatUserAPI_ListRoleId0_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx h
 	}
 }
 
+func _PlatUserAPI_SaveRoleId0_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in PlatUserRoleIdSaveRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationPlatUserAPISaveRoleId)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SaveRoleId(ctx, req.(*PlatUserRoleIdSaveRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*PlatUserRoleIdSaveResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type PlatUserAPIHTTPClient interface {
 	Create(ctx context.Context, req *PlatUserCreateRequest, opts ...http.CallOption) (rsp *PlatUserCreateResponse, err error)
 	Delete(ctx context.Context, req *PlatUserDeleteRequest, opts ...http.CallOption) (rsp *PlatUserDeleteResponse, err error)
 	ListRoleId(ctx context.Context, req *PlatUserRoleIdListRequest, opts ...http.CallOption) (rsp *PlatUserRoleIdListResponse, err error)
 	Paging(ctx context.Context, req *PlatUserPagingRequest, opts ...http.CallOption) (rsp *PlatUserPagingResponse, err error)
+	SaveRoleId(ctx context.Context, req *PlatUserRoleIdSaveRequest, opts ...http.CallOption) (rsp *PlatUserRoleIdSaveResponse, err error)
 	Update(ctx context.Context, req *PlatUserUpdateRequest, opts ...http.CallOption) (rsp *PlatUserUpdateResponse, err error)
 }
 
@@ -197,6 +220,19 @@ func (c *PlatUserAPIHTTPClientImpl) Paging(ctx context.Context, in *PlatUserPagi
 	pattern := "/api/manager/v1/platform/user/paging"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationPlatUserAPIPaging))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *PlatUserAPIHTTPClientImpl) SaveRoleId(ctx context.Context, in *PlatUserRoleIdSaveRequest, opts ...http.CallOption) (*PlatUserRoleIdSaveResponse, error) {
+	var out PlatUserRoleIdSaveResponse
+	pattern := "/api/manager/v1/platform/user/role_id/save"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationPlatUserAPISaveRoleId))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

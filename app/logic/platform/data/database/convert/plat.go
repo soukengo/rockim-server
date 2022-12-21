@@ -14,6 +14,7 @@ func UserProto(source *entity.PlatUser) *types.PlatUser {
 		Account:    source.Account,
 		Password:   source.Password,
 		Name:       source.Name,
+		IsAdmin:    source.IsAdmin,
 	}
 }
 func UserEntity(source *types.PlatUser) *entity.PlatUser {
@@ -23,6 +24,7 @@ func UserEntity(source *types.PlatUser) *entity.PlatUser {
 		Account:    source.Account,
 		Password:   source.Password,
 		Name:       source.Name,
+		IsAdmin:    source.IsAdmin,
 	}
 }
 func ResourceProto(source *entity.PlatResource) *types.PlatResource {
@@ -35,8 +37,6 @@ func ResourceProto(source *entity.PlatResource) *types.PlatResource {
 		Name:       source.Name,
 		Url:        source.Url,
 		Icon:       source.Icon,
-		Level:      source.Level,
-		Leaf:       source.Leaf,
 		Order:      source.Order,
 	}
 }
@@ -49,8 +49,6 @@ func ResourceEntity(source *types.PlatResource) *entity.PlatResource {
 		Name:       source.Name,
 		Url:        source.Url,
 		Icon:       source.Icon,
-		Level:      source.Level,
-		Leaf:       source.Leaf,
 		Order:      source.Order,
 	}
 }

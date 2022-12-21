@@ -15,6 +15,7 @@ type PlatUserRepo interface {
 	FindByAccount(ctx context.Context, account string) (*types.PlatUser, error)
 
 	ListRoleId(ctx context.Context, userId string) ([]string, error)
+	SaveRoleId(ctx context.Context, userId string, roleIds []string) error
 }
 
 type PlatUserUseCase struct {
@@ -39,4 +40,8 @@ func (uc *PlatUserUseCase) Paging(ctx context.Context, req *v1.PlatUserPagingReq
 }
 func (uc *PlatUserUseCase) ListRoleId(ctx context.Context, userId string) ([]string, error) {
 	return uc.repo.ListRoleId(ctx, userId)
+}
+
+func (uc *PlatUserUseCase) SaveRoleId(ctx context.Context, userId string, roleIds []string) error {
+	return uc.repo.SaveRoleId(ctx, userId, roleIds)
 }

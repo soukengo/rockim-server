@@ -76,3 +76,11 @@ func (s *PlatRoleService) ListResourceId(ctx context.Context, in *v1.PlatRoleRes
 	}
 	return &v1.PlatRoleResourceIdListResponse{List: list}, nil
 }
+
+func (s *PlatRoleService) SaveResourceId(ctx context.Context, in *v1.PlatRoleResourceIdSaveRequest) (reply *v1.PlatRoleResourceIdSaveResponse, err error) {
+	err = s.uc.SaveResourceId(ctx, in.RoleId, in.ResourceIds)
+	if err != nil {
+		return nil, err
+	}
+	return &v1.PlatRoleResourceIdSaveResponse{}, nil
+}

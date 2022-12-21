@@ -9,6 +9,7 @@ type PlatUser struct {
 	Account    string             `bson:"account,omitempty"`     // 登录名
 	Password   string             `bson:"password,omitempty"`    // 密码
 	Name       string             `bson:"name,omitempty"`        // 用户名称
+	IsAdmin    bool               `bson:"is_admin,omitempty"`    // 是否超级管理员
 }
 
 func (*PlatUser) TableName() string {
@@ -35,9 +36,7 @@ type PlatResource struct {
 	Icon       string             `bson:"icon,omitempty"`        // ICON
 	Url        string             `bson:"url,omitempty"`         // 资源URL
 	Category   int32              `bson:"category,omitempty"`    // 类型 1：菜单，2：页面，3：功能
-	Leaf       bool               `bson:"leaf,omitempty"`        // 是否叶子节点
 	Order      int32              `bson:"order,omitempty"`       // 序号
-	Level      int32              `bson:"level,omitempty"`       // 层级
 }
 
 func (*PlatResource) TableName() string {
@@ -47,8 +46,8 @@ func (*PlatResource) TableName() string {
 type PlatUserRole struct {
 	Id         primitive.ObjectID `bson:"_id,omitempty"`         // 用户ID
 	CreateTime int64              `bson:"create_time,omitempty"` // 创建时间
-	UserId     string             `bson:"user_id,omitempty"`     // 用户ID
-	RoleId     string             `bson:"role_id,omitempty"`     // 角色ID
+	UserId     primitive.ObjectID `bson:"user_id,omitempty"`     // 用户ID
+	RoleId     primitive.ObjectID `bson:"role_id,omitempty"`     // 角色ID
 }
 
 func (*PlatUserRole) TableName() string {
@@ -58,8 +57,8 @@ func (*PlatUserRole) TableName() string {
 type PlatRoleResource struct {
 	Id         primitive.ObjectID `bson:"_id,omitempty"`         // 用户ID
 	CreateTime int64              `bson:"create_time,omitempty"` // 创建时间
-	RoleId     string             `bson:"role_id,omitempty"`     // 角色ID
-	ResourceId string             `bson:"resource_id,omitempty"` // 资源ID
+	RoleId     primitive.ObjectID `bson:"role_id,omitempty"`     // 角色ID
+	ResourceId primitive.ObjectID `bson:"resource_id,omitempty"` // 资源ID
 }
 
 func (*PlatRoleResource) TableName() string {

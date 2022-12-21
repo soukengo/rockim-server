@@ -41,6 +41,9 @@ func (r *platUserRepo) Paging(ctx context.Context, req *biz.PlatUserPagingReques
 	return r.db.Paging(ctx, req)
 }
 
-func (r *platUserRepo) ListRoleId(ctx context.Context, ids []string) ([]string, error) {
-	return r.db.ListRoleId(ctx, ids)
+func (r *platUserRepo) ListRoleId(ctx context.Context, userId string) ([]string, error) {
+	return r.db.ListRoleId(ctx, userId)
+}
+func (r *platUserRepo) SaveRoleId(ctx context.Context, userId string, roleIds []string) (err error) {
+	return r.db.SaveRoleId(ctx, userId, roleIds)
 }

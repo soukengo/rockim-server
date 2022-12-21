@@ -69,18 +69,26 @@ func (s *PlatUserService) Paging(ctx context.Context, in *v1.PlatUserPagingReque
 	return
 }
 
-func (s *PlatUserService) Find(ctx context.Context, req *v1.PlatUserFindRequest) (*v1.PlatUserFindResponse, error) {
-	u, err := s.uc.Find(ctx, req.Account)
+func (s *PlatUserService) Find(ctx context.Context, in *v1.PlatUserFindRequest) (*v1.PlatUserFindResponse, error) {
+	u, err := s.uc.Find(ctx, in.Account)
 	if err != nil {
 		return nil, err
 	}
 	return &v1.PlatUserFindResponse{User: u}, nil
 }
 
-func (s *PlatUserService) ListRoleId(ctx context.Context, request *v1.PlatUserRoleIdListRequest) (*v1.PlatUserRoleIdListResponse, error) {
-	list, err := s.uc.ListRoleId(ctx, request.UserIds)
+func (s *PlatUserService) ListRoleId(ctx context.Context, in *v1.PlatUserRoleIdListRequest) (*v1.PlatUserRoleIdListResponse, error) {
+	list, err := s.uc.ListRoleId(ctx, in.UserId)
 	if err != nil {
 		return nil, err
 	}
 	return &v1.PlatUserRoleIdListResponse{List: list}, nil
+}
+
+func (s *PlatUserService) SaveRoleId(ctx context.Context, in *v1.PlatUserRoleIdSaveRequest) (reply *v1.PlatUserRoleIdSaveResponse, err error) {
+	err = s.uc.SaveRoleId(ctx, in.UserId, in.RoleIds)
+	if err != nil {
+		return nil, err
+	}
+	return &v1.PlatUserRoleIdSaveResponse{}, nil
 }

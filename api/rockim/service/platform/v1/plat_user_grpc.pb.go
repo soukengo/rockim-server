@@ -34,6 +34,8 @@ type PlatUserAPIClient interface {
 	Find(ctx context.Context, in *PlatUserFindRequest, opts ...grpc.CallOption) (*PlatUserFindResponse, error)
 	// 获取用户角色ID列表
 	ListRoleId(ctx context.Context, in *PlatUserRoleIdListRequest, opts ...grpc.CallOption) (*PlatUserRoleIdListResponse, error)
+	// 保存用户角色ID列表
+	SaveRoleId(ctx context.Context, in *PlatUserRoleIdSaveRequest, opts ...grpc.CallOption) (*PlatUserRoleIdSaveResponse, error)
 }
 
 type platUserAPIClient struct {
@@ -98,6 +100,15 @@ func (c *platUserAPIClient) ListRoleId(ctx context.Context, in *PlatUserRoleIdLi
 	return out, nil
 }
 
+func (c *platUserAPIClient) SaveRoleId(ctx context.Context, in *PlatUserRoleIdSaveRequest, opts ...grpc.CallOption) (*PlatUserRoleIdSaveResponse, error) {
+	out := new(PlatUserRoleIdSaveResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.platform.v1.PlatUserAPI/SaveRoleId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PlatUserAPIServer is the server API for PlatUserAPI service.
 // All implementations must embed UnimplementedPlatUserAPIServer
 // for forward compatibility
@@ -114,6 +125,8 @@ type PlatUserAPIServer interface {
 	Find(context.Context, *PlatUserFindRequest) (*PlatUserFindResponse, error)
 	// 获取用户角色ID列表
 	ListRoleId(context.Context, *PlatUserRoleIdListRequest) (*PlatUserRoleIdListResponse, error)
+	// 保存用户角色ID列表
+	SaveRoleId(context.Context, *PlatUserRoleIdSaveRequest) (*PlatUserRoleIdSaveResponse, error)
 	mustEmbedUnimplementedPlatUserAPIServer()
 }
 
@@ -138,6 +151,9 @@ func (UnimplementedPlatUserAPIServer) Find(context.Context, *PlatUserFindRequest
 }
 func (UnimplementedPlatUserAPIServer) ListRoleId(context.Context, *PlatUserRoleIdListRequest) (*PlatUserRoleIdListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListRoleId not implemented")
+}
+func (UnimplementedPlatUserAPIServer) SaveRoleId(context.Context, *PlatUserRoleIdSaveRequest) (*PlatUserRoleIdSaveResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SaveRoleId not implemented")
 }
 func (UnimplementedPlatUserAPIServer) mustEmbedUnimplementedPlatUserAPIServer() {}
 
@@ -260,6 +276,24 @@ func _PlatUserAPI_ListRoleId_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PlatUserAPI_SaveRoleId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PlatUserRoleIdSaveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlatUserAPIServer).SaveRoleId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.platform.v1.PlatUserAPI/SaveRoleId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlatUserAPIServer).SaveRoleId(ctx, req.(*PlatUserRoleIdSaveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PlatUserAPI_ServiceDesc is the grpc.ServiceDesc for PlatUserAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -290,6 +324,10 @@ var PlatUserAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListRoleId",
 			Handler:    _PlatUserAPI_ListRoleId_Handler,
+		},
+		{
+			MethodName: "SaveRoleId",
+			Handler:    _PlatUserAPI_SaveRoleId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
