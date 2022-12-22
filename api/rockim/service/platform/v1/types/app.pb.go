@@ -20,7 +20,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// 应用
+// App 应用
 type App struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

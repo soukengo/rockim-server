@@ -25,6 +25,7 @@ type AppAPIClient interface {
 	Create(ctx context.Context, in *AppCreateRequest, opts ...grpc.CallOption) (*AppCreateResponse, error)
 	Update(ctx context.Context, in *AppUpdateRequest, opts ...grpc.CallOption) (*AppUpdateResponse, error)
 	Find(ctx context.Context, in *AppFindRequest, opts ...grpc.CallOption) (*AppFindResponse, error)
+	ListByTenant(ctx context.Context, in *AppListByTenantRequest, opts ...grpc.CallOption) (*AppListByTenantResponse, error)
 }
 
 type appAPIClient struct {
@@ -62,6 +63,15 @@ func (c *appAPIClient) Find(ctx context.Context, in *AppFindRequest, opts ...grp
 	return out, nil
 }
 
+func (c *appAPIClient) ListByTenant(ctx context.Context, in *AppListByTenantRequest, opts ...grpc.CallOption) (*AppListByTenantResponse, error) {
+	out := new(AppListByTenantResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.platform.v1.AppAPI/ListByTenant", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AppAPIServer is the server API for AppAPI service.
 // All implementations must embed UnimplementedAppAPIServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type AppAPIServer interface {
 	Create(context.Context, *AppCreateRequest) (*AppCreateResponse, error)
 	Update(context.Context, *AppUpdateRequest) (*AppUpdateResponse, error)
 	Find(context.Context, *AppFindRequest) (*AppFindResponse, error)
+	ListByTenant(context.Context, *AppListByTenantRequest) (*AppListByTenantResponse, error)
 	mustEmbedUnimplementedAppAPIServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedAppAPIServer) Update(context.Context, *AppUpdateRequest) (*Ap
 }
 func (UnimplementedAppAPIServer) Find(context.Context, *AppFindRequest) (*AppFindResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
+}
+func (UnimplementedAppAPIServer) ListByTenant(context.Context, *AppListByTenantRequest) (*AppListByTenantResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListByTenant not implemented")
 }
 func (UnimplementedAppAPIServer) mustEmbedUnimplementedAppAPIServer() {}
 
@@ -152,6 +166,24 @@ func _AppAPI_Find_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AppAPI_ListByTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AppListByTenantRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppAPIServer).ListByTenant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.platform.v1.AppAPI/ListByTenant",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppAPIServer).ListByTenant(ctx, req.(*AppListByTenantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AppAPI_ServiceDesc is the grpc.ServiceDesc for AppAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var AppAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Find",
 			Handler:    _AppAPI_Find_Handler,
+		},
+		{
+			MethodName: "ListByTenant",
+			Handler:    _AppAPI_ListByTenant_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

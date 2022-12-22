@@ -24,8 +24,10 @@ const (
 type UserStatus int32
 
 const (
-	UserStatus_USER_STATUS_INVALID UserStatus = 0 // 无效
-	UserStatus_USER_STATUS_NORMAL  UserStatus = 1 // 正常
+	// 无效
+	UserStatus_USER_STATUS_INVALID UserStatus = 0
+	// 正常
+	UserStatus_USER_STATUS_NORMAL UserStatus = 1
 )
 
 // Enum value maps for UserStatus.

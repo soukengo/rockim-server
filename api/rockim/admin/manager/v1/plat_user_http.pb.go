@@ -37,15 +37,15 @@ type PlatUserAPIHTTPServer interface {
 
 func RegisterPlatUserAPIHTTPServer(s *http.Server, srv PlatUserAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/manager/v1/platform/user/create", _PlatUserAPI_Create0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/platform/user/update", _PlatUserAPI_Update0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/platform/user/delete", _PlatUserAPI_Delete0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/platform/user/paging", _PlatUserAPI_Paging0_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/platform/user/create", _PlatUserAPI_Create2_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/platform/user/update", _PlatUserAPI_Update2_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/platform/user/delete", _PlatUserAPI_Delete2_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/platform/user/paging", _PlatUserAPI_Paging1_HTTP_Handler(srv))
 	r.POST("/api/manager/v1/platform/user/role_id/list", _PlatUserAPI_ListRoleId0_HTTP_Handler(srv))
 	r.POST("/api/manager/v1/platform/user/role_id/save", _PlatUserAPI_SaveRoleId0_HTTP_Handler(srv))
 }
 
-func _PlatUserAPI_Create0_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.Context) error {
+func _PlatUserAPI_Create2_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in PlatUserCreateRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -64,7 +64,7 @@ func _PlatUserAPI_Create0_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.
 	}
 }
 
-func _PlatUserAPI_Update0_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.Context) error {
+func _PlatUserAPI_Update2_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in PlatUserUpdateRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -83,7 +83,7 @@ func _PlatUserAPI_Update0_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.
 	}
 }
 
-func _PlatUserAPI_Delete0_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.Context) error {
+func _PlatUserAPI_Delete2_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in PlatUserDeleteRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -102,7 +102,7 @@ func _PlatUserAPI_Delete0_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.
 	}
 }
 
-func _PlatUserAPI_Paging0_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.Context) error {
+func _PlatUserAPI_Paging1_HTTP_Handler(srv PlatUserAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in PlatUserPagingRequest
 		if err := ctx.Bind(&in); err != nil {

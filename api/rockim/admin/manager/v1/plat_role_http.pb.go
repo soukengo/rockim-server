@@ -37,15 +37,15 @@ type PlatRoleAPIHTTPServer interface {
 
 func RegisterPlatRoleAPIHTTPServer(s *http.Server, srv PlatRoleAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/manager/v1/platform/role/create", _PlatRoleAPI_Create0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/platform/role/update", _PlatRoleAPI_Update0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/platform/role/delete", _PlatRoleAPI_Delete0_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/platform/role/create", _PlatRoleAPI_Create1_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/platform/role/update", _PlatRoleAPI_Update1_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/platform/role/delete", _PlatRoleAPI_Delete1_HTTP_Handler(srv))
 	r.POST("/api/manager/v1/platform/role/paging", _PlatRoleAPI_Paging0_HTTP_Handler(srv))
 	r.POST("/api/manager/v1/platform/role/resource_id/list", _PlatRoleAPI_ListResourceId0_HTTP_Handler(srv))
 	r.POST("/api/manager/v1/platform/role/resource_id/save", _PlatRoleAPI_SaveResourceId0_HTTP_Handler(srv))
 }
 
-func _PlatRoleAPI_Create0_HTTP_Handler(srv PlatRoleAPIHTTPServer) func(ctx http.Context) error {
+func _PlatRoleAPI_Create1_HTTP_Handler(srv PlatRoleAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in PlatRoleCreateRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -64,7 +64,7 @@ func _PlatRoleAPI_Create0_HTTP_Handler(srv PlatRoleAPIHTTPServer) func(ctx http.
 	}
 }
 
-func _PlatRoleAPI_Update0_HTTP_Handler(srv PlatRoleAPIHTTPServer) func(ctx http.Context) error {
+func _PlatRoleAPI_Update1_HTTP_Handler(srv PlatRoleAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in PlatRoleUpdateRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -83,7 +83,7 @@ func _PlatRoleAPI_Update0_HTTP_Handler(srv PlatRoleAPIHTTPServer) func(ctx http.
 	}
 }
 
-func _PlatRoleAPI_Delete0_HTTP_Handler(srv PlatRoleAPIHTTPServer) func(ctx http.Context) error {
+func _PlatRoleAPI_Delete1_HTTP_Handler(srv PlatRoleAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in PlatRoleDeleteRequest
 		if err := ctx.Bind(&in); err != nil {
