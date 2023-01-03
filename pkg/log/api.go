@@ -1,5 +1,7 @@
 package log
 
+import "context"
+
 // Debug logs a message at debug level.
 func Debug(a ...interface{}) {
 	global.root.Debug(a...)
@@ -53,5 +55,10 @@ func Std() Helper {
 }
 func Use(loggerName string) Helper {
 	l := global.use(loggerName)
+	return l
+}
+
+func WithContext(ctx context.Context) Helper {
+	l := wrap(global.root.WithContext(ctx))
 	return l
 }

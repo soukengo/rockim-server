@@ -9,12 +9,13 @@ package admin
 import (
 	"github.com/go-kratos/kratos/v2"
 	"rockim/app/access/admin/biz/manager"
+	"rockim/app/access/admin/biz/tenant"
 	"rockim/app/access/admin/conf"
 	"rockim/app/access/admin/data"
 	"rockim/app/access/admin/data/grpc"
 	"rockim/app/access/admin/server"
 	manager2 "rockim/app/access/admin/service/manager"
-	"rockim/app/access/admin/service/tenant"
+	tenant2 "rockim/app/access/admin/service/tenant"
 	"rockim/pkg/component/discovery"
 )
 
@@ -51,9 +52,28 @@ func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, a
 	platRoleService := manager2.NewPlatRoleService(platRoleUseCase)
 	platResourceUseCase := manager.NewPlatResourceUseCase(platResourceRepo)
 	platResourceService := manager2.NewPlatResourceService(platResourceUseCase)
-	managerServiceGroup := server.NewManagerServiceGroup(auth, authService, sessionService, platUserService, platRoleService, platResourceService)
-	tenantAuthService := tenant.NewAuthService(authUseCase)
-	tenantServiceGroup := server.NewTenantServiceGroup(tenantAuthService)
+	tenantAPIClient, err := grpc.NewTenantAPIClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	tenantRepo := data.NewManagerTenantRepo(tenantAPIClient)
+	tenantUseCase := manager.NewTenantUseCase(tenantRepo)
+	tenantService := manager2.NewTenantService(tenantUseCase)
+	tenantResourceAPIClient, err := grpc.NewTenantResourceAPIClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	tenantResourceRepo := data.NewManagerTenantResourceRepo(tenantResourceAPIClient)
+	tenantResourceUseCase := manager.NewTenantResourceUseCase(tenantResourceRepo)
+	tenantResourceService := manager2.NewTenantResourceService(tenantResourceUseCase)
+	managerServiceGroup := server.NewManagerServiceGroup(auth, authService, sessionService, platUserService, platRoleService, platResourceService, tenantService, tenantResourceService)
+	tenantTenantRepo := data.NewTenantRepo(tenantAPIClient)
+	tenantAuthUseCase := tenant.NewAuthUseCase(auth, tenantTenantRepo)
+	tenantAuthService := tenant2.NewAuthService(tenantAuthUseCase)
+	tenantTenantResourceRepo := data.NewTenantResourceRepo(tenantResourceAPIClient)
+	tenantSessionUseCase := tenant.NewSessionUseCase(tenantTenantResourceRepo)
+	tenantSessionService := tenant2.NewSessionService(tenantSessionUseCase)
+	tenantServiceGroup := server.NewTenantServiceGroup(auth, tenantAuthService, tenantSessionService)
 	httpServer := server.NewHTTPServer(confServer, managerServiceGroup, tenantServiceGroup)
 	app := newApp(env, httpServer)
 	return app, nil

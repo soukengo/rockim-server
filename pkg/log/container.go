@@ -4,11 +4,11 @@ import "sync"
 
 var (
 	std      = newHelper(newAdapter(LevelInfo, nil))
-	stdProxy = proxy(proxy(std))
+	stdProxy = wrap(wrap(std))
 )
 var global = &loggerContainer{
 	root:      std,
-	rootProxy: proxy(std),
+	rootProxy: wrap(std),
 	loggers:   map[string]Helper{},
 	empty:     &emptyHelper{}}
 
@@ -24,12 +24,12 @@ func (c *loggerContainer) setLogger(root Helper) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 	c.root = root
-	c.rootProxy = proxy(root)
+	c.rootProxy = wrap(root)
 }
 func (c *loggerContainer) register(name string, logger Helper) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
-	c.loggers[name] = proxy(logger)
+	c.loggers[name] = wrap(logger)
 }
 
 func (c *loggerContainer) use(name string) Helper {

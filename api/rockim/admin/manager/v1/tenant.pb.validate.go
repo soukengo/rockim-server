@@ -57,9 +57,9 @@ func (m *TenantCreateRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetAccount()) < 1 {
+	if utf8.RuneCountInString(m.GetEmail()) < 1 {
 		err := TenantCreateRequestValidationError{
-			field:  "Account",
+			field:  "Email",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {

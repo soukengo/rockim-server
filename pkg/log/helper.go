@@ -67,48 +67,48 @@ func (h helper) WithContext(ctx context.Context) Helper {
 	}
 }
 
-func proxy(hpl Helper) *proxyHelper {
-	return &proxyHelper{hpl: hpl}
+func wrap(hpl Helper) *logWrapper {
+	return &logWrapper{hpl: hpl}
 }
 
-type proxyHelper struct {
+type logWrapper struct {
 	hpl Helper
 }
 
-func (p proxyHelper) Debug(args ...interface{}) {
+func (p *logWrapper) Debug(args ...interface{}) {
 	p.hpl.Debug(args...)
 }
 
-func (p proxyHelper) Debugf(format string, args ...interface{}) {
+func (p *logWrapper) Debugf(format string, args ...interface{}) {
 	p.hpl.Debugf(format, args...)
 }
 
-func (p proxyHelper) Info(args ...interface{}) {
+func (p *logWrapper) Info(args ...interface{}) {
 	p.hpl.Info(args...)
 }
 
-func (p proxyHelper) Infof(format string, args ...interface{}) {
+func (p *logWrapper) Infof(format string, args ...interface{}) {
 	p.hpl.Infof(format, args...)
 }
 
-func (p proxyHelper) Warn(args ...interface{}) {
+func (p *logWrapper) Warn(args ...interface{}) {
 	p.hpl.Warn(args...)
 }
 
-func (p proxyHelper) Warnf(format string, args ...interface{}) {
+func (p *logWrapper) Warnf(format string, args ...interface{}) {
 	p.hpl.Warnf(format, args...)
 }
 
-func (p proxyHelper) Error(args ...interface{}) {
+func (p logWrapper) Error(args ...interface{}) {
 	p.hpl.Error(args...)
 }
 
-func (p proxyHelper) Errorf(format string, args ...interface{}) {
+func (p *logWrapper) Errorf(format string, args ...interface{}) {
 	p.hpl.Errorf(format, args...)
 }
 
-func (p proxyHelper) WithContext(ctx context.Context) Helper {
-	return proxy(proxy(p.hpl.WithContext(ctx)))
+func (p *logWrapper) WithContext(ctx context.Context) Helper {
+	return wrap(wrap(p.hpl.WithContext(ctx)))
 }
 
 type emptyHelper struct {

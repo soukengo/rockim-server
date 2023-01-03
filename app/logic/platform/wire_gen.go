@@ -35,7 +35,15 @@ func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, m
 	platResourceRepo := data.NewPlatResourceRepo(platResourceData)
 	platResourceUseCase := biz.NewPlatResourceUseCase(platResourceRepo)
 	platResourceService := service.NewPlatResourceService(platResourceUseCase)
-	grpcServer := server.NewGRPCServer(confServer, platUserService, platRoleService, platResourceService)
+	tenantData := database.NewTenantData(client)
+	tenantRepo := data.NewTenantRepo(tenantData)
+	tenantUseCase := biz.NewTenantUseCase(tenantRepo)
+	tenantService := service.NewTenantService(tenantUseCase)
+	tenantResourceData := database.NewTenantResourceData(client)
+	tenantResourceRepo := data.NewTenantResourceRepo(tenantResourceData)
+	tenantResourceUseCase := biz.NewTenantResourceUseCase(tenantResourceRepo)
+	tenantResourceService := service.NewTenantResourceService(tenantResourceUseCase)
+	grpcServer := server.NewGRPCServer(confServer, platUserService, platRoleService, platResourceService, tenantService, tenantResourceService)
 	registrar, err := discovery.NewRegistrar(config)
 	if err != nil {
 		return nil, err

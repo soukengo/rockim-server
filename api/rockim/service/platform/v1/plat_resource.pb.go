@@ -77,7 +77,7 @@ func (x *PlatResourceOptions) GetCategory() v1.PlatResourceCategory {
 	if x != nil {
 		return x.Category
 	}
-	return v1.PlatResourceCategory_RESOURCE_CATEGORY_INVALID
+	return v1.PlatResourceCategory_PLAT_RESOURCE_CATEGORY_INVALID
 }
 
 func (x *PlatResourceOptions) GetName() string {

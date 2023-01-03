@@ -9,7 +9,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, platUserSrv *service.PlatUserService, platRoleSrv *service.PlatRoleService, platResourceSrv *service.PlatResourceService) *grpc.Server {
+func NewGRPCServer(c *conf.Server, platUserSrv *service.PlatUserService, platRoleSrv *service.PlatRoleService, platResourceSrv *service.PlatResourceService, tenantSrv *service.TenantService, tenantResourceSrv *service.TenantResourceService) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -28,5 +28,7 @@ func NewGRPCServer(c *conf.Server, platUserSrv *service.PlatUserService, platRol
 	v1.RegisterPlatUserAPIServer(srv, platUserSrv)
 	v1.RegisterPlatRoleAPIServer(srv, platRoleSrv)
 	v1.RegisterPlatResourceAPIServer(srv, platResourceSrv)
+	v1.RegisterTenantAPIServer(srv, tenantSrv)
+	v1.RegisterTenantResourceAPIServer(srv, tenantResourceSrv)
 	return srv
 }

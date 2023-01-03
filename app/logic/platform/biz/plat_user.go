@@ -18,8 +18,8 @@ const (
 )
 
 var (
-	ErrPlatUserNotFound = errors.NotFound(v1.ErrorReason_PLAT_USER_NOT_FOUND.String(), "账号不存在")
-	ErrAccountDuplicate = errors.Conflict(v1.ErrorReason_ACCOUNT_DUPLICATE.String(), "不能重复创建")
+	ErrPlatUserNotFound         = errors.NotFound(v1.ErrorReason_PLAT_USER_NOT_FOUND.String(), "账号不存在")
+	ErrPlatUserAccountDuplicate = errors.Conflict(v1.ErrorReason_PLAT_USER_ACCOUNT_DUPLICATE.String(), "不能重复创建")
 )
 
 // PlatUserRepo is a PlatUser repo.
@@ -78,7 +78,7 @@ func (uc *PlatUserUseCase) Create(ctx context.Context, req *PlatUserCreateReques
 		return
 	}
 	if len(uid) > 0 {
-		return ErrAccountDuplicate
+		return ErrPlatUserAccountDuplicate
 	}
 	record := &types.PlatUser{Name: req.Options.Name, Account: req.Account, Password: req.Password}
 	plainPwd := req.Password
@@ -109,7 +109,7 @@ func (uc *PlatUserUseCase) Delete(ctx context.Context, req *PlatUserDeleteReques
 func (uc *PlatUserUseCase) Find(ctx context.Context, account string) (user *types.PlatUser, err error) {
 	uid, err := uc.repo.FindIdByAccount(ctx, account)
 	if err != nil {
-		log.Errorf("FindIdByAccount account: %v error: %v", account, err)
+		log.WithContext(ctx).Errorf("FindIdByAccount account: %v error: %v", account, err)
 		err = ErrPlatUserNotFound
 		return
 	}

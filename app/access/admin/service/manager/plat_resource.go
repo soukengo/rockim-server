@@ -3,6 +3,7 @@ package manager
 import (
 	"context"
 	"github.com/emirpasic/gods/lists/arraylist"
+	"golang.org/x/exp/slices"
 	adminV1 "rockim/api/rockim/admin/manager/v1"
 	adminTypes "rockim/api/rockim/admin/manager/v1/types"
 	"rockim/api/rockim/service/platform/v1"
@@ -110,6 +111,9 @@ func buildSubResourceTree(pTree *adminTypes.PlatResourceTree, resourceList *arra
 			buildSubResourceTree(tree, resourceList)
 			i--
 			pTree.Children = append(pTree.Children, tree)
+			slices.SortStableFunc[*adminTypes.PlatResourceTree](pTree.Children, func(o1, o2 *adminTypes.PlatResourceTree) bool {
+				return o1.Resource.Order < o2.Resource.Order
+			})
 		}
 	}
 }

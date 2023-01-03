@@ -31,12 +31,12 @@ type TenantAPIHTTPServer interface {
 
 func RegisterTenantAPIHTTPServer(s *http.Server, srv TenantAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/manager/v1/tenant/create", _TenantAPI_Create0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/tenant/update", _TenantAPI_Update0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/tenant/paging", _TenantAPI_Paging0_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/tenant/tenant/create", _TenantAPI_Create3_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/tenant/tenant/update", _TenantAPI_Update3_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/tenant/tenant/paging", _TenantAPI_Paging2_HTTP_Handler(srv))
 }
 
-func _TenantAPI_Create0_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Context) error {
+func _TenantAPI_Create3_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in TenantCreateRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -55,7 +55,7 @@ func _TenantAPI_Create0_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Cont
 	}
 }
 
-func _TenantAPI_Update0_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Context) error {
+func _TenantAPI_Update3_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in TenantUpdateRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -74,7 +74,7 @@ func _TenantAPI_Update0_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Cont
 	}
 }
 
-func _TenantAPI_Paging0_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Context) error {
+func _TenantAPI_Paging2_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in TenantPagingRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -109,7 +109,7 @@ func NewTenantAPIHTTPClient(client *http.Client) TenantAPIHTTPClient {
 
 func (c *TenantAPIHTTPClientImpl) Create(ctx context.Context, in *TenantCreateRequest, opts ...http.CallOption) (*TenantCreateResponse, error) {
 	var out TenantCreateResponse
-	pattern := "/api/manager/v1/tenant/create"
+	pattern := "/api/manager/v1/tenant/tenant/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantAPICreate))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -122,7 +122,7 @@ func (c *TenantAPIHTTPClientImpl) Create(ctx context.Context, in *TenantCreateRe
 
 func (c *TenantAPIHTTPClientImpl) Paging(ctx context.Context, in *TenantPagingRequest, opts ...http.CallOption) (*TenantPagingResponse, error) {
 	var out TenantPagingResponse
-	pattern := "/api/manager/v1/tenant/paging"
+	pattern := "/api/manager/v1/tenant/tenant/paging"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantAPIPaging))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -135,7 +135,7 @@ func (c *TenantAPIHTTPClientImpl) Paging(ctx context.Context, in *TenantPagingRe
 
 func (c *TenantAPIHTTPClientImpl) Update(ctx context.Context, in *TenantUpdateRequest, opts ...http.CallOption) (*TenantUpdateResponse, error) {
 	var out TenantUpdateResponse
-	pattern := "/api/manager/v1/tenant/update"
+	pattern := "/api/manager/v1/tenant/tenant/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantAPIUpdate))
 	opts = append(opts, http.PathTemplate(pattern))

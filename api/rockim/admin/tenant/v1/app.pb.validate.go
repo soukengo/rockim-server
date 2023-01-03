@@ -57,9 +57,27 @@ func (m *AppCreateRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for TenantId
+	if utf8.RuneCountInString(m.GetTenantId()) < 1 {
+		err := AppCreateRequestValidationError{
+			field:  "TenantId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
-	// no validation rules for Name
+	if utf8.RuneCountInString(m.GetName()) < 1 {
+		err := AppCreateRequestValidationError{
+			field:  "Name",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if len(errors) > 0 {
 		return AppCreateRequestMultiError(errors)
@@ -265,7 +283,16 @@ func (m *AppUpdateRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
+	if utf8.RuneCountInString(m.GetId()) < 1 {
+		err := AppUpdateRequestValidationError{
+			field:  "Id",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	// no validation rules for Name
 

@@ -6,4 +6,4 @@ import (
 )
 
 // ProviderSet is db providers.
-var ProviderSet = wire.NewSet(database.ProviderSet, NewPlatUserRepo, NewPlatRoleRepo, NewPlatResourceRepo)
+var ProviderSet = wire.NewSet(database.ProviderSet, NewPlatUserRepo, NewPlatRoleRepo, NewPlatResourceRepo, NewTenantRepo, NewTenantResourceRepo)

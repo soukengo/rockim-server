@@ -9,7 +9,7 @@ import (
 )
 
 // ProviderSet is grpc providers.
-var ProviderSet = wire.NewSet(discovery.NewDiscovery, NewPlatUserClient, NewPlatRoleClient, NewPlatResourceClient)
+var ProviderSet = wire.NewSet(discovery.NewDiscovery, NewPlatUserClient, NewPlatRoleClient, NewPlatResourceClient, NewTenantAPIClient, NewTenantResourceAPIClient)
 
 func NewPlatUserClient(r registry.Discovery) (v1.PlatUserAPIClient, error) {
 	conn, err := service.NewGrpcClient(service.AppPlatform, r)
@@ -31,4 +31,18 @@ func NewPlatResourceClient(r registry.Discovery) (v1.PlatResourceAPIClient, erro
 		return nil, err
 	}
 	return v1.NewPlatResourceAPIClient(conn), nil
+}
+func NewTenantAPIClient(r registry.Discovery) (v1.TenantAPIClient, error) {
+	conn, err := service.NewGrpcClient(service.AppPlatform, r)
+	if err != nil {
+		return nil, err
+	}
+	return v1.NewTenantAPIClient(conn), nil
+}
+func NewTenantResourceAPIClient(r registry.Discovery) (v1.TenantResourceAPIClient, error) {
+	conn, err := service.NewGrpcClient(service.AppPlatform, r)
+	if err != nil {
+		return nil, err
+	}
+	return v1.NewTenantResourceAPIClient(conn), nil
 }

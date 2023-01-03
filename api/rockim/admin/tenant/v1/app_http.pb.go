@@ -19,10 +19,10 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationAppAPICreate = "/rockim.service.platform.v1.AppAPI/Create"
-const OperationAppAPIFind = "/rockim.service.platform.v1.AppAPI/Find"
-const OperationAppAPIPaging = "/rockim.service.platform.v1.AppAPI/Paging"
-const OperationAppAPIUpdate = "/rockim.service.platform.v1.AppAPI/Update"
+const OperationAppAPICreate = "/rockim.admin.tenant.v1.AppAPI/Create"
+const OperationAppAPIFind = "/rockim.admin.tenant.v1.AppAPI/Find"
+const OperationAppAPIPaging = "/rockim.admin.tenant.v1.AppAPI/Paging"
+const OperationAppAPIUpdate = "/rockim.admin.tenant.v1.AppAPI/Update"
 
 type AppAPIHTTPServer interface {
 	Create(context.Context, *AppCreateRequest) (*AppCreateResponse, error)

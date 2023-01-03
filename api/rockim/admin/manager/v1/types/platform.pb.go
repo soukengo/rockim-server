@@ -170,13 +170,13 @@ type PlatResource struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 菜单ID
+	// 资源ID
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// 创建时间
 	CreateTime int64 `protobuf:"varint,2,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 	// 分类
 	Category v1.PlatResourceCategory `protobuf:"varint,4,opt,name=category,proto3,enum=rockim.shared.enums.v1.PlatResourceCategory" json:"category,omitempty"`
-	// 菜单名称
+	// 资源名称
 	Name string `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
 	// 上级ID
 	ParentId string `protobuf:"bytes,6,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
@@ -238,7 +238,7 @@ func (x *PlatResource) GetCategory() v1.PlatResourceCategory {
 	if x != nil {
 		return x.Category
 	}
-	return v1.PlatResourceCategory_RESOURCE_CATEGORY_INVALID
+	return v1.PlatResourceCategory_PLAT_RESOURCE_CATEGORY_INVALID
 }
 
 func (x *PlatResource) GetName() string {
