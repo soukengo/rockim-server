@@ -5,6 +5,7 @@ import (
 	v1 "rockim/api/rockim/service/platform/v1"
 	"rockim/api/rockim/service/platform/v1/types"
 	"rockim/app/access/admin/module/tenant/biz"
+	"rockim/app/access/admin/module/tenant/biz/options"
 )
 
 type productRepo struct {
@@ -15,7 +16,7 @@ func NewProductRepo(ac v1.ProductAPIClient) biz.ProductRepo {
 	return &productRepo{ac: ac}
 }
 
-func (r *productRepo) Create(ctx context.Context, req *biz.ProductCreateRequest) (err error) {
+func (r *productRepo) Create(ctx context.Context, req *options.ProductCreateOptions) (err error) {
 	_, err = r.ac.Create(ctx, &v1.ProductCreateRequest{
 		TenantId: req.TenantId,
 		Name:     req.Name,
@@ -23,7 +24,7 @@ func (r *productRepo) Create(ctx context.Context, req *biz.ProductCreateRequest)
 	return
 }
 
-func (r *productRepo) Update(ctx context.Context, req *biz.ProductUpdateRequest) (err error) {
+func (r *productRepo) Update(ctx context.Context, req *options.ProductUpdateOptions) (err error) {
 	_, err = r.ac.Update(ctx, &v1.ProductUpdateRequest{
 		Id:   req.Id,
 		Name: req.Name,

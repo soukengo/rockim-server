@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"rockim/api/rockim/service/platform/v1/types"
@@ -34,12 +33,8 @@ func (d *ProductData) GenID(ctx context.Context) (string, error) {
 }
 
 func (d *ProductData) FindByID(ctx context.Context, id string) (t *types.Product, err error) {
-	objId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
 	var record entity.Product
-	err = d.mgo.FindOne(ctx, entity.TableProduct, bson.M{entity.MongoFieldId: objId}, &record, options.FindOne())
+	err = d.mgo.FindOne(ctx, entity.TableProduct, bson.M{entity.MongoFieldId: id}, &record, options.FindOne())
 	if err != nil {
 		return
 	}

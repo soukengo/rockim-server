@@ -6,7 +6,9 @@ import (
 	"rockim/api/rockim/admin/tenant/v1/types"
 	"rockim/api/rockim/shared"
 	"rockim/app/access/admin/module/tenant/biz"
+	"rockim/app/access/admin/module/tenant/biz/options"
 	"rockim/app/access/admin/module/tenant/service/converter"
+	"rockim/pkg/util/copier"
 )
 
 type ProductService struct {
@@ -23,7 +25,11 @@ func (s *ProductService) Create(ctx context.Context, in *v1.ProductCreateRequest
 	if err != nil {
 		return
 	}
-	req := &biz.ProductCreateRequest{Name: in.Name}
+	req := &options.ProductCreateOptions{}
+	err = copier.Copy(req, in)
+	if err != nil {
+		return
+	}
 	req.TenantId = session.TenantId
 
 	err = s.uc.Create(ctx, req)
@@ -36,7 +42,11 @@ func (s *ProductService) Create(ctx context.Context, in *v1.ProductCreateRequest
 }
 
 func (s *ProductService) Update(ctx context.Context, in *v1.ProductUpdateRequest) (out *v1.ProductUpdateResponse, err error) {
-	req := &biz.ProductUpdateRequest{Name: in.Name}
+	req := &options.ProductUpdateOptions{}
+	err = copier.Copy(req, in)
+	if err != nil {
+		return
+	}
 	err = s.uc.Update(ctx, req)
 	if err != nil {
 		return
@@ -50,7 +60,7 @@ func (s *ProductService) Paging(ctx context.Context, in *v1.ProductPagingRequest
 	if err != nil {
 		return
 	}
-	req := &biz.ProductPagingRequest{}
+	req := &options.ProductPagingOptions{}
 	req.TenantId = session.TenantId
 
 	ret, err := s.uc.ListByTenant(ctx, req)
