@@ -10,10 +10,10 @@ import (
 )
 
 type sysRoleRepo struct {
-	db database.SysRoleData
+	db *database.SysRoleData
 }
 
-func NewSysRoleRepo(db database.SysRoleData) biz.SysRoleRepo {
+func NewSysRoleRepo(db *database.SysRoleData) biz.SysRoleRepo {
 	return &sysRoleRepo{db: db}
 }
 

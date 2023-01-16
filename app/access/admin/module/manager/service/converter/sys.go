@@ -50,6 +50,41 @@ func ToManagerTenantResource(source *types.SysTenantResource) *apiTypes.SysTenan
 	}
 }
 
+func BuildResourceTree(resourceList []*apiTypes.SysResource) []*apiTypes.SysResourceTree {
+	if resourceList == nil || len(resourceList) == 0 {
+		return []*apiTypes.SysResourceTree{}
+	}
+	newList := arraylist.New()
+	for _, v := range resourceList {
+		newList.Add(v)
+	}
+	root := &apiTypes.SysResourceTree{}
+	root.Resource = &apiTypes.SysResource{Id: "0"}
+	root.Children = []*apiTypes.SysResourceTree{}
+	buildSubResourceTree(root, newList)
+	return root.Children
+}
+
+func buildSubResourceTree(pTree *apiTypes.SysResourceTree, resourceList *arraylist.List) {
+	for i := 0; i < resourceList.Size(); i++ {
+		item, _ := resourceList.Get(i)
+		resource := item.(*apiTypes.SysResource)
+		tree := &apiTypes.SysResourceTree{
+			Resource: resource,
+		}
+		tree.Children = []*apiTypes.SysResourceTree{}
+		if pTree.Resource.Id == tree.Resource.ParentId {
+			resourceList.Remove(i)
+			buildSubResourceTree(tree, resourceList)
+			i--
+			pTree.Children = append(pTree.Children, tree)
+			slices.SortStableFunc[*apiTypes.SysResourceTree](pTree.Children, func(o1, o2 *apiTypes.SysResourceTree) bool {
+				return o1.Resource.Order < o2.Resource.Order
+			})
+		}
+	}
+}
+
 func BuildTenantResourceTree(resourceList []*apiTypes.SysTenantResource) []*apiTypes.SysTenantResourceTree {
 	if resourceList == nil || len(resourceList) == 0 {
 		return []*apiTypes.SysTenantResourceTree{}

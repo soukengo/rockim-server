@@ -8,7 +8,7 @@ import (
 // ProviderSet is data providers.
 var ProviderSet = wire.NewSet(
 	database.ProviderSet,
+	NewSysTenantResourceRepo,
 	NewTenantRepo,
-	NewTenantResourceRepo,
 	NewProductRepo,
 )

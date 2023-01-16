@@ -5,6 +5,7 @@ import (
 	v1 "rockim/api/rockim/admin/manager/v1"
 	apiTypes "rockim/api/rockim/admin/manager/v1/types"
 	"rockim/app/access/admin/module/manager/biz"
+	"rockim/app/access/admin/module/manager/service/converter"
 )
 
 type SessionService struct {
@@ -33,10 +34,10 @@ func (s *SessionService) ListResource(ctx context.Context, in *v1.SessionListRes
 	}
 	resources := make([]*apiTypes.SysResource, len(list))
 	for i, item := range list {
-		resources[i] = convertResource(item)
+		resources[i] = converter.ToManagerSysResource(item)
 	}
 	reply = &v1.SessionListResourceResponse{
-		List: buildResourceTree(resources),
+		List: converter.BuildResourceTree(resources),
 	}
 	return
 }

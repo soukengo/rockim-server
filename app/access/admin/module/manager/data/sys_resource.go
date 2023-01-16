@@ -8,10 +8,10 @@ import (
 )
 
 type platResourceRepo struct {
-	db database.SysResourceData
+	db *database.SysResourceData
 }
 
-func NewSysResourceRepo(db database.SysResourceData) biz.SysResourceRepo {
+func NewSysResourceRepo(db *database.SysResourceData) biz.SysResourceRepo {
 	return &platResourceRepo{db: db}
 }
 

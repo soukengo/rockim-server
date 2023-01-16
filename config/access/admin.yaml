@@ -18,5 +18,5 @@ database:
     address: mongodb://127.0.0.1:27017
     username: rockim
     password: rockim2022
-    database: rockim
+    database: rockim_admin
     authSource: admin

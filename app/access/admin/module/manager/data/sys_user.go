@@ -11,10 +11,10 @@ import (
 )
 
 type sysUserRepo struct {
-	db database.SysUserData
+	db *database.SysUserData
 }
 
-func NewSysUserRepo(db database.SysUserData) biz.SysUserRepo {
+func NewSysUserRepo(db *database.SysUserData) biz.SysUserRepo {
 	return &sysUserRepo{db: db}
 }
 
