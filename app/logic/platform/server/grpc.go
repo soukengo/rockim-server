@@ -3,13 +3,11 @@ package server
 import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	v1 "rockim/api/rockim/service/platform/v1"
 	"rockim/app/logic/platform/conf"
-	"rockim/app/logic/platform/service"
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, platUserSrv *service.PlatUserService, platRoleSrv *service.PlatRoleService, platResourceSrv *service.PlatResourceService, tenantSrv *service.TenantService, tenantResourceSrv *service.TenantResourceService) *grpc.Server {
+func NewGRPCServer(c *conf.Server, group *ServiceGroup) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -25,10 +23,6 @@ func NewGRPCServer(c *conf.Server, platUserSrv *service.PlatUserService, platRol
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterPlatUserAPIServer(srv, platUserSrv)
-	v1.RegisterPlatRoleAPIServer(srv, platRoleSrv)
-	v1.RegisterPlatResourceAPIServer(srv, platResourceSrv)
-	v1.RegisterTenantAPIServer(srv, tenantSrv)
-	v1.RegisterTenantResourceAPIServer(srv, tenantResourceSrv)
+	group.Register(srv)
 	return srv
 }

@@ -10,7 +10,7 @@ func UserProto(source *entity.ImUser) *types.User {
 	return &types.User{
 		Id:         source.Id.Hex(),
 		CreateTime: source.CreateTime,
-		AppId:      source.AppId,
+		AppId:      source.ProductId,
 		Bucket:     source.Bucket,
 		Account:    source.Account,
 		Name:       source.Name,
@@ -21,7 +21,7 @@ func UserProto(source *entity.ImUser) *types.User {
 func UserEntity(source *types.User) *entity.ImUser {
 	return &entity.ImUser{
 		CreateTime: source.CreateTime,
-		AppId:      source.AppId,
+		ProductId:  source.AppId,
 		Bucket:     source.Bucket,
 		Account:    source.Account,
 		Name:       source.Name,

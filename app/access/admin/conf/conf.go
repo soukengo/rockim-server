@@ -4,6 +4,7 @@ import (
 	"flag"
 	"rockim/api/rockim/service"
 	"rockim/pkg/component/config"
+	"rockim/pkg/component/database/mongo"
 	"rockim/pkg/component/discovery"
 	"rockim/pkg/log"
 	"time"
@@ -40,6 +41,7 @@ type Config struct {
 	Log       *log.Config
 	Server    *Server
 	Auth      *Auth
+	Database  *Database
 }
 
 type Env struct {
@@ -65,4 +67,8 @@ type Auth struct {
 type Jwt struct {
 	AppKey  string
 	Expires time.Duration
+}
+
+type Database struct {
+	Mongodb *mongo.Config
 }

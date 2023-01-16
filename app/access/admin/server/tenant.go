@@ -8,25 +8,27 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/http"
 	jwtV4 "github.com/golang-jwt/jwt/v4"
 	v1 "rockim/api/rockim/admin/tenant/v1"
-	bizTenant "rockim/app/access/admin/biz/tenant"
 	"rockim/app/access/admin/conf"
-	"rockim/app/access/admin/service/tenant"
+	"rockim/app/access/admin/module/tenant/biz"
+	"rockim/app/access/admin/module/tenant/service"
 )
 
 type TenantServiceGroup struct {
 	authCfg    *conf.Auth
-	authSrv    *tenant.AuthService
-	sessionSrv *tenant.SessionService
+	authSrv    *service.AuthService
+	sessionSrv *service.SessionService
+	productSrv *service.ProductService
 }
 
-func NewTenantServiceGroup(authCfg *conf.Auth, authSrv *tenant.AuthService, sessionSrv *tenant.SessionService) *TenantServiceGroup {
-	return &TenantServiceGroup{authCfg: authCfg, authSrv: authSrv, sessionSrv: sessionSrv}
+func NewTenantServiceGroup(authCfg *conf.Auth, authSrv *service.AuthService, sessionSrv *service.SessionService, productSrv *service.ProductService) *TenantServiceGroup {
+	return &TenantServiceGroup{authCfg: authCfg, authSrv: authSrv, sessionSrv: sessionSrv, productSrv: productSrv}
 }
 
 func (g *TenantServiceGroup) Register(srv *http.Server) {
 	srv.Use("/rockim.admin.tenant.v1.*", checkTenantAuth(g.authCfg))
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	v1.RegisterSessionAPIHTTPServer(srv, g.sessionSrv)
+	v1.RegisterProductAPIHTTPServer(srv, g.productSrv)
 }
 
 func checkTenantAuth(authCfg *conf.Auth) middleware.Middleware {
@@ -37,7 +39,7 @@ func checkTenantAuth(authCfg *conf.Auth) middleware.Middleware {
 	},
 		jwtAuth.WithSigningMethod(jwtV4.SigningMethodHS256),
 		jwtAuth.WithClaims(func() jwtV4.Claims {
-			return &bizTenant.Claims{}
+			return &biz.Claims{}
 		}),
 	)).Match(func(ctx context.Context, operation string) bool {
 		_, ok := whiteList[operation]

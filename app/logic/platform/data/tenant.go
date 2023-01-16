@@ -15,6 +15,10 @@ func NewTenantRepo(db *database.TenantData) biz.TenantRepo {
 	return &tenantRepo{db: db}
 }
 
+func (r *tenantRepo) GenID(ctx context.Context) (string, error) {
+	return r.db.GenID(ctx)
+}
+
 func (r *tenantRepo) Create(ctx context.Context, record *types.Tenant) error {
 	return r.db.Create(ctx, record)
 }

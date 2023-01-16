@@ -8,10 +8,6 @@ import (
 	"rockim/app/access/admin/conf"
 )
 
-type HttpServiceGroup interface {
-	Register(*http.Server)
-}
-
 // NewHTTPServer new a HTTP server.
 func NewHTTPServer(c *conf.Server, managerGroup *ManagerServiceGroup, tenantGroup *TenantServiceGroup) *http.Server {
 	var opts = []http.ServerOption{

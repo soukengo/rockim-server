@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"rockim/api/rockim/service/platform/v1/types"
@@ -11,6 +10,7 @@ import (
 	"rockim/app/logic/platform/data/database/convert"
 	"rockim/app/logic/platform/data/database/entity"
 	"rockim/pkg/component/database/mongo"
+	"strconv"
 )
 
 type TenantData struct {
@@ -25,13 +25,17 @@ func (d *TenantData) collection() *mgo.Collection {
 	return d.mgo.Collection(entity.TableTenant)
 }
 
-func (d *TenantData) FindByID(ctx context.Context, id string) (t *types.Tenant, err error) {
-	objId, err := primitive.ObjectIDFromHex(id)
+func (d *TenantData) GenID(ctx context.Context) (string, error) {
+	seq, err := genMongoSeq(ctx, d.mgo, entity.TableTenant, true, 1)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
+	return strconv.FormatInt(seq, 10), nil
+}
+
+func (d *TenantData) FindByID(ctx context.Context, id string) (t *types.Tenant, err error) {
 	var record entity.Tenant
-	err = d.mgo.FindOne(ctx, entity.TableTenant, bson.M{entity.MongoFieldId: objId}, &record, options.FindOne())
+	err = d.mgo.FindOne(ctx, entity.TableTenant, bson.M{entity.MongoFieldId: id}, &record, options.FindOne())
 	if err != nil {
 		return
 	}
@@ -45,21 +49,12 @@ func (d *TenantData) FindIdByEmail(ctx context.Context, email string) (id string
 	if err != nil {
 		return
 	}
-	return record.Id.Hex(), nil
+	return record.Id, nil
 }
 
 func (d *TenantData) ListByIds(ctx context.Context, ids []string) (results []*types.Tenant, err error) {
-	var objIdList []primitive.ObjectID
-	for _, id := range ids {
-		var objId primitive.ObjectID
-		objId, err = primitive.ObjectIDFromHex(id)
-		if err != nil {
-			return nil, err
-		}
-		objIdList = append(objIdList, objId)
-	}
 	var records []*entity.Tenant
-	err = d.mgo.FindList(ctx, entity.TableTenant, bson.M{entity.MongoFieldId: bson.M{"$in": objIdList}}, &records, options.Find())
+	err = d.mgo.FindList(ctx, entity.TableTenant, bson.M{entity.MongoFieldId: bson.M{"$in": ids}}, &records, options.Find())
 	if err != nil {
 		return
 	}
@@ -70,12 +65,7 @@ func (d *TenantData) ListByIds(ctx context.Context, ids []string) (results []*ty
 }
 
 func (d *TenantData) Create(ctx context.Context, t *types.Tenant) (err error) {
-	objId, err := primitive.ObjectIDFromHex(t.Id)
-	if err != nil {
-		return
-	}
 	record := convert.TenantEntity(t)
-	record.Id = objId
 	if err != nil {
 		return
 	}
@@ -84,21 +74,14 @@ func (d *TenantData) Create(ctx context.Context, t *types.Tenant) (err error) {
 }
 
 func (d *TenantData) Update(ctx context.Context, t *types.Tenant) (err error) {
-	objId, err := primitive.ObjectIDFromHex(t.Id)
-	if err != nil {
-		return
-	}
 	record := convert.TenantEntity(t)
-	_, err = d.collection().UpdateByID(ctx, objId, bson.M{"$set": record})
+	record.Id = ""
+	_, err = d.collection().UpdateByID(ctx, t.Id, bson.M{"$set": record})
 	return
 }
 
 func (d *TenantData) Delete(ctx context.Context, id string) (err error) {
-	objId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return
-	}
-	_, err = d.collection().DeleteOne(ctx, bson.M{entity.MongoFieldId: objId})
+	_, err = d.collection().DeleteOne(ctx, bson.M{entity.MongoFieldId: id})
 	return
 }
 

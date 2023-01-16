@@ -2,10 +2,9 @@ package biz
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	v1 "rockim/api/rockim/service/platform/v1"
 	"rockim/api/rockim/service/platform/v1/types"
-	sharedTypes "rockim/api/rockim/shared/types"
+	"rockim/api/rockim/shared"
 	"rockim/pkg/errors"
 	"rockim/pkg/log"
 	"rockim/pkg/util/encrypt"
@@ -18,6 +17,7 @@ var (
 )
 
 type TenantRepo interface {
+	GenID(ctx context.Context) (string, error)
 	Create(ctx context.Context, record *types.Tenant) error
 	Update(ctx context.Context, record *types.Tenant) error
 	Delete(ctx context.Context, id string) error
@@ -38,12 +38,12 @@ type TenantUpdateRequest struct {
 }
 
 type TenantPagingRequest struct {
-	Paginate *sharedTypes.Paginating
+	Paginate *shared.Paginating
 	Keyword  string
 }
 type TenantPagingResponse struct {
 	List     []*types.Tenant
-	Paginate *sharedTypes.Paginated
+	Paginate *shared.Paginated
 }
 
 // TenantUseCase is a tenant use case.
@@ -56,17 +56,21 @@ func NewTenantUseCase(repo TenantRepo) *TenantUseCase {
 }
 
 func (uc *TenantUseCase) Create(ctx context.Context, req *TenantCreateRequest) (err error) {
-	id, err := uc.repo.FindIdByEmail(ctx, req.Email)
+	oldId, err := uc.repo.FindIdByEmail(ctx, req.Email)
 	if err != nil && !errors.IsNotFound(err) {
 		return
 	}
-	if len(id) > 0 {
+	if len(oldId) > 0 {
 		return ErrTenantAccountDuplicate
+	}
+	newId, err := uc.repo.GenID(ctx)
+	if err != nil {
+		return
 	}
 	record := &types.Tenant{Name: req.Name, Email: req.Email, Password: req.Password}
 	plainPwd := req.Password
+	record.Id = newId
 	record.Password = encrypt.MD5(plainPwd)
-	record.Id = primitive.NewObjectID().Hex()
 	record.CreateTime = time.Now().UnixMilli()
 	return uc.repo.Create(ctx, record)
 }
@@ -80,9 +84,6 @@ func (uc *TenantUseCase) Update(ctx context.Context, req *TenantUpdateRequest) (
 	record.Name = req.Name
 	record.UpdateTime = time.Now().UnixMilli()
 	return uc.repo.Update(ctx, record)
-}
-func (uc *TenantUseCase) Delete(ctx context.Context, req *PlatUserDeleteRequest) (err error) {
-	return uc.repo.Delete(ctx, req.Id)
 }
 
 func (uc *TenantUseCase) Find(ctx context.Context, email string) (user *types.Tenant, err error) {

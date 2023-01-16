@@ -4,12 +4,11 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"rockim/api/rockim/shared/types"
+	"rockim/api/rockim/shared"
 	"rockim/pkg/errors"
 )
 
 var (
-	reason           = "DB_ERROR"
 	DocumentNotFound = errors.NotFound("DATA_NOT_FOUND", "data not found")
 )
 
@@ -30,7 +29,7 @@ func (c *Client) FindList(ctx context.Context, collection string, filter any, re
 	return cursor.All(ctx, result)
 }
 
-func (c *Client) Paginate(ctx context.Context, collection string, query interface{}, paginate *types.Paginating, opts ...*options.FindOptions) (cursor *mongo.Cursor, p *types.Paginated, err error) {
+func (c *Client) Paginate(ctx context.Context, collection string, query interface{}, paginate *shared.Paginating, opts ...*options.FindOptions) (cursor *mongo.Cursor, p *shared.Paginated, err error) {
 	offset := paginate.Offset()
 	limit := paginate.Limit()
 	opts = append(opts, &options.FindOptions{
@@ -42,7 +41,7 @@ func (c *Client) Paginate(ctx context.Context, collection string, query interfac
 	if err != nil {
 		return nil, nil, err
 	}
-	p = &types.Paginated{Total: total}
+	p = &shared.Paginated{Total: total}
 	cursor, err = co.Find(ctx, query, opts...)
 	return
 }

@@ -8,23 +8,23 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/http"
 	jwtV4 "github.com/golang-jwt/jwt/v4"
 	v1 "rockim/api/rockim/admin/manager/v1"
-	bizManager "rockim/app/access/admin/biz/manager"
 	"rockim/app/access/admin/conf"
-	"rockim/app/access/admin/service/manager"
+	"rockim/app/access/admin/module/manager/biz"
+	"rockim/app/access/admin/module/manager/service"
 )
 
 type ManagerServiceGroup struct {
 	authCfg           *conf.Auth
-	authSrv           *manager.AuthService
-	sessionSrv        *manager.SessionService
-	platUserSrv       *manager.PlatUserService
-	platRoleSrv       *manager.PlatRoleService
-	platResourceSrv   *manager.PlatResourceService
-	tenantSrv         *manager.TenantService
-	tenantResourceSrv *manager.TenantResourceService
+	authSrv           *service.AuthService
+	sessionSrv        *service.SessionService
+	platUserSrv       *service.SysUserService
+	platRoleSrv       *service.SysRoleService
+	platResourceSrv   *service.SysResourceService
+	tenantSrv         *service.TenantService
+	tenantResourceSrv *service.SysTenantResourceService
 }
 
-func NewManagerServiceGroup(authCfg *conf.Auth, authSrv *manager.AuthService, sessionSrv *manager.SessionService, platUserSrv *manager.PlatUserService, platRoleSrv *manager.PlatRoleService, platResourceSrv *manager.PlatResourceService, tenantSrv *manager.TenantService, tenantResourceSrv *manager.TenantResourceService) *ManagerServiceGroup {
+func NewManagerServiceGroup(authCfg *conf.Auth, authSrv *service.AuthService, sessionSrv *service.SessionService, platUserSrv *service.SysUserService, platRoleSrv *service.SysRoleService, platResourceSrv *service.SysResourceService, tenantSrv *service.TenantService, tenantResourceSrv *service.SysTenantResourceService) *ManagerServiceGroup {
 	return &ManagerServiceGroup{authCfg: authCfg, authSrv: authSrv, sessionSrv: sessionSrv, platUserSrv: platUserSrv, platRoleSrv: platRoleSrv, platResourceSrv: platResourceSrv, tenantSrv: tenantSrv, tenantResourceSrv: tenantResourceSrv}
 }
 
@@ -32,11 +32,11 @@ func (g *ManagerServiceGroup) Register(srv *http.Server) {
 	srv.Use("/rockim.admin.manager.v1.*", checkManagerAuth(g.authCfg))
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	v1.RegisterSessionAPIHTTPServer(srv, g.sessionSrv)
-	v1.RegisterPlatUserAPIHTTPServer(srv, g.platUserSrv)
-	v1.RegisterPlatRoleAPIHTTPServer(srv, g.platRoleSrv)
-	v1.RegisterPlatResourceAPIHTTPServer(srv, g.platResourceSrv)
+	v1.RegisterSysUserAPIHTTPServer(srv, g.platUserSrv)
+	v1.RegisterSysRoleAPIHTTPServer(srv, g.platRoleSrv)
+	v1.RegisterSysResourceAPIHTTPServer(srv, g.platResourceSrv)
 	v1.RegisterTenantAPIHTTPServer(srv, g.tenantSrv)
-	v1.RegisterTenantResourceAPIHTTPServer(srv, g.tenantResourceSrv)
+	v1.RegisterSysTenantResourceAPIHTTPServer(srv, g.tenantResourceSrv)
 }
 
 func checkManagerAuth(authCfg *conf.Auth) middleware.Middleware {
@@ -47,7 +47,7 @@ func checkManagerAuth(authCfg *conf.Auth) middleware.Middleware {
 	},
 		jwtAuth.WithSigningMethod(jwtV4.SigningMethodHS256),
 		jwtAuth.WithClaims(func() jwtV4.Claims {
-			return &bizManager.Claims{}
+			return &biz.Claims{}
 		}),
 	)).Match(func(ctx context.Context, operation string) bool {
 		_, ok := whiteList[operation]

@@ -31,12 +31,12 @@ type TenantAPIHTTPServer interface {
 
 func RegisterTenantAPIHTTPServer(s *http.Server, srv TenantAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/manager/v1/tenant/tenant/create", _TenantAPI_Create3_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/tenant/tenant/update", _TenantAPI_Update3_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/tenant/tenant/create", _TenantAPI_Create4_HTTP_Handler(srv))
+	r.POST("/api/manager/v1/tenant/tenant/update", _TenantAPI_Update4_HTTP_Handler(srv))
 	r.POST("/api/manager/v1/tenant/tenant/paging", _TenantAPI_Paging2_HTTP_Handler(srv))
 }
 
-func _TenantAPI_Create3_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Context) error {
+func _TenantAPI_Create4_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in TenantCreateRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -55,7 +55,7 @@ func _TenantAPI_Create3_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Cont
 	}
 }
 
-func _TenantAPI_Update3_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Context) error {
+func _TenantAPI_Update4_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in TenantUpdateRequest
 		if err := ctx.Bind(&in); err != nil {

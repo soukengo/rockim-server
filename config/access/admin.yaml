@@ -13,3 +13,10 @@ auth:
   jwt:
     apiKey: "rockim2022"
     expires: "24h"
+database:
+  mongodb:
+    address: mongodb://127.0.0.1:27017
+    username: rockim
+    password: rockim2022
+    database: rockim
+    authSource: admin
