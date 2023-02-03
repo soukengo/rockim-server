@@ -1,5 +1,5 @@
 # PROTOC变量
-PROTOC_VAR = -I. -I../rockim-apis  -I${GOPATH}/src -Ithird_party
+PROTOC_VAR = -I. -I../rockim-apis  -I${GOPATH}/src -I../rockim-apis/third_party
 
 protoc-shared:
 	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis ../rockim-apis/rockim/shared/enums/**.proto
