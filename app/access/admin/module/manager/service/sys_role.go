@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	adminV1 "rockim/api/rockim/admin/manager/v1"
-	apiTypes "rockim/api/rockim/admin/manager/v1/types"
-	"rockim/app/access/admin/module/manager/biz"
-	"rockim/app/access/admin/module/manager/biz/options"
-	"rockim/app/access/admin/module/manager/service/converter"
-	"rockim/pkg/util/copier"
+	adminV1 "rockimserver/apis/rockim/api/admin/manager/v1"
+	apiTypes "rockimserver/apis/rockim/api/admin/manager/v1/types"
+	"rockimserver/app/access/admin/module/manager/biz"
+	"rockimserver/app/access/admin/module/manager/biz/options"
+	"rockimserver/app/access/admin/module/manager/service/converter"
+	"rockimserver/pkg/util/copier"
 )
 
 type SysRoleService struct {

@@ -2,11 +2,11 @@ package conf
 
 import (
 	"flag"
-	"rockim/api/rockim/service"
-	"rockim/pkg/component/config"
-	"rockim/pkg/component/database/mongo"
-	"rockim/pkg/component/discovery"
-	"rockim/pkg/log"
+	"rockimserver/apis/rockim/service"
+	"rockimserver/pkg/component/config"
+	"rockimserver/pkg/component/database/mongo"
+	"rockimserver/pkg/component/discovery"
+	"rockimserver/pkg/log"
 	"time"
 )
 

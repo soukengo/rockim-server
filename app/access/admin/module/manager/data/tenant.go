@@ -2,8 +2,8 @@ package data
 
 import (
 	"context"
-	v1 "rockim/api/rockim/service/platform/v1"
-	"rockim/app/access/admin/module/manager/biz"
+	v1 "rockimserver/apis/rockim/service/platform/v1"
+	"rockimserver/app/access/admin/module/manager/biz"
 )
 
 type tenantRepo struct {

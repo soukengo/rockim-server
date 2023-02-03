@@ -1,7 +1,7 @@
 package types
 
 import (
-	"rockim/api/rockim/shared/enums"
+	"rockimserver/apis/rockim/shared/enums"
 )
 
 // SysTenantResource 商户资源

@@ -1,8 +1,8 @@
 package convert
 
 import (
-	"rockim/api/rockim/service/platform/v1/types"
-	"rockim/app/logic/platform/data/database/entity"
+	"rockimserver/apis/rockim/service/platform/v1/types"
+	"rockimserver/app/logic/platform/data/database/entity"
 )
 
 func ProductProto(source *entity.Product) *types.Product {

@@ -2,10 +2,10 @@ package data
 
 import (
 	"context"
-	v1 "rockim/api/rockim/service/platform/v1"
-	"rockim/api/rockim/service/platform/v1/types"
-	"rockim/app/access/admin/module/tenant/biz"
-	"rockim/app/access/admin/module/tenant/biz/options"
+	v1 "rockimserver/apis/rockim/service/platform/v1"
+	"rockimserver/apis/rockim/service/platform/v1/types"
+	"rockimserver/app/access/admin/module/tenant/biz"
+	"rockimserver/app/access/admin/module/tenant/biz/options"
 )
 
 type productRepo struct {

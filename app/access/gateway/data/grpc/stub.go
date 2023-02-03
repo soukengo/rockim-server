@@ -3,9 +3,9 @@ package grpc
 import (
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/google/wire"
-	"rockim/api/rockim/service"
-	"rockim/api/rockim/service/user/v1"
-	"rockim/pkg/component/discovery"
+	"rockimserver/apis/rockim/service"
+	"rockimserver/apis/rockim/service/user/v1"
+	"rockimserver/pkg/component/discovery"
 )
 
 // ProviderSet is grpc providers.

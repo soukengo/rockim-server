@@ -2,9 +2,9 @@ package data
 
 import (
 	"context"
-	"rockim/api/rockim/service/platform/v1/types"
-	"rockim/app/logic/platform/biz"
-	"rockim/app/logic/platform/data/database"
+	"rockimserver/apis/rockim/service/platform/v1/types"
+	"rockimserver/app/logic/platform/biz"
+	"rockimserver/app/logic/platform/data/database"
 )
 
 type productRepo struct {

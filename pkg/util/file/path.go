@@ -2,7 +2,7 @@ package file
 
 import (
 	"path/filepath"
-	"rockim/pkg/util/env"
+	"rockimserver/pkg/util/env"
 )
 
 func Abs(fileName string) (dist string, err error) {

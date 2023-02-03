@@ -2,12 +2,12 @@ package data
 
 import (
 	"context"
-	"rockim/api/rockim/shared"
-	"rockim/app/access/admin/module/manager/biz"
-	"rockim/app/access/admin/module/manager/biz/options"
-	"rockim/app/access/admin/module/manager/biz/types"
-	"rockim/app/access/admin/module/manager/data/database"
-	"rockim/pkg/errors"
+	"rockimserver/apis/rockim/shared"
+	"rockimserver/app/access/admin/module/manager/biz"
+	"rockimserver/app/access/admin/module/manager/biz/options"
+	"rockimserver/app/access/admin/module/manager/biz/types"
+	"rockimserver/app/access/admin/module/manager/data/database"
+	"rockimserver/pkg/errors"
 )
 
 type sysUserRepo struct {

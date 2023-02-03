@@ -5,7 +5,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/gorilla/handlers"
-	"rockim/app/access/admin/conf"
+	"rockimserver/app/access/admin/conf"
 )
 
 // NewHTTPServer new a HTTP server.

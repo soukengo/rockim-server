@@ -1,9 +1,9 @@
 package convert
 
 import (
-	"rockim/api/rockim/shared/enums"
-	"rockim/app/access/admin/module/manager/biz/types"
-	"rockim/app/access/admin/module/manager/data/database/entity"
+	"rockimserver/apis/rockim/shared/enums"
+	"rockimserver/app/access/admin/module/manager/biz/types"
+	"rockimserver/app/access/admin/module/manager/data/database/entity"
 )
 
 func UserProto(source *entity.SysUser) *types.SysUser {
@@ -68,8 +68,6 @@ func RoleEntity(source *types.SysRole) *entity.SysRole {
 		Name:       source.Name,
 	}
 }
-
-
 
 func SysTenantResourceProto(source *entity.SysTenantResource) *types.SysTenantResource {
 	return &types.SysTenantResource{

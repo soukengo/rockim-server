@@ -8,13 +8,13 @@ package platform
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
-	"rockim/app/logic/platform/biz"
-	"rockim/app/logic/platform/conf"
-	"rockim/app/logic/platform/data"
-	"rockim/app/logic/platform/server"
-	"rockim/app/logic/platform/service"
-	"rockim/pkg/component/database/mongo"
-	"rockim/pkg/component/discovery"
+	"rockimserver/app/logic/platform/biz"
+	"rockimserver/app/logic/platform/conf"
+	"rockimserver/app/logic/platform/data"
+	"rockimserver/app/logic/platform/server"
+	"rockimserver/app/logic/platform/service"
+	"rockimserver/pkg/component/database/mongo"
+	"rockimserver/pkg/component/discovery"
 )
 
 // wireApp init kratos application.

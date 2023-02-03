@@ -2,7 +2,7 @@ package data
 
 import (
 	"github.com/google/wire"
-	"rockim/app/logic/platform/data/database"
+	"rockimserver/app/logic/platform/data/database"
 )
 
 // ProviderSet is db providers.

@@ -2,12 +2,12 @@ package biz
 
 import (
 	"context"
-	v1 "rockim/api/rockim/service/platform/v1"
-	"rockim/api/rockim/service/platform/v1/types"
-	"rockim/api/rockim/shared"
-	"rockim/pkg/errors"
-	"rockim/pkg/log"
-	"rockim/pkg/util/encrypt"
+	v1 "rockimserver/apis/rockim/service/platform/v1"
+	"rockimserver/apis/rockim/service/platform/v1/types"
+	"rockimserver/apis/rockim/shared"
+	"rockimserver/pkg/errors"
+	"rockimserver/pkg/log"
+	"rockimserver/pkg/util/encrypt"
 	"time"
 )
 

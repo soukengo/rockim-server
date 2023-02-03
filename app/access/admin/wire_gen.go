@@ -8,19 +8,19 @@ package admin
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"rockim/app/access/admin/conf"
-	"rockim/app/access/admin/infra/database"
-	"rockim/app/access/admin/infra/grpc"
-	"rockim/app/access/admin/module/manager/biz"
-	"rockim/app/access/admin/module/manager/data"
-	database2 "rockim/app/access/admin/module/manager/data/database"
-	"rockim/app/access/admin/module/manager/service"
-	biz2 "rockim/app/access/admin/module/tenant/biz"
-	data2 "rockim/app/access/admin/module/tenant/data"
-	database3 "rockim/app/access/admin/module/tenant/data/database"
-	service2 "rockim/app/access/admin/module/tenant/service"
-	"rockim/app/access/admin/server"
-	"rockim/pkg/component/discovery"
+	"rockimserver/app/access/admin/conf"
+	"rockimserver/app/access/admin/infra/database"
+	"rockimserver/app/access/admin/infra/grpc"
+	"rockimserver/app/access/admin/module/manager/biz"
+	"rockimserver/app/access/admin/module/manager/data"
+	database2 "rockimserver/app/access/admin/module/manager/data/database"
+	"rockimserver/app/access/admin/module/manager/service"
+	biz2 "rockimserver/app/access/admin/module/tenant/biz"
+	data2 "rockimserver/app/access/admin/module/tenant/data"
+	database3 "rockimserver/app/access/admin/module/tenant/data/database"
+	service2 "rockimserver/app/access/admin/module/tenant/service"
+	"rockimserver/app/access/admin/server"
+	"rockimserver/pkg/component/discovery"
 )
 
 // Injectors from wire.go:

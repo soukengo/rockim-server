@@ -2,11 +2,11 @@ package biz
 
 import (
 	"context"
-	v1 "rockim/api/rockim/service/platform/v1"
-	"rockim/api/rockim/service/platform/v1/types"
-	"rockim/pkg/errors"
-	"rockim/pkg/log"
-	"rockim/pkg/util/strings"
+	v1 "rockimserver/apis/rockim/service/platform/v1"
+	"rockimserver/apis/rockim/service/platform/v1/types"
+	"rockimserver/pkg/errors"
+	"rockimserver/pkg/log"
+	"rockimserver/pkg/util/strings"
 	"time"
 )
 

@@ -3,10 +3,10 @@ package data
 import (
 	"context"
 	"github.com/google/wire"
-	"rockim/api/rockim/service/user/v1"
-	"rockim/api/rockim/service/user/v1/types"
-	"rockim/app/access/gateway/biz"
-	"rockim/app/access/gateway/data/grpc"
+	"rockimserver/apis/rockim/service/user/v1"
+	"rockimserver/apis/rockim/service/user/v1/types"
+	"rockimserver/app/access/gateway/biz"
+	"rockimserver/app/access/gateway/data/grpc"
 )
 
 // ProviderSet is data providers.
@@ -22,11 +22,11 @@ func NewUserRepo(uac v1.UserAPIClient) biz.UserRepo {
 
 func (r *userRepo) Register(ctx context.Context, user *types.User) (*types.User, error) {
 	ret, err := r.uac.Register(ctx, &v1.UserRegisterRequest{
-		AppId:   user.AppId,
-		Bucket:  user.Bucket,
-		Account: user.Account,
-		Name:    user.Name,
-		Fields:  user.Fields,
+		ProductId: user.ProductId,
+		Bucket:    user.Bucket,
+		Account:   user.Account,
+		Name:      user.Name,
+		Fields:    user.Fields,
 	})
 	if err != nil {
 		return nil, err

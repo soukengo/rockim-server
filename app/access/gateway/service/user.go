@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"rockim/api/rockim/client/v1"
-	clienttypes "rockim/api/rockim/client/v1/types"
-	"rockim/api/rockim/service/user/v1/types"
-	"rockim/app/access/gateway/biz"
+	"rockimserver/api/rockim/client/v1"
+	clienttypes "rockimserver/api/rockim/client/v1/types"
+	"rockimserver/apis/rockim/service/user/v1/types"
+	"rockimserver/app/access/gateway/biz"
 )
 
 type UserService struct {
@@ -18,11 +18,11 @@ func NewUserService(uc *biz.UserUseCase) *UserService {
 
 func (s *UserService) Register(ctx context.Context, req *v1.UserRegisterRequest) (*v1.UserRegisterResponse, error) {
 	user, err := s.uc.RegisterUser(ctx, &types.User{
-		AppId:   req.AppId,
-		Bucket:  req.Bucket,
-		Account: req.Account,
-		Name:    req.Name,
-		Fields:  req.Fields,
+		ProductId: req.ProductId,
+		Bucket:    req.Bucket,
+		Account:   req.Account,
+		Name:      req.Name,
+		Fields:    req.Fields,
 	})
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func (s *UserService) Register(ctx context.Context, req *v1.UserRegisterRequest)
 	return &v1.UserRegisterResponse{User: &clienttypes.User{
 		Id:         user.Id,
 		CreateTime: user.CreateTime,
-		AppId:      user.AppId,
+		ProductId:  user.ProductId,
 		Bucket:     user.Bucket,
 		Account:    user.Account,
 		Name:       user.Name,

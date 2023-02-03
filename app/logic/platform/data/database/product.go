@@ -5,10 +5,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"rockim/api/rockim/service/platform/v1/types"
-	"rockim/app/logic/platform/data/database/convert"
-	"rockim/app/logic/platform/data/database/entity"
-	"rockim/pkg/component/database/mongo"
+	"rockimserver/apis/rockim/service/platform/v1/types"
+	"rockimserver/app/logic/platform/data/database/convert"
+	"rockimserver/app/logic/platform/data/database/entity"
+	"rockimserver/pkg/component/database/mongo"
 	"strconv"
 )
 

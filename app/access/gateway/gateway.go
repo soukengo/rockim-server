@@ -4,8 +4,8 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"rockim"
-	"rockim/app/access/gateway/conf"
-	"rockim/pkg/log"
+	"rockimserver/app/access/gateway/conf"
+	"rockimserver/pkg/log"
 )
 
 // New new a new User Application

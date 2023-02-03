@@ -2,13 +2,13 @@ package service
 
 import (
 	"context"
-	v1 "rockim/api/rockim/admin/tenant/v1"
-	"rockim/api/rockim/admin/tenant/v1/types"
-	"rockim/api/rockim/shared"
-	"rockim/app/access/admin/module/tenant/biz"
-	"rockim/app/access/admin/module/tenant/biz/options"
-	"rockim/app/access/admin/module/tenant/service/converter"
-	"rockim/pkg/util/copier"
+	v1 "rockimserver/apis/rockim/api/admin/tenant/v1"
+	"rockimserver/apis/rockim/api/admin/tenant/v1/types"
+	"rockimserver/apis/rockim/shared"
+	"rockimserver/app/access/admin/module/tenant/biz"
+	"rockimserver/app/access/admin/module/tenant/biz/options"
+	"rockimserver/app/access/admin/module/tenant/service/converter"
+	"rockimserver/pkg/util/copier"
 )
 
 type ProductService struct {

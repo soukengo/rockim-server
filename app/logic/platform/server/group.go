@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	v1 "rockim/api/rockim/service/platform/v1"
-	"rockim/app/logic/platform/service"
+	v1 "rockimserver/apis/rockim/service/platform/v1"
+	"rockimserver/app/logic/platform/service"
 )
 
 type ServiceGroup struct {

@@ -3,7 +3,7 @@ package log
 import (
 	"context"
 	"path/filepath"
-	"rockim/pkg/util/file"
+	"rockimserver/pkg/util/file"
 	"strings"
 )
 

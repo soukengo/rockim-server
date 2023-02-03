@@ -3,8 +3,8 @@ package converter
 import (
 	"github.com/emirpasic/gods/lists/arraylist"
 	"golang.org/x/exp/slices"
-	apiTypes "rockim/api/rockim/admin/manager/v1/types"
-	"rockim/app/access/admin/module/manager/biz/types"
+	apiTypes "rockimserver/apis/rockim/api/admin/manager/v1/types"
+	"rockimserver/app/access/admin/module/manager/biz/types"
 )
 
 func ToManagerSysUser(source *types.SysUser) *apiTypes.SysUser {

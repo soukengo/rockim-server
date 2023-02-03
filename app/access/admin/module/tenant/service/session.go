@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	v1 "rockim/api/rockim/admin/tenant/v1"
-	"rockim/api/rockim/admin/tenant/v1/types"
-	"rockim/app/access/admin/module/tenant/biz"
-	"rockim/app/access/admin/module/tenant/service/converter"
+	v1 "rockimserver/apis/rockim/api/admin/tenant/v1"
+	"rockimserver/apis/rockim/api/admin/tenant/v1/types"
+	"rockimserver/app/access/admin/module/tenant/biz"
+	"rockimserver/app/access/admin/module/tenant/service/converter"
 )
 
 type SessionService struct {

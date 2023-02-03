@@ -3,6 +3,9 @@ package errors
 import (
 	"fmt"
 	"github.com/go-kratos/kratos/v2/errors"
+	httpstatus "github.com/go-kratos/kratos/v2/transport/http/status"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
+	"google.golang.org/grpc/status"
 )
 
 type Error struct {
@@ -45,4 +48,14 @@ func (e *Error) Is(err error) bool {
 		return false
 	}
 	return e.err.Is(err)
+}
+
+// GRPCStatus returns the Status represented by se.
+func (e *Error) GRPCStatus() *status.Status {
+	s, _ := status.New(httpstatus.ToGRPCCode(int(e.err.Code)), e.err.Message).
+		WithDetails(&errdetails.ErrorInfo{
+			Reason:   e.err.Reason,
+			Metadata: e.err.Metadata,
+		})
+	return s
 }

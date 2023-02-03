@@ -2,7 +2,7 @@ package biz
 
 import (
 	"context"
-	"rockim/app/access/admin/module/tenant/biz/types"
+	"rockimserver/app/access/admin/module/tenant/biz/types"
 )
 
 type SysTenantResourceRepo interface {

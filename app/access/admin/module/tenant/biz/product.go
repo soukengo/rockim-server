@@ -2,8 +2,8 @@ package biz
 
 import (
 	"context"
-	"rockim/api/rockim/service/platform/v1/types"
-	"rockim/app/access/admin/module/tenant/biz/options"
+	"rockimserver/apis/rockim/service/platform/v1/types"
+	"rockimserver/app/access/admin/module/tenant/biz/options"
 )
 
 type ProductRepo interface {

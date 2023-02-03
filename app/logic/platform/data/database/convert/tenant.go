@@ -1,9 +1,9 @@
 package convert
 
 import (
-	"rockim/api/rockim/service/platform/v1/types"
-	"rockim/api/rockim/shared/enums"
-	"rockim/app/logic/platform/data/database/entity"
+	"rockimserver/apis/rockim/service/platform/v1/types"
+	"rockimserver/apis/rockim/shared/enums"
+	"rockimserver/app/logic/platform/data/database/entity"
 )
 
 func TenantProto(source *entity.Tenant) *types.Tenant {

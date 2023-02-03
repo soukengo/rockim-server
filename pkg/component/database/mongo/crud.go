@@ -4,8 +4,8 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"rockim/api/rockim/shared"
-	"rockim/pkg/errors"
+	"rockimserver/apis/rockim/shared"
+	"rockimserver/pkg/errors"
 )
 
 var (

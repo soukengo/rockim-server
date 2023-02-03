@@ -8,12 +8,12 @@ package admin
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
-	"rockim/app/access/admin/conf"
-	"rockim/app/access/admin/infra"
-	"rockim/app/access/admin/module/manager"
-	"rockim/app/access/admin/module/tenant"
-	"rockim/app/access/admin/server"
-	"rockim/pkg/component/discovery"
+	"rockimserver/app/access/admin/conf"
+	"rockimserver/app/access/admin/infra"
+	"rockimserver/app/access/admin/module/manager"
+	"rockimserver/app/access/admin/module/tenant"
+	"rockimserver/app/access/admin/server"
+	"rockimserver/pkg/component/discovery"
 )
 
 // wireApp init kratos application.

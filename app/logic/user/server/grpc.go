@@ -3,9 +3,9 @@ package server
 import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	v1 "rockim/api/rockim/service/user/v1"
-	"rockim/app/logic/user/conf"
-	"rockim/app/logic/user/service"
+	v1 "rockimserver/apis/rockim/service/user/v1"
+	"rockimserver/app/logic/user/conf"
+	"rockimserver/app/logic/user/service"
 )
 
 // NewGRPCServer new a gRPC server.

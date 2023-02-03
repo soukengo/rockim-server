@@ -2,7 +2,7 @@ package biz
 
 import (
 	"context"
-	v1 "rockim/api/rockim/service/platform/v1"
+	v1 "rockimserver/apis/rockim/service/platform/v1"
 )
 
 type TenantRepo interface {

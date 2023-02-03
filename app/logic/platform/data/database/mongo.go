@@ -4,9 +4,9 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"rockim/app/logic/user/data/database/entity"
-	"rockim/pkg/component/database/mongo"
-	"rockim/pkg/errors"
+	"rockimserver/app/logic/user/data/database/entity"
+	"rockimserver/pkg/component/database/mongo"
+	"rockimserver/pkg/errors"
 )
 
 func genMongoSeq(ctx context.Context, client *mongo.Client, idType string, allowCreate bool, incr ...int64) (int64, error) {

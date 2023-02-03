@@ -1,22 +1,35 @@
 # PROTOC变量
-PROTOC_VAR = -I. -I../rockim-apis -I../rockim-apis/api  -I${GOPATH}/src -Ithird_party
+PROTOC_VAR = -I. -I../rockim-apis  -I${GOPATH}/src -Ithird_party
 
-protoc-shard:
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:. ../rockim-apis/api/rockim/shared/enums/**.proto
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:. ../rockim-apis/api/rockim/shared/reasons/**.proto
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:. ../rockim-apis/api/rockim/shared/**.proto
+protoc-shared:
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis ../rockim-apis/rockim/shared/enums/**.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis ../rockim-apis/rockim/shared/reasons/**.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis ../rockim-apis/rockim/shared/**.proto
+
+protoc-java:
+	protoc ${PROTOC_VAR} --java_out=./dist/java ../rockim-apis/rockim/shared/enums/**.proto
+	protoc ${PROTOC_VAR} --java_out=./dist/java ../rockim-apis/rockim/shared/reasons/**.proto
+	protoc ${PROTOC_VAR} --java_out=./dist/java ../rockim-apis/rockim/shared/**.proto
+protoc-cpp:
+	protoc ${PROTOC_VAR} --cpp_out=./dist/cpp ../rockim-apis/rockim/shared/enums/**.proto
+	protoc ${PROTOC_VAR} --cpp_out=./dist/cpp ../rockim-apis/rockim/shared/reasons/**.proto
+	protoc ${PROTOC_VAR} --cpp_out=./dist/cpp ../rockim-apis/rockim/shared/**.proto
 
 protoc-admin:
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:. --go-http_out=paths=source_relative:. --validate_out="paths=source_relative,lang=go:." ../rockim-apis/api/rockim/admin/manager/v1/*.proto
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:. --go-http_out=paths=source_relative:. --validate_out="paths=source_relative,lang=go:." ../rockim-apis/api/rockim/admin/manager/v1/types/*.proto
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:. --go-http_out=paths=source_relative:. --validate_out="paths=source_relative,lang=go:." ../rockim-apis/api/rockim/admin/tenant/v1/*.proto
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:. --go-http_out=paths=source_relative:. --validate_out="paths=source_relative,lang=go:." ../rockim-apis/api/rockim/admin/tenant/v1/types/*.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --go-http_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/admin/manager/v1/*.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/admin/manager/v1/types/*.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --go-http_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/admin/tenant/v1/*.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/admin/tenant/v1/types/*.proto
 
 protoc-platform:
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. --validate_out="paths=source_relative,lang=go:." ../rockim-apis/api/rockim/service/platform/v1/*.proto
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:.  ../rockim-apis/api/rockim/service/platform/v1/types/*.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --go-grpc_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/service/platform/v1/*.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis  ../rockim-apis/rockim/service/platform/v1/types/*.proto
 
 protoc-user:
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. --validate_out="paths=source_relative,lang=go:." ../rockim-apis/api/rockim/service/user/v1/*.proto
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:.  ../rockim-apis/api/rockim/service/user/v1/types/*.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --go-grpc_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/service/user/v1/*.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis  ../rockim-apis/rockim/service/user/v1/types/*.proto
+
+protoc-client:
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --go-http_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/client/v1/*.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/client/v1/types/*.proto
 

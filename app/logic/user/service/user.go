@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"rockim/api/rockim/service/user/v1"
-	"rockim/api/rockim/service/user/v1/types"
-	"rockim/app/logic/user/biz"
+	"rockimserver/apis/rockim/service/user/v1"
+	"rockimserver/apis/rockim/service/user/v1/types"
+	"rockimserver/app/logic/user/biz"
 )
 
 type UserService struct {
@@ -19,11 +19,11 @@ func NewUserService(uc *biz.UserUseCase) *UserService {
 
 func (s *UserService) Register(ctx context.Context, in *v1.UserRegisterRequest) (*v1.UserRegisterResponse, error) {
 	user, err := s.uc.Register(ctx, &types.User{
-		AppId:   in.AppId,
-		Bucket:  in.Bucket,
-		Account: in.Account,
-		Name:    in.Name,
-		Fields:  in.Fields,
+		ProductId: in.ProductId,
+		Bucket:    in.Bucket,
+		Account:   in.Account,
+		Name:      in.Name,
+		Fields:    in.Fields,
 	})
 	if err != nil {
 		return nil, err

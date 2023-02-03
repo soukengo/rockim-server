@@ -2,8 +2,8 @@ package database
 
 import (
 	"github.com/google/wire"
-	"rockim/app/access/admin/conf"
-	"rockim/pkg/component/database/mongo"
+	"rockimserver/app/access/admin/conf"
+	"rockimserver/pkg/component/database/mongo"
 )
 
 var ProviderSet = wire.NewSet(NewMongoClient)

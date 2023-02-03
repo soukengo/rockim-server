@@ -3,9 +3,9 @@ package biz
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"rockim/app/access/admin/module/manager/biz/options"
-	"rockim/app/access/admin/module/manager/biz/types"
-	"rockim/pkg/util/copier"
+	"rockimserver/app/access/admin/module/manager/biz/options"
+	"rockimserver/app/access/admin/module/manager/biz/types"
+	"rockimserver/pkg/util/copier"
 	"time"
 )
 

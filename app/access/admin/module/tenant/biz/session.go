@@ -4,7 +4,7 @@ import (
 	"context"
 	jwtAuth "github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/golang-jwt/jwt/v4"
-	"rockim/app/access/admin/module/tenant/biz/types"
+	"rockimserver/app/access/admin/module/tenant/biz/types"
 )
 
 type SessionUseCase struct {

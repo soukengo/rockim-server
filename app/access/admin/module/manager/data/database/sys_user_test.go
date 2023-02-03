@@ -3,9 +3,9 @@ package database
 import (
 	"context"
 	"github.com/stretchr/testify/suite"
-	"rockim/api/rockim/shared"
-	"rockim/app/access/admin/module/manager/biz/options"
-	"rockim/pkg/component/database/mongo"
+	"rockimserver/apis/rockim/shared"
+	"rockimserver/app/access/admin/module/manager/biz/options"
+	"rockimserver/pkg/component/database/mongo"
 	"testing"
 )
 

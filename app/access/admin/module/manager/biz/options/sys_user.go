@@ -1,7 +1,7 @@
 package options
 
 import (
-	"rockim/api/rockim/shared"
+	"rockimserver/apis/rockim/shared"
 )
 
 // SysUserOptions 用户选项

@@ -8,13 +8,13 @@ package gateway
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"rockim/app/access/gateway/biz"
-	"rockim/app/access/gateway/conf"
-	"rockim/app/access/gateway/data"
-	"rockim/app/access/gateway/data/grpc"
-	"rockim/app/access/gateway/server"
-	"rockim/app/access/gateway/service"
-	"rockim/pkg/component/discovery"
+	"rockimserver/app/access/gateway/biz"
+	"rockimserver/app/access/gateway/conf"
+	"rockimserver/app/access/gateway/data"
+	"rockimserver/app/access/gateway/data/grpc"
+	"rockimserver/app/access/gateway/server"
+	"rockimserver/app/access/gateway/service"
+	"rockimserver/pkg/component/discovery"
 )
 
 // Injectors from wire.go:

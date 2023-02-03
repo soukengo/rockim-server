@@ -6,10 +6,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"rockim/api/rockim/service/user/v1/types"
-	"rockim/app/logic/user/data/database/convert"
-	"rockim/app/logic/user/data/database/entity"
-	"rockim/pkg/component/database/mongo"
+	"rockimserver/apis/rockim/service/user/v1/types"
+	"rockimserver/app/logic/user/data/database/convert"
+	"rockimserver/app/logic/user/data/database/entity"
+	"rockimserver/pkg/component/database/mongo"
 )
 
 type UserData struct {
@@ -33,22 +33,22 @@ func (d *UserData) GenID(ctx context.Context) (string, error) {
 	return primitive.NewObjectID().Hex(), nil
 }
 
-func (d *UserData) FindByID(ctx context.Context, appId string, id string) (user *types.User, err error) {
+func (d *UserData) FindByID(ctx context.Context, productId string, id string) (user *types.User, err error) {
 	objId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
 	var record entity.ImUser
-	err = d.mgo.FindOne(ctx, entity.TableImUser, bson.M{"appId": appId, entity.MongoFieldId: objId}, &record, options.FindOne())
+	err = d.mgo.FindOne(ctx, entity.TableImUser, bson.M{"productId": productId, entity.MongoFieldId: objId}, &record, options.FindOne())
 	if err != nil {
 		return
 	}
 	return convert.UserProto(&record), nil
 }
-func (d *UserData) FindByAccount(ctx context.Context, appId string, account string) (id string, err error) {
+func (d *UserData) FindByAccount(ctx context.Context, productId string, account string) (id string, err error) {
 	projection := bson.M{entity.MongoFieldId: 1}
 	var record entity.ImUser
-	err = d.mgo.FindOne(ctx, entity.TableImUser, bson.M{"app_id": appId, "account": account}, &record, options.FindOne().SetProjection(projection))
+	err = d.mgo.FindOne(ctx, entity.TableImUser, bson.M{"product_id": productId, "account": account}, &record, options.FindOne().SetProjection(projection))
 	if err != nil {
 		return
 	}

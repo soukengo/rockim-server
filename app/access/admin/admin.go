@@ -3,9 +3,9 @@ package admin
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"rockim"
-	"rockim/app/access/admin/conf"
-	"rockim/pkg/log"
+	"rockimserver"
+	"rockimserver/app/access/admin/conf"
+	"rockimserver/pkg/log"
 )
 
 // New new a new User Application
@@ -31,6 +31,7 @@ func New(version string) (app *kratos.App, err error) {
 func configure(cfg *conf.Config) (err error) {
 	cfg.Log.AppId = cfg.Env.AppId
 	cfg.Log.AppVersion = cfg.Env.Version
+	cfg.Discovery.AppId = cfg.Env.AppId
 	err = log.Configure(cfg.Log)
 	if err != nil {
 		return

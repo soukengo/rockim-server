@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	v1 "rockim/api/rockim/service/platform/v1"
-	"rockim/app/logic/platform/biz"
-	"rockim/pkg/util/copier"
+	v1 "rockimserver/apis/rockim/service/platform/v1"
+	"rockimserver/app/logic/platform/biz"
+	"rockimserver/pkg/util/copier"
 )
 
 type TenantService struct {

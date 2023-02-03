@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	adminV1 "rockim/api/rockim/admin/manager/v1"
-	apiTypes "rockim/api/rockim/admin/manager/v1/types"
-	"rockim/api/rockim/service/platform/v1"
-	"rockim/api/rockim/service/platform/v1/types"
-	"rockim/app/access/admin/module/manager/biz"
-	"rockim/pkg/util/copier"
+	adminV1 "rockimserver/apis/rockim/api/admin/manager/v1"
+	apiTypes "rockimserver/apis/rockim/api/admin/manager/v1/types"
+	"rockimserver/apis/rockim/service/platform/v1"
+	"rockimserver/apis/rockim/service/platform/v1/types"
+	"rockimserver/app/access/admin/module/manager/biz"
+	"rockimserver/pkg/util/copier"
 )
 
 type TenantService struct {

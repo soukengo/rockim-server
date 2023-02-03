@@ -2,9 +2,9 @@ package data
 
 import (
 	"context"
-	"rockim/app/access/admin/module/tenant/biz"
-	"rockim/app/access/admin/module/tenant/biz/types"
-	"rockim/app/access/admin/module/tenant/data/database"
+	"rockimserver/app/access/admin/module/tenant/biz"
+	"rockimserver/app/access/admin/module/tenant/biz/types"
+	"rockimserver/app/access/admin/module/tenant/data/database"
 )
 
 type sysTenantResourceRepo struct {

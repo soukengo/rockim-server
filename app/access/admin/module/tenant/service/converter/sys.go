@@ -3,8 +3,8 @@ package converter
 import (
 	"github.com/emirpasic/gods/lists/arraylist"
 	"golang.org/x/exp/slices"
-	apiTypes "rockim/api/rockim/admin/tenant/v1/types"
-	"rockim/app/access/admin/module/tenant/biz/types"
+	apiTypes "rockimserver/apis/rockim/api/admin/tenant/v1/types"
+	"rockimserver/app/access/admin/module/tenant/biz/types"
 )
 
 func ToSysTenantResource(source *types.SysTenantResource) *apiTypes.SysTenantResource {

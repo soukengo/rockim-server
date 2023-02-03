@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"rockim/app/logic/platform"
+	"rockimserver/app/logic/platform"
 )
 
 // go build -ldflags "-X main.version=x.y.z"

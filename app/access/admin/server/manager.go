@@ -7,10 +7,10 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	jwtV4 "github.com/golang-jwt/jwt/v4"
-	v1 "rockim/api/rockim/admin/manager/v1"
-	"rockim/app/access/admin/conf"
-	"rockim/app/access/admin/module/manager/biz"
-	"rockim/app/access/admin/module/manager/service"
+	v1 "rockimserver/apis/rockim/api/admin/manager/v1"
+	"rockimserver/app/access/admin/conf"
+	"rockimserver/app/access/admin/module/manager/biz"
+	"rockimserver/app/access/admin/module/manager/service"
 )
 
 type ManagerServiceGroup struct {

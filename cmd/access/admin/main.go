@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"rockim/app/access/admin"
+	"rockimserver/app/access/admin"
 )
 
 // go build -ldflags "-X main.version=x.y.z"

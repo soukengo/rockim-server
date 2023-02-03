@@ -6,12 +6,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	mgoOpts "go.mongodb.org/mongo-driver/mongo/options"
-	"rockim/api/rockim/shared"
-	"rockim/app/access/admin/module/manager/biz/options"
-	"rockim/app/access/admin/module/manager/biz/types"
-	"rockim/app/access/admin/module/manager/data/database/convert"
-	"rockim/app/access/admin/module/manager/data/database/entity"
-	"rockim/pkg/component/database/mongo"
+	"rockimserver/apis/rockim/shared"
+	"rockimserver/app/access/admin/module/manager/biz/options"
+	"rockimserver/app/access/admin/module/manager/biz/types"
+	"rockimserver/app/access/admin/module/manager/data/database/convert"
+	"rockimserver/app/access/admin/module/manager/data/database/entity"
+	"rockimserver/pkg/component/database/mongo"
 	"time"
 )
 

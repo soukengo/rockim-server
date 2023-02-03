@@ -1,9 +1,9 @@
 package convert
 
 import (
-	"rockim/api/rockim/shared/enums"
-	"rockim/app/access/admin/module/tenant/biz/types"
-	"rockim/app/access/admin/module/tenant/data/database/entity"
+	"rockimserver/apis/rockim/shared/enums"
+	"rockimserver/app/access/admin/module/tenant/biz/types"
+	"rockimserver/app/access/admin/module/tenant/data/database/entity"
 )
 
 func SysTenantResourceProto(source *entity.SysTenantResource) *types.SysTenantResource {

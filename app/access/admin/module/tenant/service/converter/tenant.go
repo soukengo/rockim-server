@@ -1,8 +1,8 @@
 package converter
 
 import (
-	apiTypes "rockim/api/rockim/admin/tenant/v1/types"
-	"rockim/api/rockim/service/platform/v1/types"
+	apiTypes "rockimserver/apis/rockim/api/admin/tenant/v1/types"
+	"rockimserver/apis/rockim/service/platform/v1/types"
 )
 
 func ToTenantProduct(source *types.Product) *apiTypes.Product {

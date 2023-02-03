@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	v1 "rockim/api/rockim/admin/manager/v1"
-	"rockim/app/access/admin/module/manager/biz"
+	v1 "rockimserver/apis/rockim/api/admin/manager/v1"
+	"rockimserver/app/access/admin/module/manager/biz"
 )
 
 type AuthService struct {

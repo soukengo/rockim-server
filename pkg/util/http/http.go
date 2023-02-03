@@ -5,10 +5,10 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/golang/protobuf/proto"
 	"net/http"
-	"rockim/pkg/errors"
-	log "rockim/pkg/log"
-	"rockim/pkg/util/json"
-	"rockim/pkg/util/strings"
+	"rockimserver/pkg/errors"
+	log "rockimserver/pkg/log"
+	"rockimserver/pkg/util/json"
+	"rockimserver/pkg/util/strings"
 	"time"
 )
 

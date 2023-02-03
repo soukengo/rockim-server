@@ -2,12 +2,12 @@ package biz
 
 import (
 	"context"
+	"rockimserver/apis/rockim/shared/enums"
+	"rockimserver/pkg/errors"
 	"time"
 
-	"github.com/go-kratos/kratos/v2/errors"
-	"rockim/api/rockim/service/user/v1"
-	"rockim/api/rockim/service/user/v1/types"
-	v1enums "rockim/api/rockim/shared/enums/v1"
+	"rockimserver/apis/rockim/service/user/v1"
+	"rockimserver/apis/rockim/service/user/v1/types"
 )
 
 var (
@@ -18,8 +18,8 @@ var (
 
 // UserRepo is a User repo.
 type UserRepo interface {
-	FindByID(ctx context.Context, appId string, id string) (*types.User, error)
-	FindByAccount(ctx context.Context, appId string, account string) (uid string, err error)
+	FindByID(ctx context.Context, productId string, id string) (*types.User, error)
+	FindByAccount(ctx context.Context, productId string, account string) (uid string, err error)
 	GenID(ctx context.Context) (string, error)
 	Create(context.Context, *types.User) error
 	Update(context.Context, *types.User) error
@@ -39,7 +39,7 @@ func NewUserUseCase(repo UserRepo) *UserUseCase {
 func (uc *UserUseCase) Register(ctx context.Context, u *types.User) (*types.User, error) {
 	// TODO: 分布式锁
 	// 检查是否已经注册
-	exists, err := uc.existsAccount(ctx, u.AppId, u.Account)
+	exists, err := uc.existsAccount(ctx, u.ProductId, u.Account)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (uc *UserUseCase) Register(ctx context.Context, u *types.User) (*types.User
 	}
 	u.Id = uid
 	u.CreateTime = time.Now().UnixMilli()
-	u.Status = v1enums.UserStatus_USER_STATUS_NORMAL
+	u.Status = enums.UserStatus_USER_STATUS_NORMAL
 	err = uc.repo.Create(ctx, u)
 	if err != nil {
 		return nil, err
@@ -61,8 +61,8 @@ func (uc *UserUseCase) Register(ctx context.Context, u *types.User) (*types.User
 	return u, nil
 }
 
-func (uc *UserUseCase) existsAccount(ctx context.Context, appId string, account string) (exists bool, err error) {
-	uid, err := uc.repo.FindByAccount(ctx, appId, account)
+func (uc *UserUseCase) existsAccount(ctx context.Context, productId string, account string) (exists bool, err error) {
+	uid, err := uc.repo.FindByAccount(ctx, productId, account)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			err = nil

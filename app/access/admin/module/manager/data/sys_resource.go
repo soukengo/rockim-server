@@ -2,9 +2,9 @@ package data
 
 import (
 	"context"
-	"rockim/app/access/admin/module/manager/biz"
-	"rockim/app/access/admin/module/manager/biz/types"
-	"rockim/app/access/admin/module/manager/data/database"
+	"rockimserver/app/access/admin/module/manager/biz"
+	"rockimserver/app/access/admin/module/manager/biz/types"
+	"rockimserver/app/access/admin/module/manager/data/database"
 )
 
 type platResourceRepo struct {

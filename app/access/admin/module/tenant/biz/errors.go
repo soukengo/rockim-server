@@ -1,8 +1,8 @@
 package biz
 
 import (
-	"rockim/api/rockim/shared/reasons"
-	"rockim/pkg/errors"
+	"rockimserver/apis/rockim/shared/reasons"
+	"rockimserver/pkg/errors"
 )
 
 var (

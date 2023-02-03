@@ -3,13 +3,13 @@ package biz
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"rockim/api/rockim/shared"
-	"rockim/api/rockim/shared/reasons"
-	"rockim/app/access/admin/module/manager/biz/options"
-	"rockim/app/access/admin/module/manager/biz/types"
-	"rockim/pkg/errors"
-	"rockim/pkg/util/copier"
-	"rockim/pkg/util/encrypt"
+	"rockimserver/apis/rockim/shared"
+	"rockimserver/apis/rockim/shared/reasons"
+	"rockimserver/app/access/admin/module/manager/biz/options"
+	"rockimserver/app/access/admin/module/manager/biz/types"
+	"rockimserver/pkg/errors"
+	"rockimserver/pkg/util/copier"
+	"rockimserver/pkg/util/encrypt"
 	"time"
 )
 

@@ -1,7 +1,7 @@
 package options
 
 import (
-	"rockim/api/rockim/shared/enums"
+	"rockimserver/apis/rockim/shared/enums"
 )
 
 type SysTenantResourceOptions struct {

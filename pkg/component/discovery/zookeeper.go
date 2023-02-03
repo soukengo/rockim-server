@@ -7,14 +7,12 @@ import (
 	"time"
 )
 
-var conn *zk.Conn
-
 func NewZookeeper(cfg *Config) (res Discovery, err error) {
 	if cfg.Zookeeper == nil || cfg.Zookeeper.Nodes == nil || len(cfg.Zookeeper.Nodes) == 0 {
 		err = errors.New("discovery zookeeper配置错误")
 		return
 	}
-	conn, _, err = zk.Connect(cfg.Zookeeper.Nodes, time.Minute*60)
+	conn, _, err := zk.Connect(cfg.Zookeeper.Nodes, time.Minute*60)
 	if err != nil {
 		return
 	}

@@ -2,9 +2,9 @@ package data
 
 import (
 	"context"
-	"rockim/api/rockim/service/user/v1/types"
-	"rockim/app/logic/user/biz"
-	"rockim/app/logic/user/data/database"
+	"rockimserver/apis/rockim/service/user/v1/types"
+	"rockimserver/app/logic/user/biz"
+	"rockimserver/app/logic/user/data/database"
 )
 
 type userRepo struct {
@@ -18,12 +18,12 @@ func NewUserRepo(db *database.UserData) biz.UserRepo {
 	}
 }
 
-func (r *userRepo) FindByID(ctx context.Context, appId string, id string) (*types.User, error) {
-	return r.db.FindByID(ctx, appId, id)
+func (r *userRepo) FindByID(ctx context.Context, productId string, id string) (*types.User, error) {
+	return r.db.FindByID(ctx, productId, id)
 }
 
-func (r *userRepo) FindByAccount(ctx context.Context, appId string, account string) (uid string, err error) {
-	return r.db.FindByAccount(ctx, appId, account)
+func (r *userRepo) FindByAccount(ctx context.Context, productId string, account string) (uid string, err error) {
+	return r.db.FindByAccount(ctx, productId, account)
 }
 
 func (r *userRepo) GenID(ctx context.Context) (string, error) {

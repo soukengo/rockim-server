@@ -1,7 +1,7 @@
 package options
 
 import (
-	"rockim/api/rockim/shared"
+	"rockimserver/apis/rockim/shared"
 )
 
 // SysRoleOptions 角色选项

@@ -8,14 +8,14 @@ package user
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"rockim/app/logic/user/biz"
-	"rockim/app/logic/user/conf"
-	"rockim/app/logic/user/data"
-	"rockim/app/logic/user/data/database"
-	"rockim/app/logic/user/server"
-	"rockim/app/logic/user/service"
-	"rockim/pkg/component/database/mongo"
-	"rockim/pkg/component/discovery"
+	"rockimserver/app/logic/user/biz"
+	"rockimserver/app/logic/user/conf"
+	"rockimserver/app/logic/user/data"
+	"rockimserver/app/logic/user/data/database"
+	"rockimserver/app/logic/user/server"
+	"rockimserver/app/logic/user/service"
+	"rockimserver/pkg/component/database/mongo"
+	"rockimserver/pkg/component/discovery"
 )
 
 // Injectors from wire.go:

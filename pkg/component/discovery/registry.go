@@ -13,6 +13,7 @@ type Discovery interface {
 const (
 	Etcd      = "etcd"
 	Zookeeper = "zookeeper"
+	Nacos     = "nacos"
 )
 
 type handler func(config *Config) (Discovery, error)
@@ -21,6 +22,7 @@ var (
 	processor = map[string]handler{
 		Zookeeper: NewZookeeper,
 		Etcd:      NewEtcd,
+		Nacos:     NewNacos,
 	}
 )
 
