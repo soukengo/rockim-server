@@ -29,7 +29,7 @@ func (adp *kratosAdapter) WithContext(ctx context.Context) Logger {
 func newAdapter(level Level, appender *AppenderConfig, kvs ...any) Logger {
 	var writer = newAppender(appender)
 	if len(kvs) == 0 {
-		kvs = make([]any, 8)
+		kvs = make([]any, 0, 8)
 	}
 	kvs = append(kvs, defKvs...)
 	return &kratosAdapter{pvd: log.With(zap.NewLogger(newZap(level.String(), writer)), kvs...)}

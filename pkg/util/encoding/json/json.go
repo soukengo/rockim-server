@@ -11,21 +11,24 @@ func init() {
 	extra.RegisterFuzzyDecoders()
 }
 
-func Unmarshal(data []byte, v any) error {
-	return json.Unmarshal(data, v)
-}
 func Marshal(v any) ([]byte, error) {
 	return json.Marshal(v)
 }
+func Unmarshal(data []byte, v any) error {
+	return json.Unmarshal(data, v)
+}
 
-func ToJSONString(v interface{}) (result string, err error) {
+func ToString(v any) (result string, err error) {
 	if v == nil {
 		return
 	}
 	result, err = json.MarshalToString(v)
 	return
 }
-func TryToJSONString(v interface{}) (result string) {
-	result, _ = ToJSONString(v)
+func TryToString(v any) (result string) {
+	result, _ = ToString(v)
 	return
+}
+func FromString(str string, v any) error {
+	return json.UnmarshalFromString(str, v)
 }

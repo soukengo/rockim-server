@@ -3,7 +3,7 @@ package gateway
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"rockim"
+	"rockimserver"
 	"rockimserver/app/access/gateway/conf"
 	"rockimserver/pkg/log"
 )
@@ -14,7 +14,7 @@ func New(version string) (app *kratos.App, err error) {
 	if err != nil {
 		return
 	}
-	version = rockim.SetVersion(version)
+	version = rockimserver.SetVersion(version)
 	cfg.Env.Version = version
 	err = configure(cfg)
 	if err != nil {

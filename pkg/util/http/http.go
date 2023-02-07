@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"rockimserver/pkg/errors"
 	log "rockimserver/pkg/log"
-	"rockimserver/pkg/util/json"
+	"rockimserver/pkg/util/encoding/json"
 	"rockimserver/pkg/util/strings"
 	"time"
 )
@@ -75,7 +75,7 @@ func PostProtobufWithHeader(ctx context.Context, addr string, data proto.Message
 	headers["Accept"] = "application/x-protobuf"
 	logger := log.Use(loggerName).WithContext(ctx)
 	reqId := strings.RandStr(20)
-	logger.Infof("PostProtobufWithHeader[%s] request addr: %s, data: %v", reqId, addr, json.TryToJSONString(data))
+	logger.Infof("PostProtobufWithHeader[%s] request addr: %s, data: %v", reqId, addr, json.TryToString(data))
 	body, err := proto.Marshal(data)
 	if err != nil {
 		return
