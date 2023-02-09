@@ -3,7 +3,7 @@ package cache
 import "time"
 
 const (
-	defaultExpire = time.Hour * 24
+	defaultExpire = 0
 )
 
 type Option func(opts *Options)

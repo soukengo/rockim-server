@@ -4,12 +4,11 @@ import (
 	"context"
 	"rockimserver/pkg/component/cache"
 	"rockimserver/pkg/component/database/redis"
+	"rockimserver/pkg/errors"
 )
 
 type valueCache[T any] struct {
-	cli  *redis.Client
-	key  string
-	opts *cache.Options
+	redisCache[T]
 }
 
 func NewValueCache[T any](client *redis.Client, key string, opts ...cache.Option) cache.ValueCache[T] {
@@ -17,37 +16,22 @@ func NewValueCache[T any](client *redis.Client, key string, opts ...cache.Option
 }
 
 func newValueCache[T any](cli *redis.Client, key string, opts *cache.Options) cache.ValueCache[T] {
-	return &valueCache[T]{cli: cli, key: key, opts: opts}
-}
-
-func (c *valueCache[T]) Exists(ctx context.Context) (bool, error) {
-	exists, err := c.cli.Exists(ctx, c.key)
-	if err != nil {
-		return false, err
-	}
-	return exists > 0, nil
-}
-
-func (c *valueCache[T]) Delete(ctx context.Context) (err error) {
-	_, err = c.cli.Del(ctx, c.key)
-	return
+	return &valueCache[T]{redisCache: newRedisCache[T](cli, key, opts)}
 }
 
 func (c *valueCache[T]) Get(ctx context.Context) (ret *T, err error) {
-	str, err := c.cli.Get(ctx, c.key)
+	v, err := c.cli.Get(ctx, c.key)
 	if err != nil {
+		if errors.IsNotFound(err) {
+			err = cache.ErrNoCache
+		}
 		return
 	}
-	var value = new(T)
-	err = c.opts.Codec().Decode([]byte(str), value)
-	if err != nil {
-		return
-	}
-	return value, nil
+	return c.decode([]byte(v))
 }
 
-func (c *valueCache[T]) Set(ctx context.Context, value *T) (err error) {
-	data, err := c.opts.Codec().Encode(value)
+func (c *valueCache[T]) Set(ctx context.Context, v *T) (err error) {
+	data, err := c.encode(v)
 	if err != nil {
 		return
 	}

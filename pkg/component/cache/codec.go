@@ -7,10 +7,6 @@ type Codec interface {
 	Decode([]byte, any) error
 }
 
-type Primitive interface {
-	~int32 | ~int64 | ~int | ~string
-}
-
 type jsonCodec struct {
 }
 
