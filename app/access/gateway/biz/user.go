@@ -7,6 +7,7 @@ import (
 
 type UserRepo interface {
 	Register(ctx context.Context, user *types.User) (*types.User, error)
+	Find(ctx context.Context, productId string, account string) (*types.User, error)
 }
 
 type UserUseCase struct {
@@ -17,6 +18,10 @@ func NewUserUseCase(repo UserRepo) *UserUseCase {
 	return &UserUseCase{repo: repo}
 }
 
-func (uc *UserUseCase) RegisterUser(ctx context.Context, user *types.User) (*types.User, error) {
+func (uc *UserUseCase) Register(ctx context.Context, user *types.User) (*types.User, error) {
 	return uc.repo.Register(ctx, user)
+}
+
+func (uc *UserUseCase) Find(ctx context.Context, productId string, account string) (*types.User, error) {
+	return uc.repo.Find(ctx, productId, account)
 }

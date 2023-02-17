@@ -21,7 +21,7 @@ func New(version string) (app *kratos.App, err error) {
 	if err != nil {
 		return
 	}
-	app, err = wireApp(cfg.Env, cfg.Discovery, cfg.Server, cfg.Database.Mongodb)
+	app, err = wireApp(cfg.Env, cfg.Discovery, cfg.Server, cfg.Database.Mongodb, cfg.Database.Redis)
 	if err != nil {
 		//err = errors.New(errors.UnknownCode, "", "wireApp error")
 		return

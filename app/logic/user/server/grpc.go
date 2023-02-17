@@ -9,7 +9,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, user *service.UserService) *grpc.Server {
+func NewGRPCServer(c *conf.Server, user *service.UserService, auth *service.AuthService) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -26,5 +26,6 @@ func NewGRPCServer(c *conf.Server, user *service.UserService) *grpc.Server {
 	}
 	srv := grpc.NewServer(opts...)
 	v1.RegisterUserAPIServer(srv, user)
+	v1.RegisterAuthAPIServer(srv, auth)
 	return srv
 }

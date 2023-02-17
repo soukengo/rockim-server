@@ -58,7 +58,7 @@ func (c *hashCache[T]) Get(ctx context.Context, field string) (ret *T, err error
 		}
 		return
 	}
-	return c.decode([]byte(v))
+	return c.decodeStr(v)
 }
 
 func (c *hashCache[T]) GetAll(ctx context.Context) (ret map[string]*T, err error) {
@@ -72,7 +72,7 @@ func (c *hashCache[T]) GetAll(ctx context.Context) (ret map[string]*T, err error
 	ret = make(map[string]*T)
 	for k, v := range hash {
 		var item *T
-		item, err = c.decode([]byte(v))
+		item, err = c.decodeStr(v)
 		if err != nil {
 			return
 		}

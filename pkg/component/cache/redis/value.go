@@ -27,7 +27,8 @@ func (c *valueCache[T]) Get(ctx context.Context) (ret *T, err error) {
 		}
 		return
 	}
-	return c.decode([]byte(v))
+	ret, err = c.decodeStr(v)
+	return
 }
 
 func (c *valueCache[T]) Set(ctx context.Context, v *T) (err error) {
@@ -35,6 +36,10 @@ func (c *valueCache[T]) Set(ctx context.Context, v *T) (err error) {
 	if err != nil {
 		return
 	}
-	_, err = c.cli.Set(ctx, c.key, data, c.opts.Expire())
+	expire := c.opts.Expire()
+	if len(data) == 0 {
+		expire = c.opts.EmptyExpire()
+	}
+	_, err = c.cli.Set(ctx, c.key, data, expire)
 	return
 }

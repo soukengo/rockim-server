@@ -5,6 +5,7 @@ import (
 	"rockimserver/apis/rockim/service"
 	"rockimserver/pkg/component/config"
 	"rockimserver/pkg/component/database/mongo"
+	"rockimserver/pkg/component/database/redis"
 	"rockimserver/pkg/component/discovery"
 	"rockimserver/pkg/log"
 	"time"
@@ -15,7 +16,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&configPath, "conf", "../../../config/logic/user.yaml", "config path, eg: -conf config.yaml")
+	flag.StringVar(&configPath, "conf", "config/logic/user.yaml", "config path, eg: -conf config.yaml")
 }
 
 func Load() (conf *Config, err error) {
@@ -24,9 +25,6 @@ func Load() (conf *Config, err error) {
 		Log: &log.Config{
 			LoggerConfig: log.LoggerConfig{
 				Level: "info",
-			},
-			Loggers: []log.LoggerConfig{
-				{Name: "mongo", Level: "info"},
 			},
 		},
 	}
@@ -63,4 +61,5 @@ type Grpc struct {
 
 type Database struct {
 	Mongodb *mongo.Config
+	Redis   *redis.Config
 }

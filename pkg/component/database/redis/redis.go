@@ -17,7 +17,7 @@ type Client struct {
 
 type OnKeyChanged func(key string)
 
-func New(conf *Config) *Client {
+func NewClient(conf *Config) *Client {
 	c := new(Client)
 	c.config = conf
 	c.keyChangeHandlers = make(map[string]OnKeyChanged)

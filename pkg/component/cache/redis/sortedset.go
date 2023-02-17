@@ -62,7 +62,7 @@ func (c *sortedSetCache[T]) Paginate(ctx context.Context, cursor uint64, count i
 	ret = make([]*T, len(values))
 	for i, v := range values {
 		var item *T
-		item, err = c.decode([]byte(v))
+		item, err = c.decodeStr(v)
 		if err != nil {
 			return
 		}

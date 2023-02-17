@@ -10,7 +10,7 @@ import (
 
 func NewNacos(c *Config) (res Discovery, err error) {
 	if c.Nacos == nil || len(c.Nacos.Server.Addr) == 0 || c.Nacos.Server.Port <= 0 {
-		err = errors.New("discovery zookeeper配置错误")
+		err = errors.New("discovery nacos配置错误")
 		return
 	}
 	cfg := c.Nacos

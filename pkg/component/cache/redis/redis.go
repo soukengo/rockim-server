@@ -6,6 +6,11 @@ import (
 	"rockimserver/pkg/component/database/redis"
 )
 
+const (
+	nullValue = "null"
+	emptyStr  = ""
+)
+
 type redisCache[T any] struct {
 	cli  *redis.Client
 	key  string
@@ -33,6 +38,14 @@ func (c *redisCache[T]) encode(v any) (data []byte, err error) {
 	return c.opts.Codec().Encode(v)
 }
 
+func (c *redisCache[T]) decodeStr(data string) (ret *T, err error) {
+	if data == nullValue {
+		err = cache.ErrNotFound
+		return
+	}
+	b := []byte(data)
+	return c.decode(b)
+}
 func (c *redisCache[T]) decode(data []byte) (ret *T, err error) {
 	var value = new(T)
 	err = c.opts.Codec().Decode(data, value)

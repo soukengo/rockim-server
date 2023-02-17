@@ -1,11 +1,15 @@
 package cache
 
-import "errors"
+import (
+	xerrors "errors"
+	"rockimserver/pkg/errors"
+)
 
 var (
-	ErrNoCache = errors.New("no cache")
+	ErrNoCache  = xerrors.New("no cache")
+	ErrNotFound = errors.NotFound("CACHE_ERROR", "data not found")
 )
 
 func IsErrNoCache(err error) bool {
-	return errors.Is(err, ErrNoCache)
+	return xerrors.Is(err, ErrNoCache)
 }

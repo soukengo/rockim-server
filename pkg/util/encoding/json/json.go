@@ -5,7 +5,10 @@ import (
 	"github.com/json-iterator/go/extra"
 )
 
-var json = jsoniter.ConfigDefault
+var json = jsoniter.Config{
+	EscapeHTML:             true,
+	ValidateJsonRawMessage: true,
+}.Froze()
 
 func init() {
 	extra.RegisterFuzzyDecoders()

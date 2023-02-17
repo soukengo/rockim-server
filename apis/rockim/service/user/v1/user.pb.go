@@ -21,16 +21,22 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// UserRegisterRequest 用户注册请求
 type UserRegisterRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ProductId string            `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`                                                                  // 所属应用
-	Bucket    string            `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`                                                                                         // 用户所属分桶（可选）
-	Account   string            `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`                                                                                       // 用户账户名，由接入方指定
-	Name      string            `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`                                                                                             // 用户名称
-	Fields    map[string]string `protobuf:"bytes,5,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // 客户自定义字段
+	// 所属应用
+	ProductId string `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	// 用户所属分桶（可选）
+	Bucket string `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	// 用户账户名，由接入方指定
+	Account string `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
+	// 用户名称
+	Name string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	// 客户自定义字段
+	Fields map[string]string `protobuf:"bytes,5,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *UserRegisterRequest) Reset() {
@@ -100,6 +106,7 @@ func (x *UserRegisterRequest) GetFields() map[string]string {
 	return nil
 }
 
+// UserRegisterResponse 用户注册响应
 type UserRegisterResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -147,6 +154,112 @@ func (x *UserRegisterResponse) GetUser() *types.User {
 	return nil
 }
 
+// UserFindRequest 用户查找请求
+type UserFindRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// 所属应用
+	ProductId string `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	// 用户账户名，由接入方指定
+	Account string `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
+}
+
+func (x *UserFindRequest) Reset() {
+	*x = UserFindRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_rockim_service_user_v1_user_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UserFindRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserFindRequest) ProtoMessage() {}
+
+func (x *UserFindRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_rockim_service_user_v1_user_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserFindRequest.ProtoReflect.Descriptor instead.
+func (*UserFindRequest) Descriptor() ([]byte, []int) {
+	return file_rockim_service_user_v1_user_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *UserFindRequest) GetProductId() string {
+	if x != nil {
+		return x.ProductId
+	}
+	return ""
+}
+
+func (x *UserFindRequest) GetAccount() string {
+	if x != nil {
+		return x.Account
+	}
+	return ""
+}
+
+// UserFindResponse 用户查找响应
+type UserFindResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	User *types.User `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+}
+
+func (x *UserFindResponse) Reset() {
+	*x = UserFindResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_rockim_service_user_v1_user_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UserFindResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserFindResponse) ProtoMessage() {}
+
+func (x *UserFindResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_rockim_service_user_v1_user_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserFindResponse.ProtoReflect.Descriptor instead.
+func (*UserFindResponse) Descriptor() ([]byte, []int) {
+	return file_rockim_service_user_v1_user_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *UserFindResponse) GetUser() *types.User {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
 var File_rockim_service_user_v1_user_proto protoreflect.FileDescriptor
 
 var file_rockim_service_user_v1_user_proto_rawDesc = []byte{
@@ -177,18 +290,33 @@ var file_rockim_service_user_v1_user_proto_rawDesc = []byte{
 	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x36, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2e, 0x73, 0x65, 0x72,
 	0x76, 0x69, 0x63, 0x65, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x74, 0x79, 0x70,
-	0x65, 0x73, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x32, 0x70, 0x0a,
-	0x07, 0x55, 0x73, 0x65, 0x72, 0x41, 0x50, 0x49, 0x12, 0x65, 0x0a, 0x08, 0x52, 0x65, 0x67, 0x69,
-	0x73, 0x74, 0x65, 0x72, 0x12, 0x2b, 0x2e, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2e, 0x73, 0x65,
-	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x73,
-	0x65, 0x72, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x2c, 0x2e, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52,
-	0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42,
-	0x2d, 0x5a, 0x2b, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f,
-	0x61, 0x70, 0x69, 0x73, 0x2f, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2f, 0x73, 0x65, 0x72, 0x76,
-	0x69, 0x63, 0x65, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x2f, 0x76, 0x31, 0x3b, 0x76, 0x31, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x73, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x22, 0x4a, 0x0a,
+	0x0f, 0x55, 0x73, 0x65, 0x72, 0x46, 0x69, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x64, 0x12,
+	0x18, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x4a, 0x0a, 0x10, 0x55, 0x73, 0x65,
+	0x72, 0x46, 0x69, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x36, 0x0a,
+	0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x72, 0x6f,
+	0x63, 0x6b, 0x69, 0x6d, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x75, 0x73, 0x65,
+	0x72, 0x2e, 0x76, 0x31, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52,
+	0x04, 0x75, 0x73, 0x65, 0x72, 0x32, 0xcb, 0x01, 0x0a, 0x07, 0x55, 0x73, 0x65, 0x72, 0x41, 0x50,
+	0x49, 0x12, 0x65, 0x0a, 0x08, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x12, 0x2b, 0x2e,
+	0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x75,
+	0x73, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x67, 0x69, 0x73,
+	0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2c, 0x2e, 0x72, 0x6f, 0x63,
+	0x6b, 0x69, 0x6d, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x75, 0x73, 0x65, 0x72,
+	0x2e, 0x76, 0x31, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x59, 0x0a, 0x04, 0x46, 0x69, 0x6e, 0x64,
+	0x12, 0x27, 0x2e, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x46, 0x69,
+	0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x72, 0x6f, 0x63, 0x6b,
+	0x69, 0x6d, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e,
+	0x76, 0x31, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x46, 0x69, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x42, 0x2d, 0x5a, 0x2b, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x73, 0x65, 0x72,
+	0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x73, 0x2f, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2f,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x2f, 0x76, 0x31, 0x3b,
+	0x76, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -203,23 +331,28 @@ func file_rockim_service_user_v1_user_proto_rawDescGZIP() []byte {
 	return file_rockim_service_user_v1_user_proto_rawDescData
 }
 
-var file_rockim_service_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_rockim_service_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_rockim_service_user_v1_user_proto_goTypes = []interface{}{
 	(*UserRegisterRequest)(nil),  // 0: rockim.service.user.v1.UserRegisterRequest
 	(*UserRegisterResponse)(nil), // 1: rockim.service.user.v1.UserRegisterResponse
-	nil,                          // 2: rockim.service.user.v1.UserRegisterRequest.FieldsEntry
-	(*types.User)(nil),           // 3: rockim.service.user.v1.types.User
+	(*UserFindRequest)(nil),      // 2: rockim.service.user.v1.UserFindRequest
+	(*UserFindResponse)(nil),     // 3: rockim.service.user.v1.UserFindResponse
+	nil,                          // 4: rockim.service.user.v1.UserRegisterRequest.FieldsEntry
+	(*types.User)(nil),           // 5: rockim.service.user.v1.types.User
 }
 var file_rockim_service_user_v1_user_proto_depIdxs = []int32{
-	2, // 0: rockim.service.user.v1.UserRegisterRequest.fields:type_name -> rockim.service.user.v1.UserRegisterRequest.FieldsEntry
-	3, // 1: rockim.service.user.v1.UserRegisterResponse.user:type_name -> rockim.service.user.v1.types.User
-	0, // 2: rockim.service.user.v1.UserAPI.Register:input_type -> rockim.service.user.v1.UserRegisterRequest
-	1, // 3: rockim.service.user.v1.UserAPI.Register:output_type -> rockim.service.user.v1.UserRegisterResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	4, // 0: rockim.service.user.v1.UserRegisterRequest.fields:type_name -> rockim.service.user.v1.UserRegisterRequest.FieldsEntry
+	5, // 1: rockim.service.user.v1.UserRegisterResponse.user:type_name -> rockim.service.user.v1.types.User
+	5, // 2: rockim.service.user.v1.UserFindResponse.user:type_name -> rockim.service.user.v1.types.User
+	0, // 3: rockim.service.user.v1.UserAPI.Register:input_type -> rockim.service.user.v1.UserRegisterRequest
+	2, // 4: rockim.service.user.v1.UserAPI.Find:input_type -> rockim.service.user.v1.UserFindRequest
+	1, // 5: rockim.service.user.v1.UserAPI.Register:output_type -> rockim.service.user.v1.UserRegisterResponse
+	3, // 6: rockim.service.user.v1.UserAPI.Find:output_type -> rockim.service.user.v1.UserFindResponse
+	5, // [5:7] is the sub-list for method output_type
+	3, // [3:5] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_rockim_service_user_v1_user_proto_init() }
@@ -252,6 +385,30 @@ func file_rockim_service_user_v1_user_proto_init() {
 				return nil
 			}
 		}
+		file_rockim_service_user_v1_user_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserFindRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_rockim_service_user_v1_user_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserFindResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -259,7 +416,7 @@ func file_rockim_service_user_v1_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_rockim_service_user_v1_user_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

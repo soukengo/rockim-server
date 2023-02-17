@@ -30,3 +30,11 @@ func (s *UserService) Register(ctx context.Context, in *v1.UserRegisterRequest) 
 	}
 	return &v1.UserRegisterResponse{User: user}, nil
 }
+
+func (s *UserService) Find(ctx context.Context, in *v1.UserFindRequest) (out *v1.UserFindResponse, err error) {
+	user, err := s.uc.Find(ctx, in.ProductId, in.Account)
+	if err != nil {
+		return
+	}
+	return &v1.UserFindResponse{User: user}, nil
+}

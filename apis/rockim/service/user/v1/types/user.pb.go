@@ -40,8 +40,9 @@ type User struct {
 	// 用户账户名，由接入方指定
 	Account string `protobuf:"bytes,6,opt,name=account,proto3" json:"account,omitempty"`
 	// 用户名称
-	Name   string           `protobuf:"bytes,7,opt,name=name,proto3" json:"name,omitempty"`
-	Status enums.UserStatus `protobuf:"varint,8,opt,name=status,proto3,enum=rockim.shared.enums.UserStatus" json:"status,omitempty"` // 状态
+	Name string `protobuf:"bytes,7,opt,name=name,proto3" json:"name,omitempty"`
+	// 状态
+	Status enums.UserStatus `protobuf:"varint,8,opt,name=status,proto3,enum=rockim.shared.enums.UserStatus" json:"status,omitempty"`
 	// 客户自定义字段
 	Fields map[string]string `protobuf:"bytes,9,rep,name=fields,proto3" json:"fields,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// 用户数据版本号

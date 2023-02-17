@@ -19,15 +19,18 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationUserAPIFind = "/rockim.api.client.v1.UserAPI/Find"
 const OperationUserAPIRegister = "/rockim.api.client.v1.UserAPI/Register"
 
 type UserAPIHTTPServer interface {
+	Find(context.Context, *UserFindRequest) (*UserFindResponse, error)
 	Register(context.Context, *UserRegisterRequest) (*UserRegisterResponse, error)
 }
 
 func RegisterUserAPIHTTPServer(s *http.Server, srv UserAPIHTTPServer) {
 	r := s.Route("/")
 	r.POST("/api/v1/user/register", _UserAPI_Register0_HTTP_Handler(srv))
+	r.POST("/api/v1/user/find", _UserAPI_Find0_HTTP_Handler(srv))
 }
 
 func _UserAPI_Register0_HTTP_Handler(srv UserAPIHTTPServer) func(ctx http.Context) error {
@@ -49,7 +52,27 @@ func _UserAPI_Register0_HTTP_Handler(srv UserAPIHTTPServer) func(ctx http.Contex
 	}
 }
 
+func _UserAPI_Find0_HTTP_Handler(srv UserAPIHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UserFindRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserAPIFind)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Find(ctx, req.(*UserFindRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UserFindResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserAPIHTTPClient interface {
+	Find(ctx context.Context, req *UserFindRequest, opts ...http.CallOption) (rsp *UserFindResponse, err error)
 	Register(ctx context.Context, req *UserRegisterRequest, opts ...http.CallOption) (rsp *UserRegisterResponse, err error)
 }
 
@@ -59,6 +82,19 @@ type UserAPIHTTPClientImpl struct {
 
 func NewUserAPIHTTPClient(client *http.Client) UserAPIHTTPClient {
 	return &UserAPIHTTPClientImpl{client}
+}
+
+func (c *UserAPIHTTPClientImpl) Find(ctx context.Context, in *UserFindRequest, opts ...http.CallOption) (*UserFindResponse, error) {
+	var out UserFindResponse
+	pattern := "/api/v1/user/find"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserAPIFind))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
 }
 
 func (c *UserAPIHTTPClientImpl) Register(ctx context.Context, in *UserRegisterRequest, opts ...http.CallOption) (*UserRegisterResponse, error) {

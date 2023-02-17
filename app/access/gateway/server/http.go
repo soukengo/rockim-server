@@ -4,11 +4,11 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"rockimserver/api/rockim/client/v1"
+	"rockimserver/apis/rockim/api/client/v1"
 	"rockimserver/app/access/gateway/conf"
 	"rockimserver/app/access/gateway/server/middleware"
 	"rockimserver/app/access/gateway/service"
-	_ "rockimserver/pkg/encoding/proto"
+	_ "rockimserver/pkg/util/encoding/proto"
 )
 
 // NewHTTPServer new a HTTP server.

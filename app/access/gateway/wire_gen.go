@@ -29,7 +29,11 @@ func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server) (
 	if err != nil {
 		return nil, err
 	}
-	userRepo := data.NewUserRepo(userAPIClient)
+	authAPIClient, err := grpc.NewAuthClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	userRepo := data.NewUserRepo(userAPIClient, authAPIClient)
 	userUseCase := biz.NewUserUseCase(userRepo)
 	userService := service.NewUserService(userUseCase)
 	httpServer := server.NewHTTPServer(confServer, userService)

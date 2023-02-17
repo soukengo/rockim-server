@@ -39,13 +39,13 @@ func (d *UserData) FindByID(ctx context.Context, productId string, id string) (u
 		return nil, err
 	}
 	var record entity.ImUser
-	err = d.mgo.FindOne(ctx, entity.TableImUser, bson.M{"productId": productId, entity.MongoFieldId: objId}, &record, options.FindOne())
+	err = d.mgo.FindOne(ctx, entity.TableImUser, bson.M{"product_id": productId, entity.MongoFieldId: objId}, &record, options.FindOne())
 	if err != nil {
 		return
 	}
 	return convert.UserProto(&record), nil
 }
-func (d *UserData) FindByAccount(ctx context.Context, productId string, account string) (id string, err error) {
+func (d *UserData) FindUidByAccount(ctx context.Context, productId string, account string) (id string, err error) {
 	projection := bson.M{entity.MongoFieldId: 1}
 	var record entity.ImUser
 	err = d.mgo.FindOne(ctx, entity.TableImUser, bson.M{"product_id": productId, "account": account}, &record, options.FindOne().SetProjection(projection))

@@ -93,3 +93,8 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+//
+//replace github.com/go-kratos/kratos/v2 => /Users/sergewu/go/src/github.com/soukengo/kratos
+//
+//replace github.com/go-kratos/kratos/contrib/registry/nacos/v2 => /Users/sergewu/go/src/github.com/soukengo/kratos/contrib/registry/nacos
