@@ -3,6 +3,7 @@ package conf
 import (
 	"flag"
 	"rockimserver/apis/rockim/service"
+	"rockimserver/pkg/component/cache"
 	"rockimserver/pkg/component/config"
 	"rockimserver/pkg/component/database/mongo"
 	"rockimserver/pkg/component/database/redis"
@@ -32,6 +33,9 @@ func Load() (conf *Config, err error) {
 	defer source.Close()
 	loader := config.NewLoader(source)
 	err = loader.Load(conf)
+	if err != nil {
+		return
+	}
 	return
 }
 
@@ -41,6 +45,7 @@ type Config struct {
 	Discovery *discovery.Config
 	Log       *log.Config
 	Database  *Database
+	Cache     *cache.Config
 }
 
 type Env struct {

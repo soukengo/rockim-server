@@ -3,17 +3,17 @@ package biz
 import (
 	"context"
 	"rockimserver/apis/rockim/shared/enums"
+	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/pkg/errors"
 	"time"
 
-	"rockimserver/apis/rockim/service/user/v1"
 	"rockimserver/apis/rockim/service/user/v1/types"
 )
 
 var (
 	// ErrUserNotFound is user not found.
-	ErrUserNotFound      = errors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
-	ErrAccountRegistered = errors.Conflict(v1.ErrorReason_ACCOUNT_REGISTERED.String(), "account already registered")
+	ErrUserNotFound      = errors.NotFound(reasons.User_USER_NOT_FOUND.String(), "user not found")
+	ErrAccountRegistered = errors.Conflict(reasons.User_ACCOUNT_REGISTERED.String(), "account already registered")
 )
 
 // UserRepo is a User repo.

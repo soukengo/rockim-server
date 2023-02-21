@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	ErrNoCache  = xerrors.New("no cache")
-	ErrNotFound = errors.NotFound("CACHE_ERROR", "data not found")
+	ErrNoCache  = errors.NotFound("CACHE_NOT_FOUND", "no cache")
+	ErrNotFound = errors.NotFound("DATA_NOT_FOUND", "data not found")
 )
 
 func IsErrNoCache(err error) bool {

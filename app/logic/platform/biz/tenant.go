@@ -2,9 +2,10 @@ package biz
 
 import (
 	"context"
-	v1 "rockimserver/apis/rockim/service/platform/v1"
 	"rockimserver/apis/rockim/service/platform/v1/types"
 	"rockimserver/apis/rockim/shared"
+	"rockimserver/apis/rockim/shared/reasons"
+	"rockimserver/app/logic/platform/biz/options"
 	"rockimserver/pkg/errors"
 	"rockimserver/pkg/log"
 	"rockimserver/pkg/util/encrypt"
@@ -12,8 +13,8 @@ import (
 )
 
 var (
-	ErrTenantNotFound         = errors.NotFound(v1.ErrorReason_TENANT_NOT_FOUND.String(), "商户不存在")
-	ErrTenantAccountDuplicate = errors.Conflict(v1.ErrorReason_TENANT_ACCOUNT_DUPLICATE.String(), "不能重复创建")
+	ErrTenantNotFound         = errors.NotFound(reasons.Platform_TENANT_NOT_FOUND.String(), "商户不存在")
+	ErrTenantAccountDuplicate = errors.BadRequest(reasons.Platform_TENANT_ACCOUNT_DUPLICATE.String(), "不能重复创建")
 )
 
 type TenantRepo interface {
@@ -24,26 +25,7 @@ type TenantRepo interface {
 
 	FindById(context.Context, string) (*types.Tenant, error)
 	FindIdByEmail(ctx context.Context, account string) (id string, err error)
-	Paging(ctx context.Context, req *TenantPagingRequest) (res *TenantPagingResponse, err error)
-}
-
-type TenantCreateRequest struct {
-	Email    string
-	Password string
-	Name     string
-}
-type TenantUpdateRequest struct {
-	Id   string
-	Name string
-}
-
-type TenantPagingRequest struct {
-	Paginate *shared.Paginating
-	Keyword  string
-}
-type TenantPagingResponse struct {
-	List     []*types.Tenant
-	Paginate *shared.Paginated
+	Paging(ctx context.Context, opts *options.TenantPagingOptions) (ret []*types.Tenant, paginated *shared.Paginated, err error)
 }
 
 // TenantUseCase is a tenant use case.
@@ -55,8 +37,8 @@ func NewTenantUseCase(repo TenantRepo) *TenantUseCase {
 	return &TenantUseCase{repo: repo}
 }
 
-func (uc *TenantUseCase) Create(ctx context.Context, req *TenantCreateRequest) (err error) {
-	oldId, err := uc.repo.FindIdByEmail(ctx, req.Email)
+func (uc *TenantUseCase) Create(ctx context.Context, opts *options.TenantCreateOptions) (err error) {
+	oldId, err := uc.repo.FindIdByEmail(ctx, opts.Email)
 	if err != nil && !errors.IsNotFound(err) {
 		return
 	}
@@ -67,21 +49,21 @@ func (uc *TenantUseCase) Create(ctx context.Context, req *TenantCreateRequest) (
 	if err != nil {
 		return
 	}
-	record := &types.Tenant{Name: req.Name, Email: req.Email, Password: req.Password}
-	plainPwd := req.Password
+	record := &types.Tenant{Name: opts.Name, Email: opts.Email, Password: opts.Password}
+	plainPwd := opts.Password
 	record.Id = newId
 	record.Password = encrypt.MD5(plainPwd)
 	record.CreateTime = time.Now().UnixMilli()
 	return uc.repo.Create(ctx, record)
 }
-func (uc *TenantUseCase) Update(ctx context.Context, req *TenantUpdateRequest) (err error) {
-	record, err := uc.repo.FindById(ctx, req.Id)
+func (uc *TenantUseCase) Update(ctx context.Context, opts *options.TenantUpdateOptions) (err error) {
+	record, err := uc.repo.FindById(ctx, opts.Id)
 	if err != nil {
 		log.WithContext(ctx).Errorf("FindById error: %v", err)
 		err = ErrTenantNotFound
 		return
 	}
-	record.Name = req.Name
+	record.Name = opts.Name
 	record.UpdateTime = time.Now().UnixMilli()
 	return uc.repo.Update(ctx, record)
 }
@@ -96,6 +78,6 @@ func (uc *TenantUseCase) Find(ctx context.Context, email string) (user *types.Te
 	return uc.repo.FindById(ctx, uid)
 }
 
-func (uc *TenantUseCase) Paging(ctx context.Context, req *TenantPagingRequest) (res *TenantPagingResponse, err error) {
-	return uc.repo.Paging(ctx, req)
+func (uc *TenantUseCase) Paging(ctx context.Context, opts *options.TenantPagingOptions) (ret []*types.Tenant, paginated *shared.Paginated, err error) {
+	return uc.repo.Paging(ctx, opts)
 }

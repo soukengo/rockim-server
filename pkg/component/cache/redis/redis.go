@@ -8,30 +8,33 @@ import (
 
 const (
 	nullValue = "null"
-	emptyStr  = ""
 )
 
 type redisCache[T any] struct {
-	cli  *redis.Client
-	key  string
-	opts *cache.Options
+	cli      *redis.Client
+	category *cache.Category
+	opts     *cache.Options
 }
 
-func newRedisCache[T any](cli *redis.Client, key string, opts *cache.Options) redisCache[T] {
-	return redisCache[T]{cli: cli, key: key, opts: opts}
+func newRedisCache[T any](cli *redis.Client, category *cache.Category, opts *cache.Options) redisCache[T] {
+	return redisCache[T]{cli: cli, category: category, opts: opts}
 }
 
-func (c *redisCache[T]) Exists(ctx context.Context) (bool, error) {
-	exists, err := c.cli.Exists(ctx, c.key)
+func (c *redisCache[T]) Exists(ctx context.Context, keySuffix string) (bool, error) {
+	exists, err := c.cli.Exists(ctx, c.key(keySuffix))
 	if err != nil {
 		return false, err
 	}
 	return exists > 0, nil
 }
 
-func (c *redisCache[T]) Delete(ctx context.Context) (err error) {
-	_, err = c.cli.Del(ctx, c.key)
+func (c *redisCache[T]) Delete(ctx context.Context, keySuffix string) (err error) {
+	_, err = c.cli.Del(ctx, c.key(keySuffix))
 	return
+}
+
+func (c *redisCache[T]) key(keySuffix string) string {
+	return c.category.GenKey(keySuffix)
 }
 
 func (c *redisCache[T]) encode(v any) (data []byte, err error) {

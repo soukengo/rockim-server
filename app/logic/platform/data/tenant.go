@@ -3,7 +3,9 @@ package data
 import (
 	"context"
 	"rockimserver/apis/rockim/service/platform/v1/types"
+	"rockimserver/apis/rockim/shared"
 	"rockimserver/app/logic/platform/biz"
+	"rockimserver/app/logic/platform/biz/options"
 	"rockimserver/app/logic/platform/data/database"
 )
 
@@ -41,6 +43,6 @@ func (r *tenantRepo) ListByIds(ctx context.Context, ids []string) ([]*types.Tena
 	return r.db.ListByIds(ctx, ids)
 }
 
-func (r *tenantRepo) Paging(ctx context.Context, req *biz.TenantPagingRequest) (res *biz.TenantPagingResponse, err error) {
-	return r.db.Paging(ctx, req)
+func (r *tenantRepo) Paging(ctx context.Context, opts *options.TenantPagingOptions) (ret []*types.Tenant, paginated *shared.Paginated, err error) {
+	return r.db.Paging(ctx, opts)
 }

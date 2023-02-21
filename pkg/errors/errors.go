@@ -33,8 +33,9 @@ func Reason(err error) string {
 }
 
 func (e *Error) WithStack() *Error {
-	e.stack = callers()
-	return e
+	e1 := e.Clone()
+	e1.stack = callers()
+	return e1
 }
 
 func (e *Error) Error() string {
@@ -58,4 +59,17 @@ func (e *Error) GRPCStatus() *status.Status {
 			Metadata: e.err.Metadata,
 		})
 	return s
+}
+
+func (e *Error) Clone() *Error {
+	return &Error{err: errors.Clone(e.err), stack: e.stack}
+}
+
+func (e *Error) SetMessage(message string) *Error {
+	e.err.Message = message
+	return e
+}
+
+func (e *Error) NewWithMessage(message string) *Error {
+	return e.Clone().SetMessage(message)
 }

@@ -5,4 +5,4 @@ import (
 	"rockimserver/pkg/component/database/redis"
 )
 
-var ProviderSet = wire.NewSet(redis.NewClient, NewUserData)
+var ProviderSet = wire.NewSet(redis.NewClient, NewUserData, NewAuthCodeData, NewAccessTokenData)

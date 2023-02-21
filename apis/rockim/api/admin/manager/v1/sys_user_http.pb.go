@@ -37,12 +37,12 @@ type SysUserAPIHTTPServer interface {
 
 func RegisterSysUserAPIHTTPServer(s *http.Server, srv SysUserAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/manager/v1/sys/user/create", _SysUserAPI_Create3_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/user/update", _SysUserAPI_Update3_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/user/delete", _SysUserAPI_Delete3_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/user/paging", _SysUserAPI_Paging1_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/user/role_id/list", _SysUserAPI_ListRoleId0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/user/role_id/save", _SysUserAPI_SaveRoleId0_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/user/create", _SysUserAPI_Create3_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/user/update", _SysUserAPI_Update3_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/user/delete", _SysUserAPI_Delete3_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/user/paging", _SysUserAPI_Paging1_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/user/role_id/list", _SysUserAPI_ListRoleId0_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/user/role_id/save", _SysUserAPI_SaveRoleId0_HTTP_Handler(srv))
 }
 
 func _SysUserAPI_Create3_HTTP_Handler(srv SysUserAPIHTTPServer) func(ctx http.Context) error {
@@ -178,7 +178,7 @@ func NewSysUserAPIHTTPClient(client *http.Client) SysUserAPIHTTPClient {
 
 func (c *SysUserAPIHTTPClientImpl) Create(ctx context.Context, in *SysUserCreateRequest, opts ...http.CallOption) (*SysUserCreateResponse, error) {
 	var out SysUserCreateResponse
-	pattern := "/api/manager/v1/sys/user/create"
+	pattern := "/admin/manager/v1/sys/user/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysUserAPICreate))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -191,7 +191,7 @@ func (c *SysUserAPIHTTPClientImpl) Create(ctx context.Context, in *SysUserCreate
 
 func (c *SysUserAPIHTTPClientImpl) Delete(ctx context.Context, in *SysUserDeleteRequest, opts ...http.CallOption) (*SysUserDeleteResponse, error) {
 	var out SysUserDeleteResponse
-	pattern := "/api/manager/v1/sys/user/delete"
+	pattern := "/admin/manager/v1/sys/user/delete"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysUserAPIDelete))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -204,7 +204,7 @@ func (c *SysUserAPIHTTPClientImpl) Delete(ctx context.Context, in *SysUserDelete
 
 func (c *SysUserAPIHTTPClientImpl) ListRoleId(ctx context.Context, in *SysUserRoleIdListRequest, opts ...http.CallOption) (*SysUserRoleIdListResponse, error) {
 	var out SysUserRoleIdListResponse
-	pattern := "/api/manager/v1/sys/user/role_id/list"
+	pattern := "/admin/manager/v1/sys/user/role_id/list"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysUserAPIListRoleId))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -217,7 +217,7 @@ func (c *SysUserAPIHTTPClientImpl) ListRoleId(ctx context.Context, in *SysUserRo
 
 func (c *SysUserAPIHTTPClientImpl) Paging(ctx context.Context, in *SysUserPagingRequest, opts ...http.CallOption) (*SysUserPagingResponse, error) {
 	var out SysUserPagingResponse
-	pattern := "/api/manager/v1/sys/user/paging"
+	pattern := "/admin/manager/v1/sys/user/paging"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysUserAPIPaging))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -230,7 +230,7 @@ func (c *SysUserAPIHTTPClientImpl) Paging(ctx context.Context, in *SysUserPaging
 
 func (c *SysUserAPIHTTPClientImpl) SaveRoleId(ctx context.Context, in *SysUserRoleIdSaveRequest, opts ...http.CallOption) (*SysUserRoleIdSaveResponse, error) {
 	var out SysUserRoleIdSaveResponse
-	pattern := "/api/manager/v1/sys/user/role_id/save"
+	pattern := "/admin/manager/v1/sys/user/role_id/save"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysUserAPISaveRoleId))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -243,7 +243,7 @@ func (c *SysUserAPIHTTPClientImpl) SaveRoleId(ctx context.Context, in *SysUserRo
 
 func (c *SysUserAPIHTTPClientImpl) Update(ctx context.Context, in *SysUserUpdateRequest, opts ...http.CallOption) (*SysUserUpdateResponse, error) {
 	var out SysUserUpdateResponse
-	pattern := "/api/manager/v1/sys/user/update"
+	pattern := "/admin/manager/v1/sys/user/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysUserAPIUpdate))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -68,17 +68,6 @@ func (m *LoginRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if utf8.RuneCountInString(m.GetAccount()) < 1 {
-		err := LoginRequestValidationError{
-			field:  "Account",
-			reason: "value length must be at least 1 runes",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
 	if utf8.RuneCountInString(m.GetAuthCode()) < 1 {
 		err := LoginRequestValidationError{
 			field:  "AuthCode",
@@ -190,6 +179,8 @@ func (m *LoginResponse) validate(all bool) error {
 	var errors []error
 
 	// no validation rules for Token
+
+	// no validation rules for ExpireTime
 
 	if len(errors) > 0 {
 		return LoginResponseMultiError(errors)

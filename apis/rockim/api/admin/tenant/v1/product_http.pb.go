@@ -31,9 +31,9 @@ type ProductAPIHTTPServer interface {
 
 func RegisterProductAPIHTTPServer(s *http.Server, srv ProductAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/tenant/v1/product/create", _ProductAPI_Create0_HTTP_Handler(srv))
-	r.POST("/api/tenant/v1/product/update", _ProductAPI_Update0_HTTP_Handler(srv))
-	r.POST("/api/tenant/v1/product/paging", _ProductAPI_Paging0_HTTP_Handler(srv))
+	r.POST("/admin/tenant/v1/product/create", _ProductAPI_Create0_HTTP_Handler(srv))
+	r.POST("/admin/tenant/v1/product/update", _ProductAPI_Update0_HTTP_Handler(srv))
+	r.POST("/admin/tenant/v1/product/paging", _ProductAPI_Paging0_HTTP_Handler(srv))
 }
 
 func _ProductAPI_Create0_HTTP_Handler(srv ProductAPIHTTPServer) func(ctx http.Context) error {
@@ -109,7 +109,7 @@ func NewProductAPIHTTPClient(client *http.Client) ProductAPIHTTPClient {
 
 func (c *ProductAPIHTTPClientImpl) Create(ctx context.Context, in *ProductCreateRequest, opts ...http.CallOption) (*ProductCreateResponse, error) {
 	var out ProductCreateResponse
-	pattern := "/api/tenant/v1/product/create"
+	pattern := "/admin/tenant/v1/product/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationProductAPICreate))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -122,7 +122,7 @@ func (c *ProductAPIHTTPClientImpl) Create(ctx context.Context, in *ProductCreate
 
 func (c *ProductAPIHTTPClientImpl) Paging(ctx context.Context, in *ProductPagingRequest, opts ...http.CallOption) (*ProductPagingResponse, error) {
 	var out ProductPagingResponse
-	pattern := "/api/tenant/v1/product/paging"
+	pattern := "/admin/tenant/v1/product/paging"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationProductAPIPaging))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -135,7 +135,7 @@ func (c *ProductAPIHTTPClientImpl) Paging(ctx context.Context, in *ProductPaging
 
 func (c *ProductAPIHTTPClientImpl) Update(ctx context.Context, in *ProductUpdateRequest, opts ...http.CallOption) (*ProductUpdateResponse, error) {
 	var out ProductUpdateResponse
-	pattern := "/api/tenant/v1/product/update"
+	pattern := "/admin/tenant/v1/product/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationProductAPIUpdate))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -37,12 +37,12 @@ type SysRoleAPIHTTPServer interface {
 
 func RegisterSysRoleAPIHTTPServer(s *http.Server, srv SysRoleAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/manager/v1/sys/role/create", _SysRoleAPI_Create1_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/role/update", _SysRoleAPI_Update1_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/role/delete", _SysRoleAPI_Delete1_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/role/paging", _SysRoleAPI_Paging0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/role/resource_id/list", _SysRoleAPI_ListResourceId0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/role/resource_id/save", _SysRoleAPI_SaveResourceId0_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/role/create", _SysRoleAPI_Create1_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/role/update", _SysRoleAPI_Update1_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/role/delete", _SysRoleAPI_Delete1_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/role/paging", _SysRoleAPI_Paging0_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/role/resource_id/list", _SysRoleAPI_ListResourceId0_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/role/resource_id/save", _SysRoleAPI_SaveResourceId0_HTTP_Handler(srv))
 }
 
 func _SysRoleAPI_Create1_HTTP_Handler(srv SysRoleAPIHTTPServer) func(ctx http.Context) error {
@@ -178,7 +178,7 @@ func NewSysRoleAPIHTTPClient(client *http.Client) SysRoleAPIHTTPClient {
 
 func (c *SysRoleAPIHTTPClientImpl) Create(ctx context.Context, in *SysRoleCreateRequest, opts ...http.CallOption) (*SysRoleCreateResponse, error) {
 	var out SysRoleCreateResponse
-	pattern := "/api/manager/v1/sys/role/create"
+	pattern := "/admin/manager/v1/sys/role/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysRoleAPICreate))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -191,7 +191,7 @@ func (c *SysRoleAPIHTTPClientImpl) Create(ctx context.Context, in *SysRoleCreate
 
 func (c *SysRoleAPIHTTPClientImpl) Delete(ctx context.Context, in *SysRoleDeleteRequest, opts ...http.CallOption) (*SysRoleDeleteResponse, error) {
 	var out SysRoleDeleteResponse
-	pattern := "/api/manager/v1/sys/role/delete"
+	pattern := "/admin/manager/v1/sys/role/delete"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysRoleAPIDelete))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -204,7 +204,7 @@ func (c *SysRoleAPIHTTPClientImpl) Delete(ctx context.Context, in *SysRoleDelete
 
 func (c *SysRoleAPIHTTPClientImpl) ListResourceId(ctx context.Context, in *SysRoleResourceIdListRequest, opts ...http.CallOption) (*SysRoleResourceIdListResponse, error) {
 	var out SysRoleResourceIdListResponse
-	pattern := "/api/manager/v1/sys/role/resource_id/list"
+	pattern := "/admin/manager/v1/sys/role/resource_id/list"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysRoleAPIListResourceId))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -217,7 +217,7 @@ func (c *SysRoleAPIHTTPClientImpl) ListResourceId(ctx context.Context, in *SysRo
 
 func (c *SysRoleAPIHTTPClientImpl) Paging(ctx context.Context, in *SysRolePagingRequest, opts ...http.CallOption) (*SysRolePagingResponse, error) {
 	var out SysRolePagingResponse
-	pattern := "/api/manager/v1/sys/role/paging"
+	pattern := "/admin/manager/v1/sys/role/paging"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysRoleAPIPaging))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -230,7 +230,7 @@ func (c *SysRoleAPIHTTPClientImpl) Paging(ctx context.Context, in *SysRolePaging
 
 func (c *SysRoleAPIHTTPClientImpl) SaveResourceId(ctx context.Context, in *SysRoleResourceIdSaveRequest, opts ...http.CallOption) (*SysRoleResourceIdSaveResponse, error) {
 	var out SysRoleResourceIdSaveResponse
-	pattern := "/api/manager/v1/sys/role/resource_id/save"
+	pattern := "/admin/manager/v1/sys/role/resource_id/save"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysRoleAPISaveResourceId))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -243,7 +243,7 @@ func (c *SysRoleAPIHTTPClientImpl) SaveResourceId(ctx context.Context, in *SysRo
 
 func (c *SysRoleAPIHTTPClientImpl) Update(ctx context.Context, in *SysRoleUpdateRequest, opts ...http.CallOption) (*SysRoleUpdateResponse, error) {
 	var out SysRoleUpdateResponse
-	pattern := "/api/manager/v1/sys/role/update"
+	pattern := "/admin/manager/v1/sys/role/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysRoleAPIUpdate))
 	opts = append(opts, http.PathTemplate(pattern))

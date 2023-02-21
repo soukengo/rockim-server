@@ -33,10 +33,10 @@ type SysResourceAPIHTTPServer interface {
 
 func RegisterSysResourceAPIHTTPServer(s *http.Server, srv SysResourceAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/manager/v1/sys/resource/create", _SysResourceAPI_Create0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/resource/update", _SysResourceAPI_Update0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/resource/delete", _SysResourceAPI_Delete0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/sys/resource/tree", _SysResourceAPI_ListTree0_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/resource/create", _SysResourceAPI_Create0_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/resource/update", _SysResourceAPI_Update0_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/resource/delete", _SysResourceAPI_Delete0_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/sys/resource/tree", _SysResourceAPI_ListTree0_HTTP_Handler(srv))
 }
 
 func _SysResourceAPI_Create0_HTTP_Handler(srv SysResourceAPIHTTPServer) func(ctx http.Context) error {
@@ -132,7 +132,7 @@ func NewSysResourceAPIHTTPClient(client *http.Client) SysResourceAPIHTTPClient {
 
 func (c *SysResourceAPIHTTPClientImpl) Create(ctx context.Context, in *SysResourceCreateRequest, opts ...http.CallOption) (*SysResourceCreateResponse, error) {
 	var out SysResourceCreateResponse
-	pattern := "/api/manager/v1/sys/resource/create"
+	pattern := "/admin/manager/v1/sys/resource/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysResourceAPICreate))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -145,7 +145,7 @@ func (c *SysResourceAPIHTTPClientImpl) Create(ctx context.Context, in *SysResour
 
 func (c *SysResourceAPIHTTPClientImpl) Delete(ctx context.Context, in *SysResourceDeleteRequest, opts ...http.CallOption) (*SysResourceDeleteResponse, error) {
 	var out SysResourceDeleteResponse
-	pattern := "/api/manager/v1/sys/resource/delete"
+	pattern := "/admin/manager/v1/sys/resource/delete"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysResourceAPIDelete))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -158,7 +158,7 @@ func (c *SysResourceAPIHTTPClientImpl) Delete(ctx context.Context, in *SysResour
 
 func (c *SysResourceAPIHTTPClientImpl) ListTree(ctx context.Context, in *SysResourceTreeRequest, opts ...http.CallOption) (*SysResourceTreeResponse, error) {
 	var out SysResourceTreeResponse
-	pattern := "/api/manager/v1/sys/resource/tree"
+	pattern := "/admin/manager/v1/sys/resource/tree"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysResourceAPIListTree))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -171,7 +171,7 @@ func (c *SysResourceAPIHTTPClientImpl) ListTree(ctx context.Context, in *SysReso
 
 func (c *SysResourceAPIHTTPClientImpl) Update(ctx context.Context, in *SysResourceUpdateRequest, opts ...http.CallOption) (*SysResourceUpdateResponse, error) {
 	var out SysResourceUpdateResponse
-	pattern := "/api/manager/v1/sys/resource/update"
+	pattern := "/admin/manager/v1/sys/resource/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSysResourceAPIUpdate))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	v1 "rockimserver/apis/rockim/service/user/v1"
 	"rockimserver/app/logic/user/conf"
@@ -13,6 +14,7 @@ func NewGRPCServer(c *conf.Server, user *service.UserService, auth *service.Auth
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
+			validate.Validator(),
 		),
 	}
 	if c.Grpc.Network != "" {

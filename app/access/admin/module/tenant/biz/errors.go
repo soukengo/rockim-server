@@ -6,6 +6,6 @@ import (
 )
 
 var (
-	ErrPasswordIncorrect    = errors.Conflict(reasons.AdminTenantErrorReason_TENANT_PASSWORD_INCORRECT.String(), "Password is incorrect")
-	ErrAuthorizationInvalid = errors.Conflict(reasons.AdminTenantErrorReason_TENANT_AUTHORIZATION_INVALID.String(), "Authorization invalid")
+	ErrPasswordIncorrect    = errors.BadRequest(reasons.Admin_TENANT_PASSWORD_INCORRECT.String(), "Password is incorrect")
+	ErrAuthorizationInvalid = errors.BadRequest(reasons.Admin_TENANT_AUTHORIZATION_INVALID.String(), "Authorization invalid")
 )

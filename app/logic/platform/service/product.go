@@ -4,6 +4,7 @@ import (
 	"context"
 	v1 "rockimserver/apis/rockim/service/platform/v1"
 	"rockimserver/app/logic/platform/biz"
+	"rockimserver/app/logic/platform/biz/options"
 	"rockimserver/pkg/util/copier"
 )
 
@@ -17,7 +18,7 @@ func NewProductService(uc *biz.ProductUseCase) *ProductService {
 }
 
 func (s *ProductService) Create(ctx context.Context, in *v1.ProductCreateRequest) (out *v1.ProductCreateResponse, err error) {
-	req := &biz.ProductCreateRequest{}
+	req := &options.ProductCreateOptions{}
 	err = copier.Copy(req, in)
 	if err != nil {
 		return
@@ -31,7 +32,7 @@ func (s *ProductService) Create(ctx context.Context, in *v1.ProductCreateRequest
 }
 
 func (s *ProductService) Update(ctx context.Context, in *v1.ProductUpdateRequest) (out *v1.ProductUpdateResponse, err error) {
-	req := &biz.ProductUpdateRequest{}
+	req := &options.ProductUpdateOptions{}
 	err = copier.Copy(req, in)
 	if err != nil {
 		return

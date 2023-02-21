@@ -35,6 +35,232 @@ var (
 	_ = sort.Sort
 )
 
+// Validate checks the field values on AuthCodeRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *AuthCodeRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AuthCodeRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// AuthCodeRequestMultiError, or nil if none found.
+func (m *AuthCodeRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AuthCodeRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if utf8.RuneCountInString(m.GetProductId()) < 1 {
+		err := AuthCodeRequestValidationError{
+			field:  "ProductId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if utf8.RuneCountInString(m.GetAccount()) < 1 {
+		err := AuthCodeRequestValidationError{
+			field:  "Account",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return AuthCodeRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// AuthCodeRequestMultiError is an error wrapping multiple validation errors
+// returned by AuthCodeRequest.ValidateAll() if the designated constraints
+// aren't met.
+type AuthCodeRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AuthCodeRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AuthCodeRequestMultiError) AllErrors() []error { return m }
+
+// AuthCodeRequestValidationError is the validation error returned by
+// AuthCodeRequest.Validate if the designated constraints aren't met.
+type AuthCodeRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AuthCodeRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AuthCodeRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AuthCodeRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AuthCodeRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AuthCodeRequestValidationError) ErrorName() string { return "AuthCodeRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e AuthCodeRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAuthCodeRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AuthCodeRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AuthCodeRequestValidationError{}
+
+// Validate checks the field values on AuthCodeResponse with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *AuthCodeResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AuthCodeResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// AuthCodeResponseMultiError, or nil if none found.
+func (m *AuthCodeResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AuthCodeResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for AuthCode
+
+	// no validation rules for ExpireTime
+
+	if len(errors) > 0 {
+		return AuthCodeResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// AuthCodeResponseMultiError is an error wrapping multiple validation errors
+// returned by AuthCodeResponse.ValidateAll() if the designated constraints
+// aren't met.
+type AuthCodeResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AuthCodeResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AuthCodeResponseMultiError) AllErrors() []error { return m }
+
+// AuthCodeResponseValidationError is the validation error returned by
+// AuthCodeResponse.Validate if the designated constraints aren't met.
+type AuthCodeResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AuthCodeResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AuthCodeResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AuthCodeResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AuthCodeResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AuthCodeResponseValidationError) ErrorName() string { return "AuthCodeResponseValidationError" }
+
+// Error satisfies the builtin error interface
+func (e AuthCodeResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAuthCodeResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AuthCodeResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AuthCodeResponseValidationError{}
+
 // Validate checks the field values on LoginRequest with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
@@ -57,9 +283,27 @@ func (m *LoginRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for ProductId
+	if utf8.RuneCountInString(m.GetProductId()) < 1 {
+		err := LoginRequestValidationError{
+			field:  "ProductId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
-	// no validation rules for Account
+	if utf8.RuneCountInString(m.GetAuthCode()) < 1 {
+		err := LoginRequestValidationError{
+			field:  "AuthCode",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if len(errors) > 0 {
 		return LoginRequestMultiError(errors)
@@ -160,9 +404,9 @@ func (m *LoginResponse) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Uid
-
 	// no validation rules for Token
+
+	// no validation rules for ExpireTime
 
 	if len(errors) > 0 {
 		return LoginResponseMultiError(errors)
@@ -241,3 +485,231 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = LoginResponseValidationError{}
+
+// Validate checks the field values on TokenCheckRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *TokenCheckRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on TokenCheckRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// TokenCheckRequestMultiError, or nil if none found.
+func (m *TokenCheckRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *TokenCheckRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if utf8.RuneCountInString(m.GetProductId()) < 1 {
+		err := TokenCheckRequestValidationError{
+			field:  "ProductId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if utf8.RuneCountInString(m.GetToken()) < 1 {
+		err := TokenCheckRequestValidationError{
+			field:  "Token",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return TokenCheckRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// TokenCheckRequestMultiError is an error wrapping multiple validation errors
+// returned by TokenCheckRequest.ValidateAll() if the designated constraints
+// aren't met.
+type TokenCheckRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m TokenCheckRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m TokenCheckRequestMultiError) AllErrors() []error { return m }
+
+// TokenCheckRequestValidationError is the validation error returned by
+// TokenCheckRequest.Validate if the designated constraints aren't met.
+type TokenCheckRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e TokenCheckRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e TokenCheckRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e TokenCheckRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e TokenCheckRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e TokenCheckRequestValidationError) ErrorName() string {
+	return "TokenCheckRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e TokenCheckRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sTokenCheckRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = TokenCheckRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = TokenCheckRequestValidationError{}
+
+// Validate checks the field values on TokenCheckResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *TokenCheckResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on TokenCheckResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// TokenCheckResponseMultiError, or nil if none found.
+func (m *TokenCheckResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *TokenCheckResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Uid
+
+	if len(errors) > 0 {
+		return TokenCheckResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// TokenCheckResponseMultiError is an error wrapping multiple validation errors
+// returned by TokenCheckResponse.ValidateAll() if the designated constraints
+// aren't met.
+type TokenCheckResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m TokenCheckResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m TokenCheckResponseMultiError) AllErrors() []error { return m }
+
+// TokenCheckResponseValidationError is the validation error returned by
+// TokenCheckResponse.Validate if the designated constraints aren't met.
+type TokenCheckResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e TokenCheckResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e TokenCheckResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e TokenCheckResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e TokenCheckResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e TokenCheckResponseValidationError) ErrorName() string {
+	return "TokenCheckResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e TokenCheckResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sTokenCheckResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = TokenCheckResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = TokenCheckResponseValidationError{}

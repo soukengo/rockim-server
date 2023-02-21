@@ -31,9 +31,9 @@ type TenantAPIHTTPServer interface {
 
 func RegisterTenantAPIHTTPServer(s *http.Server, srv TenantAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/manager/v1/tenant/tenant/create", _TenantAPI_Create4_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/tenant/tenant/update", _TenantAPI_Update4_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/tenant/tenant/paging", _TenantAPI_Paging2_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/tenant/tenant/create", _TenantAPI_Create4_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/tenant/tenant/update", _TenantAPI_Update4_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/tenant/tenant/paging", _TenantAPI_Paging2_HTTP_Handler(srv))
 }
 
 func _TenantAPI_Create4_HTTP_Handler(srv TenantAPIHTTPServer) func(ctx http.Context) error {
@@ -109,7 +109,7 @@ func NewTenantAPIHTTPClient(client *http.Client) TenantAPIHTTPClient {
 
 func (c *TenantAPIHTTPClientImpl) Create(ctx context.Context, in *TenantCreateRequest, opts ...http.CallOption) (*TenantCreateResponse, error) {
 	var out TenantCreateResponse
-	pattern := "/api/manager/v1/tenant/tenant/create"
+	pattern := "/admin/manager/v1/tenant/tenant/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantAPICreate))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -122,7 +122,7 @@ func (c *TenantAPIHTTPClientImpl) Create(ctx context.Context, in *TenantCreateRe
 
 func (c *TenantAPIHTTPClientImpl) Paging(ctx context.Context, in *TenantPagingRequest, opts ...http.CallOption) (*TenantPagingResponse, error) {
 	var out TenantPagingResponse
-	pattern := "/api/manager/v1/tenant/tenant/paging"
+	pattern := "/admin/manager/v1/tenant/tenant/paging"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantAPIPaging))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -135,7 +135,7 @@ func (c *TenantAPIHTTPClientImpl) Paging(ctx context.Context, in *TenantPagingRe
 
 func (c *TenantAPIHTTPClientImpl) Update(ctx context.Context, in *TenantUpdateRequest, opts ...http.CallOption) (*TenantUpdateResponse, error) {
 	var out TenantUpdateResponse
-	pattern := "/api/manager/v1/tenant/tenant/update"
+	pattern := "/admin/manager/v1/tenant/tenant/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantAPIUpdate))
 	opts = append(opts, http.PathTemplate(pattern))

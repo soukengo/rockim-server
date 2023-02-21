@@ -4,9 +4,10 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	mgo "go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	mgoopts "go.mongodb.org/mongo-driver/mongo/options"
 	"rockimserver/apis/rockim/service/platform/v1/types"
-	"rockimserver/app/logic/platform/biz"
+	"rockimserver/apis/rockim/shared"
+	"rockimserver/app/logic/platform/biz/options"
 	"rockimserver/app/logic/platform/data/database/convert"
 	"rockimserver/app/logic/platform/data/database/entity"
 	"rockimserver/pkg/component/database/mongo"
@@ -35,7 +36,7 @@ func (d *TenantData) GenID(ctx context.Context) (string, error) {
 
 func (d *TenantData) FindByID(ctx context.Context, id string) (t *types.Tenant, err error) {
 	var record entity.Tenant
-	err = d.mgo.FindOne(ctx, entity.TableTenant, bson.M{entity.MongoFieldId: id}, &record, options.FindOne())
+	err = d.mgo.FindOne(ctx, entity.TableTenant, bson.M{entity.MongoFieldId: id}, &record, mgoopts.FindOne())
 	if err != nil {
 		return
 	}
@@ -45,7 +46,7 @@ func (d *TenantData) FindByID(ctx context.Context, id string) (t *types.Tenant, 
 func (d *TenantData) FindIdByEmail(ctx context.Context, email string) (id string, err error) {
 	projection := bson.M{entity.MongoFieldId: 1}
 	var record entity.Tenant
-	err = d.mgo.FindOne(ctx, entity.TableTenant, bson.M{"email": email}, &record, options.FindOne().SetProjection(projection))
+	err = d.mgo.FindOne(ctx, entity.TableTenant, bson.M{"email": email}, &record, mgoopts.FindOne().SetProjection(projection))
 	if err != nil {
 		return
 	}
@@ -54,7 +55,7 @@ func (d *TenantData) FindIdByEmail(ctx context.Context, email string) (id string
 
 func (d *TenantData) ListByIds(ctx context.Context, ids []string) (results []*types.Tenant, err error) {
 	var records []*entity.Tenant
-	err = d.mgo.FindList(ctx, entity.TableTenant, bson.M{entity.MongoFieldId: bson.M{"$in": ids}}, &records, options.Find())
+	err = d.mgo.FindList(ctx, entity.TableTenant, bson.M{entity.MongoFieldId: bson.M{"$in": ids}}, &records, mgoopts.Find())
 	if err != nil {
 		return
 	}
@@ -85,9 +86,9 @@ func (d *TenantData) Delete(ctx context.Context, id string) (err error) {
 	return
 }
 
-func (d *TenantData) Paging(ctx context.Context, req *biz.TenantPagingRequest) (res *biz.TenantPagingResponse, err error) {
+func (d *TenantData) Paging(ctx context.Context, opts *options.TenantPagingOptions) (ret []*types.Tenant, paginated *shared.Paginated, err error) {
 	query := bson.M{}
-	cursor, p, err := d.mgo.Paginate(ctx, entity.TableTenant, query, req.Paginate)
+	cursor, p, err := d.mgo.Paginate(ctx, entity.TableTenant, query, opts.Paginate)
 	if err != nil {
 		return
 	}
@@ -100,6 +101,5 @@ func (d *TenantData) Paging(ctx context.Context, req *biz.TenantPagingRequest) (
 	for i, record := range records {
 		list[i] = convert.TenantProto(record)
 	}
-	res = &biz.TenantPagingResponse{List: list, Paginate: p}
-	return
+	return list, p, nil
 }

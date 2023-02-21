@@ -2,8 +2,9 @@ package biz
 
 import (
 	"context"
-	v1 "rockimserver/apis/rockim/service/platform/v1"
 	"rockimserver/apis/rockim/service/platform/v1/types"
+	"rockimserver/apis/rockim/shared/reasons"
+	"rockimserver/app/logic/platform/biz/options"
 	"rockimserver/pkg/errors"
 	"rockimserver/pkg/log"
 	"rockimserver/pkg/util/strings"
@@ -11,7 +12,7 @@ import (
 )
 
 var (
-	ErrProductNotFound = errors.NotFound(v1.ErrorReason_APP_NOT_FOUND.String(), "应用不存在")
+	ErrProductNotFound = errors.NotFound(reasons.Platform_PRODUCT_NOT_FOUND.String(), "应用不存在")
 )
 
 type ProductRepo interface {
@@ -23,15 +24,6 @@ type ProductRepo interface {
 	ListByTenant(ctx context.Context, tenantId string) (res []*types.Product, err error)
 }
 
-type ProductCreateRequest struct {
-	TenantId string
-	Name     string
-}
-type ProductUpdateRequest struct {
-	Id   string
-	Name string
-}
-
 type ProductUseCase struct {
 	repo ProductRepo
 }
@@ -40,7 +32,7 @@ func NewProductUseCase(repo ProductRepo) *ProductUseCase {
 	return &ProductUseCase{repo: repo}
 }
 
-func (uc *ProductUseCase) Create(ctx context.Context, req *ProductCreateRequest) (err error) {
+func (uc *ProductUseCase) Create(ctx context.Context, req *options.ProductCreateOptions) (err error) {
 	id, err := uc.repo.GenID(ctx)
 	if err != nil {
 		return
@@ -52,7 +44,7 @@ func (uc *ProductUseCase) Create(ctx context.Context, req *ProductCreateRequest)
 	return uc.repo.Create(ctx, record)
 }
 
-func (uc *ProductUseCase) Update(ctx context.Context, req *ProductUpdateRequest) (err error) {
+func (uc *ProductUseCase) Update(ctx context.Context, req *options.ProductUpdateOptions) (err error) {
 	record, err := uc.repo.FindById(ctx, req.Id)
 	if err != nil {
 		log.WithContext(ctx).Errorf("FindById error: %v", err)

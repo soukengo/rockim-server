@@ -8,12 +8,15 @@ package gateway
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"rockimserver/app/access/gateway/biz"
 	"rockimserver/app/access/gateway/conf"
-	"rockimserver/app/access/gateway/data"
-	"rockimserver/app/access/gateway/data/grpc"
+	"rockimserver/app/access/gateway/infra/grpc"
+	"rockimserver/app/access/gateway/module/client/biz"
+	"rockimserver/app/access/gateway/module/client/data"
+	"rockimserver/app/access/gateway/module/client/service"
+	biz2 "rockimserver/app/access/gateway/module/openapi/biz"
+	data2 "rockimserver/app/access/gateway/module/openapi/data"
+	service2 "rockimserver/app/access/gateway/module/openapi/service"
 	"rockimserver/app/access/gateway/server"
-	"rockimserver/app/access/gateway/service"
 	"rockimserver/pkg/component/discovery"
 )
 
@@ -25,18 +28,37 @@ func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server) (
 	if err != nil {
 		return nil, err
 	}
-	userAPIClient, err := grpc.NewUserClient(registryDiscovery)
+	productAPIClient, err := grpc.NewProductClient(registryDiscovery)
 	if err != nil {
 		return nil, err
 	}
+	productRepo := data.NewProductRepo(productAPIClient)
+	productUseCase := biz.NewProductUseCase(productRepo)
 	authAPIClient, err := grpc.NewAuthClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	authRepo := data.NewAuthRepo(authAPIClient)
+	authUseCase := biz.NewAuthUseCase(authRepo)
+	userAPIClient, err := grpc.NewUserClient(registryDiscovery)
 	if err != nil {
 		return nil, err
 	}
 	userRepo := data.NewUserRepo(userAPIClient, authAPIClient)
 	userUseCase := biz.NewUserUseCase(userRepo)
 	userService := service.NewUserService(userUseCase)
-	httpServer := server.NewHTTPServer(confServer, userService)
+	authService := service.NewAuthService(authUseCase)
+	clientServiceGroup := server.NewClientServiceGroup(productUseCase, authUseCase, userService, authService)
+	bizProductRepo := data2.NewProductRepo(productAPIClient)
+	bizProductUseCase := biz2.NewProductUseCase(bizProductRepo)
+	bizUserRepo := data2.NewUserRepo(userAPIClient, authAPIClient)
+	bizUserUseCase := biz2.NewUserUseCase(bizUserRepo)
+	serviceUserService := service2.NewUserService(bizUserUseCase)
+	bizAuthRepo := data2.NewAuthRepo(authAPIClient)
+	bizAuthUseCase := biz2.NewAuthUseCase(bizAuthRepo)
+	serviceAuthService := service2.NewAuthService(bizAuthUseCase)
+	openApiServiceGroup := server.NewOpenApiServiceGroup(bizProductUseCase, serviceUserService, serviceAuthService)
+	httpServer := server.NewHTTPServer(confServer, clientServiceGroup, openApiServiceGroup)
 	app := newApp(env, httpServer)
 	return app, nil
 }

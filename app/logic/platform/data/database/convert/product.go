@@ -12,6 +12,7 @@ func ProductProto(source *entity.Product) *types.Product {
 		UpdateTime: source.UpdateTime,
 		TenantId:   source.TenantId,
 		Name:       source.Name,
+		ProductKey: source.ProductKey,
 	}
 }
 func ProductEntity(source *types.Product) *entity.Product {
@@ -21,5 +22,6 @@ func ProductEntity(source *types.Product) *entity.Product {
 		UpdateTime: source.UpdateTime,
 		TenantId:   source.TenantId,
 		Name:       source.Name,
+		ProductKey: source.ProductKey,
 	}
 }

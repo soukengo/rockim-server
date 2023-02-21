@@ -27,7 +27,7 @@ type AuthAPIHTTPServer interface {
 
 func RegisterAuthAPIHTTPServer(s *http.Server, srv AuthAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/tenant/v1/auth/login", _AuthAPI_Login0_HTTP_Handler(srv))
+	r.POST("/admin/tenant/v1/auth/login", _AuthAPI_Login0_HTTP_Handler(srv))
 }
 
 func _AuthAPI_Login0_HTTP_Handler(srv AuthAPIHTTPServer) func(ctx http.Context) error {
@@ -63,7 +63,7 @@ func NewAuthAPIHTTPClient(client *http.Client) AuthAPIHTTPClient {
 
 func (c *AuthAPIHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts ...http.CallOption) (*LoginResponse, error) {
 	var out LoginResponse
-	pattern := "/api/tenant/v1/auth/login"
+	pattern := "/admin/tenant/v1/auth/login"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAuthAPILogin))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -11,10 +11,11 @@ import (
 	"rockimserver/app/logic/user/biz"
 	"rockimserver/app/logic/user/conf"
 	"rockimserver/app/logic/user/data"
-	"rockimserver/app/logic/user/data/cache"
+	cache2 "rockimserver/app/logic/user/data/cache"
 	"rockimserver/app/logic/user/data/database"
 	"rockimserver/app/logic/user/server"
 	"rockimserver/app/logic/user/service"
+	"rockimserver/pkg/component/cache"
 	"rockimserver/pkg/component/database/mongo"
 	"rockimserver/pkg/component/database/redis"
 	"rockimserver/pkg/component/discovery"
@@ -23,15 +24,20 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, mongoConfig *mongo.Config, redisConfig *redis.Config) (*kratos.App, error) {
+func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
 	client := mongo.NewClient(mongoConfig)
 	userData := database.NewUserData(client)
 	redisClient := redis.NewClient(redisConfig)
-	cacheUserData := cache.NewUserData(redisClient)
+	cacheUserData := cache2.NewUserData(redisClient, cacheConfig)
 	userRepo := data.NewUserRepo(userData, cacheUserData)
 	userUseCase := biz.NewUserUseCase(userRepo)
 	userService := service.NewUserService(userUseCase)
-	authService := service.NewAuthService(userUseCase)
+	authCodeData := cache2.NewAuthCodeData(redisClient, cacheConfig)
+	authCodeRepo := data.NewAuthCodeRepo(authCodeData)
+	accessTokenData := cache2.NewAccessTokenData(redisClient, cacheConfig)
+	accessTokenRepo := data.NewAccessTokenRepo(accessTokenData)
+	authUseCase := biz.NewAuthUseCase(authCodeRepo, accessTokenRepo, userRepo)
+	authService := service.NewAuthService(authUseCase)
 	grpcServer := server.NewGRPCServer(confServer, userService, authService)
 	registrar, err := discovery.NewRegistrar(config)
 	if err != nil {

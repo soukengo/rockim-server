@@ -29,7 +29,7 @@ func NewManagerServiceGroup(authCfg *conf.Auth, authSrv *service.AuthService, se
 }
 
 func (g *ManagerServiceGroup) Register(srv *http.Server) {
-	srv.Use("/rockim.admin.manager.v1.*", checkManagerAuth(g.authCfg))
+	srv.Use("/rockim.api.admin.manager.v1.*", g.checkAuth())
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	v1.RegisterSessionAPIHTTPServer(srv, g.sessionSrv)
 	v1.RegisterSysUserAPIHTTPServer(srv, g.platUserSrv)
@@ -39,11 +39,11 @@ func (g *ManagerServiceGroup) Register(srv *http.Server) {
 	v1.RegisterSysTenantResourceAPIHTTPServer(srv, g.tenantResourceSrv)
 }
 
-func checkManagerAuth(authCfg *conf.Auth) middleware.Middleware {
+func (g *ManagerServiceGroup) checkAuth() middleware.Middleware {
 	whiteList := make(map[string]struct{})
 	whiteList[v1.OperationAuthAPILogin] = struct{}{}
 	return selector.Server(jwtAuth.Server(func(token *jwtV4.Token) (interface{}, error) {
-		return []byte(authCfg.Jwt.AppKey), nil
+		return []byte(g.authCfg.Jwt.AppKey), nil
 	},
 		jwtAuth.WithSigningMethod(jwtV4.SigningMethodHS256),
 		jwtAuth.WithClaims(func() jwtV4.Claims {

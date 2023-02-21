@@ -25,17 +25,17 @@ func NewTenantServiceGroup(authCfg *conf.Auth, authSrv *service.AuthService, ses
 }
 
 func (g *TenantServiceGroup) Register(srv *http.Server) {
-	srv.Use("/rockim.admin.tenant.v1.*", checkTenantAuth(g.authCfg))
+	srv.Use("/rockim.api.admin.tenant.v1.*", g.checkAuth())
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	v1.RegisterSessionAPIHTTPServer(srv, g.sessionSrv)
 	v1.RegisterProductAPIHTTPServer(srv, g.productSrv)
 }
 
-func checkTenantAuth(authCfg *conf.Auth) middleware.Middleware {
+func (g *TenantServiceGroup) checkAuth() middleware.Middleware {
 	whiteList := make(map[string]struct{})
 	whiteList[v1.OperationAuthAPILogin] = struct{}{}
 	return selector.Server(jwtAuth.Server(func(token *jwtV4.Token) (interface{}, error) {
-		return []byte(authCfg.Jwt.AppKey), nil
+		return []byte(g.authCfg.Jwt.AppKey), nil
 	},
 		jwtAuth.WithSigningMethod(jwtV4.SigningMethodHS256),
 		jwtAuth.WithClaims(func() jwtV4.Claims {

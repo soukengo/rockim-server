@@ -5,6 +5,7 @@ import (
 	"rockimserver/apis/rockim/service/platform/v1/types"
 	"rockimserver/app/logic/platform/biz"
 	"rockimserver/app/logic/platform/data/database"
+	"rockimserver/pkg/errors"
 )
 
 type productRepo struct {
@@ -27,8 +28,15 @@ func (r *productRepo) Update(ctx context.Context, record *types.Product) error {
 	return r.db.Update(ctx, record)
 }
 
-func (r *productRepo) FindById(ctx context.Context, id string) (*types.Product, error) {
-	return r.db.FindByID(ctx, id)
+func (r *productRepo) FindById(ctx context.Context, id string) (out *types.Product, err error) {
+	out, err = r.db.FindByID(ctx, id)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			err = biz.ErrProductNotFound
+		}
+		return
+	}
+	return
 }
 
 func (r *productRepo) ListByIds(ctx context.Context, ids []string) ([]*types.Product, error) {

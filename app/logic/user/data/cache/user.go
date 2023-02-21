@@ -8,23 +8,27 @@ import (
 )
 
 type UserData struct {
-	redisCli *redis.Client
+	cache        cache.ValueCache[types.User]
+	accountCache cache.ValueCache[string]
 }
 
-func NewUserData(redisCli *redis.Client) *UserData {
-	return &UserData{redisCli: redisCli}
+func NewUserData(redisCli *redis.Client, cfg *cache.Config) *UserData {
+	return &UserData{
+		cache:        newValueCache[types.User](redisCli, cfg.Category(keyUser)),
+		accountCache: newValueCache[string](redisCli, cfg.Category(keyUserAccount)),
+	}
 }
 
 func (d *UserData) FindUserByID(ctx context.Context, productId string, uid string) (*types.User, error) {
-	val, err := d.genCache(productId, uid).Get(ctx)
+	val, err := d.cache.Get(ctx, genKey(productId, uid))
 	return val, err
 }
 func (d *UserData) SaveUser(ctx context.Context, productId string, uid string, record *types.User) error {
-	return d.genCache(productId, uid).Set(ctx, record)
+	return d.cache.Set(ctx, genKey(productId, uid), record)
 }
 
 func (d *UserData) FindUidByAccount(ctx context.Context, productId string, account string) (id string, err error) {
-	val, err := d.genAccountCache(productId, account).Get(ctx)
+	val, err := d.accountCache.Get(ctx, genKey(productId, account))
 	if err != nil {
 		return
 	}
@@ -37,18 +41,8 @@ func (d *UserData) SaveAccountUid(ctx context.Context, productId string, account
 	if len(uid) == 0 {
 		val = nil
 	}
-	return d.genAccountCache(productId, account).Set(ctx, val)
+	return d.accountCache.Set(ctx, genKey(productId, account), val)
 }
 func (d *UserData) DeleteAccountUid(ctx context.Context, productId string, account string) error {
-	return d.genAccountCache(productId, account).Delete(ctx)
-}
-
-// genCache generates a cache for user record
-func (d *UserData) genCache(productId string, uid string) cache.ValueCache[types.User] {
-	return newValueCache[types.User](d.redisCli, GenUserCacheKey(productId, uid))
-}
-
-// genAccountCache generates a cache for user account to uid
-func (d *UserData) genAccountCache(productId string, account string) cache.ValueCache[string] {
-	return newValueCache[string](d.redisCli, GenUserAccountCacheKey(productId, account))
+	return d.accountCache.Delete(ctx, genKey(productId, account))
 }

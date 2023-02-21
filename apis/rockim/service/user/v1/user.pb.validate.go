@@ -57,13 +57,40 @@ func (m *UserRegisterRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for ProductId
+	if utf8.RuneCountInString(m.GetProductId()) < 1 {
+		err := UserRegisterRequestValidationError{
+			field:  "ProductId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	// no validation rules for Bucket
 
-	// no validation rules for Account
+	if utf8.RuneCountInString(m.GetAccount()) < 1 {
+		err := UserRegisterRequestValidationError{
+			field:  "Account",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
-	// no validation rules for Name
+	if utf8.RuneCountInString(m.GetName()) < 1 {
+		err := UserRegisterRequestValidationError{
+			field:  "Name",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	// no validation rules for Fields
 
@@ -300,9 +327,27 @@ func (m *UserFindRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for ProductId
+	if utf8.RuneCountInString(m.GetProductId()) < 1 {
+		err := UserFindRequestValidationError{
+			field:  "ProductId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
-	// no validation rules for Account
+	if utf8.RuneCountInString(m.GetAccount()) < 1 {
+		err := UserFindRequestValidationError{
+			field:  "Account",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if len(errors) > 0 {
 		return UserFindRequestMultiError(errors)

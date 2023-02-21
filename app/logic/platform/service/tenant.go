@@ -4,6 +4,7 @@ import (
 	"context"
 	v1 "rockimserver/apis/rockim/service/platform/v1"
 	"rockimserver/app/logic/platform/biz"
+	"rockimserver/app/logic/platform/biz/options"
 	"rockimserver/pkg/util/copier"
 )
 
@@ -17,7 +18,7 @@ func NewTenantService(uc *biz.TenantUseCase) *TenantService {
 }
 
 func (s *TenantService) Create(ctx context.Context, in *v1.TenantCreateRequest) (reply *v1.TenantCreateResponse, err error) {
-	req := &biz.TenantCreateRequest{}
+	req := &options.TenantCreateOptions{}
 	err = copier.Copy(req, in)
 	if err != nil {
 		return
@@ -31,7 +32,7 @@ func (s *TenantService) Create(ctx context.Context, in *v1.TenantCreateRequest) 
 }
 
 func (s *TenantService) Update(ctx context.Context, in *v1.TenantUpdateRequest) (reply *v1.TenantUpdateResponse, err error) {
-	req := &biz.TenantUpdateRequest{}
+	req := &options.TenantUpdateOptions{}
 	err = copier.Copy(req, in)
 	if err != nil {
 		return
@@ -45,16 +46,16 @@ func (s *TenantService) Update(ctx context.Context, in *v1.TenantUpdateRequest) 
 }
 
 func (s *TenantService) Paging(ctx context.Context, in *v1.TenantPagingRequest) (reply *v1.TenantPagingResponse, err error) {
-	req := &biz.TenantPagingRequest{}
+	req := &options.TenantPagingOptions{}
 	err = copier.Copy(req, in)
 	if err != nil {
 		return
 	}
-	res, err := s.uc.Paging(ctx, req)
+	list, paginate, err := s.uc.Paging(ctx, req)
 	if err != nil {
 		return
 	}
-	reply = &v1.TenantPagingResponse{List: res.List, Paginate: res.Paginate}
+	reply = &v1.TenantPagingResponse{List: list, Paginate: paginate}
 	return
 }
 

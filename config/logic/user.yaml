@@ -19,3 +19,14 @@ database:
     addr:
       - 127.0.0.1:6379
     password: ""
+cache:
+  default:
+    expires: "24h"
+    codec: "json"
+  categories:
+    - category: "user"
+      expire: "24h"
+    - category: "auth.code"
+      expire: "10m"
+    - category: "auth.token"
+      expire: "24h"

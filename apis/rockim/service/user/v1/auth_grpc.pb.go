@@ -22,8 +22,12 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthAPIClient interface {
-	// 登录接口
+	// 获取授权码（服务端调用）
+	CreateAuthCode(ctx context.Context, in *AuthCodeRequest, opts ...grpc.CallOption) (*AuthCodeResponse, error)
+	// 登录接口（客户端调用）
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	// 验证访问令牌（客户端接口访问验证）
+	CheckToken(ctx context.Context, in *TokenCheckRequest, opts ...grpc.CallOption) (*TokenCheckResponse, error)
 }
 
 type authAPIClient struct {
@@ -32,6 +36,15 @@ type authAPIClient struct {
 
 func NewAuthAPIClient(cc grpc.ClientConnInterface) AuthAPIClient {
 	return &authAPIClient{cc}
+}
+
+func (c *authAPIClient) CreateAuthCode(ctx context.Context, in *AuthCodeRequest, opts ...grpc.CallOption) (*AuthCodeResponse, error) {
+	out := new(AuthCodeResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.user.v1.AuthAPI/CreateAuthCode", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *authAPIClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
@@ -43,12 +56,25 @@ func (c *authAPIClient) Login(ctx context.Context, in *LoginRequest, opts ...grp
 	return out, nil
 }
 
+func (c *authAPIClient) CheckToken(ctx context.Context, in *TokenCheckRequest, opts ...grpc.CallOption) (*TokenCheckResponse, error) {
+	out := new(TokenCheckResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.user.v1.AuthAPI/CheckToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthAPIServer is the server API for AuthAPI service.
 // All implementations must embed UnimplementedAuthAPIServer
 // for forward compatibility
 type AuthAPIServer interface {
-	// 登录接口
+	// 获取授权码（服务端调用）
+	CreateAuthCode(context.Context, *AuthCodeRequest) (*AuthCodeResponse, error)
+	// 登录接口（客户端调用）
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	// 验证访问令牌（客户端接口访问验证）
+	CheckToken(context.Context, *TokenCheckRequest) (*TokenCheckResponse, error)
 	mustEmbedUnimplementedAuthAPIServer()
 }
 
@@ -56,8 +82,14 @@ type AuthAPIServer interface {
 type UnimplementedAuthAPIServer struct {
 }
 
+func (UnimplementedAuthAPIServer) CreateAuthCode(context.Context, *AuthCodeRequest) (*AuthCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAuthCode not implemented")
+}
 func (UnimplementedAuthAPIServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedAuthAPIServer) CheckToken(context.Context, *TokenCheckRequest) (*TokenCheckResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckToken not implemented")
 }
 func (UnimplementedAuthAPIServer) mustEmbedUnimplementedAuthAPIServer() {}
 
@@ -70,6 +102,24 @@ type UnsafeAuthAPIServer interface {
 
 func RegisterAuthAPIServer(s grpc.ServiceRegistrar, srv AuthAPIServer) {
 	s.RegisterService(&AuthAPI_ServiceDesc, srv)
+}
+
+func _AuthAPI_CreateAuthCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthAPIServer).CreateAuthCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.user.v1.AuthAPI/CreateAuthCode",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthAPIServer).CreateAuthCode(ctx, req.(*AuthCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _AuthAPI_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -90,6 +140,24 @@ func _AuthAPI_Login_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthAPI_CheckToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TokenCheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthAPIServer).CheckToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.user.v1.AuthAPI/CheckToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthAPIServer).CheckToken(ctx, req.(*TokenCheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthAPI_ServiceDesc is the grpc.ServiceDesc for AuthAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,8 +166,16 @@ var AuthAPI_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuthAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "CreateAuthCode",
+			Handler:    _AuthAPI_CreateAuthCode_Handler,
+		},
+		{
 			MethodName: "Login",
 			Handler:    _AuthAPI_Login_Handler,
+		},
+		{
+			MethodName: "CheckToken",
+			Handler:    _AuthAPI_CheckToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

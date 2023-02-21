@@ -17,7 +17,31 @@ type Options struct {
 	codec       Codec
 }
 
-func Default() *Options {
+func Apply(category *Category, opts ...Option) *Options {
+	return options(category).apply(opts...)
+}
+
+func WithExpire(expire time.Duration) Option {
+	return func(o *Options) { o.expire = expire }
+}
+
+func WithEmptyExpire(emptyExpire time.Duration) Option {
+	return func(o *Options) { o.emptyExpire = emptyExpire }
+}
+
+func WithCodec(codec Codec) Option {
+	return func(o *Options) { o.codec = codec }
+}
+
+func options(category *Category) *Options {
+	opts := defaultOptions()
+	if category != nil {
+		opts = opts.apply(category.Options()...)
+	}
+	return opts
+}
+
+func defaultOptions() *Options {
 	return &Options{expire: defaultExpire, emptyExpire: emptyExpire, codec: NewJsonCodec()}
 }
 
@@ -30,23 +54,15 @@ func (o *Options) EmptyExpire() time.Duration {
 }
 
 func (o *Options) Codec() Codec {
+	if o.codec == nil {
+		o.codec = NewJsonCodec()
+	}
 	return o.codec
 }
 
-func (o *Options) Apply(opts ...Option) *Options {
+func (o *Options) apply(opts ...Option) *Options {
 	for _, opt := range opts {
 		opt(o)
 	}
 	return o
-}
-
-func WithExpire(expire time.Duration) Option {
-	return func(o *Options) { o.expire = expire }
-}
-func WithEmptyExpire(emptyExpire time.Duration) Option {
-	return func(o *Options) { o.emptyExpire = emptyExpire }
-}
-
-func WithCodec(codec Codec) Option {
-	return func(o *Options) { o.codec = codec }
 }

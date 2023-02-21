@@ -29,8 +29,8 @@ type SessionAPIHTTPServer interface {
 
 func RegisterSessionAPIHTTPServer(s *http.Server, srv SessionAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/manager/v1/session/check", _SessionAPI_Check0_HTTP_Handler(srv))
-	r.POST("/api/manager/v1/session/resources", _SessionAPI_ListResource0_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/session/check", _SessionAPI_Check0_HTTP_Handler(srv))
+	r.POST("/admin/manager/v1/session/resources", _SessionAPI_ListResource0_HTTP_Handler(srv))
 }
 
 func _SessionAPI_Check0_HTTP_Handler(srv SessionAPIHTTPServer) func(ctx http.Context) error {
@@ -86,7 +86,7 @@ func NewSessionAPIHTTPClient(client *http.Client) SessionAPIHTTPClient {
 
 func (c *SessionAPIHTTPClientImpl) Check(ctx context.Context, in *SessionCheckRequest, opts ...http.CallOption) (*SessionCheckResponse, error) {
 	var out SessionCheckResponse
-	pattern := "/api/manager/v1/session/check"
+	pattern := "/admin/manager/v1/session/check"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSessionAPICheck))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -99,7 +99,7 @@ func (c *SessionAPIHTTPClientImpl) Check(ctx context.Context, in *SessionCheckRe
 
 func (c *SessionAPIHTTPClientImpl) ListResource(ctx context.Context, in *SessionListResourceRequest, opts ...http.CallOption) (*SessionListResourceResponse, error) {
 	var out SessionListResourceResponse
-	pattern := "/api/manager/v1/session/resources"
+	pattern := "/admin/manager/v1/session/resources"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationSessionAPIListResource))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -11,6 +11,8 @@ type Product struct {
 	TenantId string `bson:"tenant_id,omitempty"`
 	// 应用名称
 	Name string `bson:"name,omitempty"`
+	// 应用密钥
+	ProductKey string `bson:"product_key,omitempty"`
 }
 
 func (*Product) TableName() string {

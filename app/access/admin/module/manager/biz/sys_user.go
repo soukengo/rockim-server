@@ -18,8 +18,8 @@ const (
 )
 
 var (
-	ErrSysUserNotFound         = errors.NotFound(reasons.AdminSysUserErrorReason_SYS_USER_NOT_FOUND.String(), "账号不存在")
-	ErrSysUserAccountDuplicate = errors.Conflict(reasons.AdminSysUserErrorReason_SYS_USER_DUPLICATE.String(), "不能重复创建")
+	ErrSysUserNotFound         = errors.NotFound(reasons.Admin_SYS_USER_NOT_FOUND.String(), "账号不存在")
+	ErrSysUserAccountDuplicate = errors.BadRequest(reasons.Admin_SYS_USER_DUPLICATE.String(), "不能重复创建")
 )
 
 type SysUserRepo interface {

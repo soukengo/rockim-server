@@ -32,4 +32,7 @@ protoc-user:
 protoc-client:
 	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --go-http_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/client/v1/*.proto
 	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/client/v1/types/*.proto
+protoc-openapi:
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --go-http_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/openapi/v1/*.proto
+	#protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/openapi/v1/types/*.proto
 

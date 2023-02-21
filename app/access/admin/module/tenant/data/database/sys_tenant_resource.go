@@ -5,7 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	mgo "go.mongodb.org/mongo-driver/mongo"
-	mgoOpts "go.mongodb.org/mongo-driver/mongo/options"
+	mgoopts "go.mongodb.org/mongo-driver/mongo/options"
 	"rockimserver/app/access/admin/module/tenant/biz/types"
 	"rockimserver/app/access/admin/module/tenant/data/database/convert"
 	"rockimserver/app/access/admin/module/tenant/data/database/entity"
@@ -30,7 +30,7 @@ func (d *SysTenantResourceData) FindByID(ctx context.Context, id string) (resour
 		return nil, err
 	}
 	var record entity.SysTenantResource
-	err = d.mgo.FindOne(ctx, entity.TableSysTenantResource, bson.M{entity.MongoFieldId: objId}, &record, mgoOpts.FindOne())
+	err = d.mgo.FindOne(ctx, entity.TableSysTenantResource, bson.M{entity.MongoFieldId: objId}, &record, mgoopts.FindOne())
 	if err != nil {
 		return
 	}
@@ -39,7 +39,7 @@ func (d *SysTenantResourceData) FindByID(ctx context.Context, id string) (resour
 
 func (d *SysTenantResourceData) List(ctx context.Context) (results []*types.SysTenantResource, err error) {
 	var records []*entity.SysTenantResource
-	err = d.mgo.FindList(ctx, entity.TableSysTenantResource, bson.M{}, &records, mgoOpts.Find())
+	err = d.mgo.FindList(ctx, entity.TableSysTenantResource, bson.M{}, &records, mgoopts.Find())
 	if err != nil {
 		return
 	}
@@ -59,7 +59,7 @@ func (d *SysTenantResourceData) ListByIds(ctx context.Context, ids []string) (re
 		objIdList = append(objIdList, objId)
 	}
 	var records []*entity.SysTenantResource
-	err = d.mgo.FindList(ctx, entity.TableSysTenantResource, bson.M{entity.MongoFieldId: bson.M{"$in": objIdList}}, &records, mgoOpts.Find())
+	err = d.mgo.FindList(ctx, entity.TableSysTenantResource, bson.M{entity.MongoFieldId: bson.M{"$in": objIdList}}, &records, mgoopts.Find())
 	if err != nil {
 		return
 	}
