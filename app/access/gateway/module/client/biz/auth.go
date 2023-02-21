@@ -31,7 +31,7 @@ func (uc *AuthUseCase) CheckToken(ctx context.Context, opts *options.TokenCheckO
 	return uc.repo.CheckToken(ctx, opts)
 }
 
-func CurrentUid(ctx context.Context) (string, bool) {
+func CurrentUidFromContext(ctx context.Context) (string, bool) {
 	val := ctx.Value(ContextValueUID)
 	if val == nil {
 		return "", false

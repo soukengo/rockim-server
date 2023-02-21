@@ -16,7 +16,7 @@ func NewAuthService(uc *biz.AuthUseCase) *AuthService {
 }
 
 func (s *AuthService) Login(ctx context.Context, in *v1.LoginRequest) (out *v1.LoginResponse, err error) {
-	ret, err := s.uc.Login(ctx, &options.LoginOptions{ProductId: in.ProductId, AuthCode: in.AuthCode})
+	ret, err := s.uc.Login(ctx, &options.LoginOptions{ProductId: in.Base.ProductId, AuthCode: in.AuthCode})
 	if err != nil {
 		return
 	}

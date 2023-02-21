@@ -22,6 +22,7 @@ const _ = http.SupportPackageIsVersion1
 const OperationUserAPIFind = "/rockim.api.client.v1.UserAPI/Find"
 
 type UserAPIHTTPServer interface {
+	// Find Find 查找用户
 	Find(context.Context, *UserFindRequest) (*UserFindResponse, error)
 }
 

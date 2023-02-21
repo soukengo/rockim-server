@@ -29,6 +29,9 @@ func (r *authCodeRepo) FindByAuthCode(ctx context.Context, productId string, cod
 	}
 	return
 }
+func (r *authCodeRepo) DeleteAuthCode(ctx context.Context, productId string, code string) (err error) {
+	return r.cache.DeleteAuthCode(ctx, productId, code)
+}
 
 type accessTokenRepo struct {
 	cache *cache.AccessTokenData

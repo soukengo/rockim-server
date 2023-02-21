@@ -2,7 +2,6 @@ package server
 
 import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
-	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"rockimserver/app/access/gateway/conf"
 	_ "rockimserver/pkg/util/encoding/proto"
@@ -13,7 +12,6 @@ func NewHTTPServer(c *conf.Server, clientGroup *ClientServiceGroup, openapiGroup
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
-			validate.Validator(),
 		),
 	}
 	if c.Http.Network != "" {

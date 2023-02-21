@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
+	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	v1 "rockimserver/apis/rockim/api/client/v1"
@@ -24,7 +25,7 @@ const (
 )
 
 var (
-	ErrSignInvalid        = errors.BadRequest(reasons.Client_SIGN_INVALID.String(), "签名错误")
+	ErrSignInvalid        = errors.BadRequest(reasons.OpenAPI_SIGN_INVALID.String(), "签名错误")
 	ErrAccessTokenInvalid = errors.BadRequest(reasons.User_ACCESS_TOKEN_INVALID.String(), "访问令牌无效或已过期")
 )
 
@@ -40,15 +41,43 @@ func NewClientServiceGroup(productUc *biz.ProductUseCase, authUc *biz.AuthUseCas
 }
 
 func (g *ClientServiceGroup) Register(srv *http.Server) {
-	srv.Use("/rockim.api.client.v1.*", g.checkSign(), g.checkAuth())
+	srv.Use("/rockim.api.client.v1.*", g.checkSign(), g.checkAuth(), g.setAPIRequest(), validate.Validator())
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	v1.RegisterUserAPIHTTPServer(srv, g.userSrv)
+}
+
+type ClientAPIRequest interface {
+	SetBase(request *v1.APIRequest)
+	GetBase() *v1.APIRequest
+}
+
+// setAPIRequest 设置APIRequest
+func (g *ClientServiceGroup) setAPIRequest() middleware.Middleware {
+	return func(handler middleware.Handler) middleware.Handler {
+		return func(ctx context.Context, req any) (resp any, err error) {
+			tr, ok := transport.FromServerContext(ctx)
+			if !ok {
+				err = ErrSignInvalid.NewWithMessage("缺少签名参数")
+				return
+			}
+			r, ok := req.(ClientAPIRequest)
+			if ok {
+				if r.GetBase() == nil {
+					r.SetBase(&v1.APIRequest{})
+				}
+				if len(r.GetBase().ProductId) == 0 {
+					r.GetBase().ProductId = tr.RequestHeader().Get(clientHeaderProductId)
+				}
+			}
+			return handler(ctx, req)
+		}
+	}
 }
 
 // checkSign 接口签名验证
 func (g *ClientServiceGroup) checkSign() middleware.Middleware {
 	return func(handler middleware.Handler) middleware.Handler {
-		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
+		return func(ctx context.Context, req any) (reply any, err error) {
 			tr, ok := transport.FromServerContext(ctx)
 			if !ok {
 				err = ErrSignInvalid.NewWithMessage("缺少签名参数")
@@ -80,6 +109,7 @@ func (g *ClientServiceGroup) checkSign() middleware.Middleware {
 	}
 }
 
+// checkAuth 验证访问令牌
 func (g *ClientServiceGroup) checkAuth() middleware.Middleware {
 	whiteList := make(map[string]struct{})
 	whiteList[v1.OperationAuthAPILogin] = struct{}{}

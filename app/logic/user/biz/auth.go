@@ -20,6 +20,7 @@ var (
 type AuthCodeRepo interface {
 	SaveAuthCode(ctx context.Context, productId string, uid string, code string) (err error)
 	FindByAuthCode(ctx context.Context, productId string, code string) (string, error)
+	DeleteAuthCode(ctx context.Context, productId string, code string) error
 }
 
 type AccessTokenRepo interface {
@@ -75,12 +76,15 @@ func (uc *AuthUseCase) Login(ctx context.Context, in *options.LoginOptions) (out
 	if err != nil {
 		return
 	}
+	// 生成Token
 	expireTime := time.Now().Add(authTokenExpires).UnixMilli()
 	token := uuid.New().String() + authSeparator + strconv.FormatInt(expireTime, 10)
 	err = uc.tokenRepo.SaveAccessToken(ctx, in.ProductId, uid, token)
 	if err != nil {
 		return
 	}
+	// 清除code
+	_ = uc.repo.DeleteAuthCode(ctx, in.ProductId, in.AuthCode)
 	out = &types.AccessToken{Token: token, ExpireTime: expireTime}
 	return
 }

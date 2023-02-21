@@ -16,7 +16,7 @@ func NewAuthService(uc *biz.AuthUseCase) *AuthService {
 }
 
 func (s *AuthService) CreateAuthCode(ctx context.Context, in *v1.AuthCodeRequest) (out *v1.AuthCodeResponse, err error) {
-	ret, err := s.uc.CreateAuthCode(ctx, &options.AuthCodeCreateOptions{ProductId: in.ProductId, Account: in.Account})
+	ret, err := s.uc.CreateAuthCode(ctx, &options.AuthCodeCreateOptions{ProductId: in.Base.ProductId, Account: in.Account})
 	if err != nil {
 		return
 	}

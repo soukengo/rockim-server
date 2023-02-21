@@ -16,7 +16,7 @@ func NewUserService(uc *biz.UserUseCase) *UserService {
 }
 
 func (s *UserService) Find(ctx context.Context, in *v1.UserFindRequest) (out *v1.UserFindResponse, err error) {
-	user, err := s.uc.Find(ctx, in.ProductId, in.Account)
+	user, err := s.uc.Find(ctx, in.Base.ProductId, in.Account)
 	if err != nil {
 		return nil, err
 	}

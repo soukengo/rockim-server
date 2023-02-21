@@ -22,6 +22,7 @@ const _ = http.SupportPackageIsVersion1
 const OperationAuthAPICreateAuthCode = "/rockim.api.openapi.v1.AuthAPI/CreateAuthCode"
 
 type AuthAPIHTTPServer interface {
+	// CreateAuthCode CreateAuthCode 获取授权码
 	CreateAuthCode(context.Context, *AuthCodeRequest) (*AuthCodeResponse, error)
 }
 

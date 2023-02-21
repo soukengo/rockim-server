@@ -53,7 +53,7 @@ func (r *userRepo) FindUidByAccount(ctx context.Context, productId string, accou
 	}, func() (ret string, cont bool, err error) {
 		ret, err = r.db.FindUidByAccount(ctx, productId, account)
 		if err == nil || errors.IsNotFound(err) {
-			_ = r.cache.SaveAccountUid(ctx, productId, account, uid)
+			_ = r.cache.SaveAccountUid(ctx, productId, account, ret)
 		}
 		return
 	})

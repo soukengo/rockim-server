@@ -22,6 +22,7 @@ const _ = http.SupportPackageIsVersion1
 const OperationUserAPIRegister = "/rockim.api.openapi.v1.UserAPI/Register"
 
 type UserAPIHTTPServer interface {
+	// Register Register 注册用户
 	Register(context.Context, *UserRegisterRequest) (*UserRegisterResponse, error)
 }
 

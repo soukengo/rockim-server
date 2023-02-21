@@ -33,7 +33,7 @@ func NewAccessTokenData(redisCli *redis.Client, cfg *cache.Config) *AccessTokenD
 func (d *AuthCodeData) SaveAuthCode(ctx context.Context, productId string, uid string, code string) (err error) {
 	keySuffix := genKey(productId, uid)
 	oldCode, err := d.cache.Get(ctx, keySuffix)
-	if !errors.IsNotFound(err) {
+	if err != nil && !errors.IsNotFound(err) {
 		return
 	}
 	// 删除旧的code
@@ -47,7 +47,11 @@ func (d *AuthCodeData) SaveAuthCode(ctx context.Context, productId string, uid s
 	if len(code) == 0 {
 		val = nil
 	}
-	return d.cache.Set(ctx, keySuffix, val)
+	err = d.cache.Set(ctx, keySuffix, val)
+	if err != nil {
+		return
+	}
+	return d.reverseCache.Set(ctx, genKey(productId, code), &uid)
 }
 
 func (d *AuthCodeData) FindUidByAuthCode(ctx context.Context, productId string, code string) (id string, err error) {
@@ -58,11 +62,14 @@ func (d *AuthCodeData) FindUidByAuthCode(ctx context.Context, productId string, 
 	id = *val
 	return
 }
+func (d *AuthCodeData) DeleteAuthCode(ctx context.Context, productId string, code string) (err error) {
+	return d.reverseCache.Delete(ctx, genKey(productId, code))
+}
 
 func (d *AccessTokenData) SaveAccessToken(ctx context.Context, productId string, uid string, token string) (err error) {
 	keySuffix := genKey(productId, uid)
 	oldToken, err := d.cache.Get(ctx, keySuffix)
-	if !errors.IsNotFound(err) {
+	if err != nil && !errors.IsNotFound(err) {
 		return
 	}
 	// 删除旧的token
@@ -76,7 +83,11 @@ func (d *AccessTokenData) SaveAccessToken(ctx context.Context, productId string,
 	if len(token) == 0 {
 		val = nil
 	}
-	return d.cache.Set(ctx, keySuffix, val)
+	err = d.cache.Set(ctx, keySuffix, val)
+	if err != nil {
+		return
+	}
+	return d.reverseCache.Set(ctx, genKey(productId, token), &uid)
 }
 
 func (d *AccessTokenData) FindUidByAccessToken(ctx context.Context, productId string, token string) (id string, err error) {
