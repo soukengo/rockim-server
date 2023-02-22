@@ -22,6 +22,7 @@ const _ = http.SupportPackageIsVersion1
 const OperationAuthAPILogin = "/rockim.api.admin.tenant.v1.AuthAPI/Login"
 
 type AuthAPIHTTPServer interface {
+	// Login 登录请求
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 }
 

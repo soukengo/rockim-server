@@ -25,9 +25,13 @@ const OperationSysResourceAPIListTree = "/rockim.api.admin.manager.v1.SysResourc
 const OperationSysResourceAPIUpdate = "/rockim.api.admin.manager.v1.SysResourceAPI/Update"
 
 type SysResourceAPIHTTPServer interface {
+	// Create 创建资源
 	Create(context.Context, *SysResourceCreateRequest) (*SysResourceCreateResponse, error)
+	// Delete 删除资源
 	Delete(context.Context, *SysResourceDeleteRequest) (*SysResourceDeleteResponse, error)
+	// ListTree 获取资源列表
 	ListTree(context.Context, *SysResourceTreeRequest) (*SysResourceTreeResponse, error)
+	// Update 修改资源
 	Update(context.Context, *SysResourceUpdateRequest) (*SysResourceUpdateResponse, error)
 }
 

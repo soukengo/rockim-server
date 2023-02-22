@@ -27,11 +27,17 @@ const OperationSysRoleAPISaveResourceId = "/rockim.api.admin.manager.v1.SysRoleA
 const OperationSysRoleAPIUpdate = "/rockim.api.admin.manager.v1.SysRoleAPI/Update"
 
 type SysRoleAPIHTTPServer interface {
+	// Create 创建角色
 	Create(context.Context, *SysRoleCreateRequest) (*SysRoleCreateResponse, error)
+	// Delete 删除角色
 	Delete(context.Context, *SysRoleDeleteRequest) (*SysRoleDeleteResponse, error)
+	// ListResourceId 获取角色资源ID列表
 	ListResourceId(context.Context, *SysRoleResourceIdListRequest) (*SysRoleResourceIdListResponse, error)
+	// Paging 分页获取角色列表
 	Paging(context.Context, *SysRolePagingRequest) (*SysRolePagingResponse, error)
+	// SaveResourceId 保存角色资源ID
 	SaveResourceId(context.Context, *SysRoleResourceIdSaveRequest) (*SysRoleResourceIdSaveResponse, error)
+	// Update 修改角色
 	Update(context.Context, *SysRoleUpdateRequest) (*SysRoleUpdateResponse, error)
 }
 

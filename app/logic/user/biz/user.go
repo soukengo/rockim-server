@@ -53,7 +53,7 @@ func (uc *UserUseCase) Register(ctx context.Context, u *types.User) (*types.User
 	}
 	u.Id = uid
 	u.CreateTime = time.Now().UnixMilli()
-	u.Status = enums.UserStatus_USER_STATUS_NORMAL
+	u.Status = enums.User_USER_STATUS_NORMAL
 	err = uc.repo.Create(ctx, u)
 	if err != nil {
 		return nil, err

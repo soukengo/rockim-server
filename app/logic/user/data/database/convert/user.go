@@ -15,7 +15,7 @@ func UserProto(source *entity.ImUser) *types.User {
 		Account:    source.Account,
 		Name:       source.Name,
 		Fields:     source.Fields,
-		Status:     enums.UserStatus(source.Status),
+		Status:     enums.User_Status(source.Status),
 	}
 }
 func UserEntity(source *types.User) *entity.ImUser {

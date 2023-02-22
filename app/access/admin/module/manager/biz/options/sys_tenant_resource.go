@@ -5,7 +5,7 @@ import (
 )
 
 type SysTenantResourceOptions struct {
-	Category enums.AdminResourceCategory
+	Category enums.Admin_ResourceCategory
 	// 菜单名称
 	Name string
 	// 上级ID

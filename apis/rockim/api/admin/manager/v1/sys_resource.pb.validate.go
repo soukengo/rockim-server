@@ -36,7 +36,7 @@ var (
 	_ = anypb.Any{}
 	_ = sort.Sort
 
-	_ = enums.AdminResourceCategory(0)
+	_ = enums.Admin_ResourceCategory(0)
 )
 
 // Validate checks the field values on SysResourceOptions with the rules
@@ -61,7 +61,7 @@ func (m *SysResourceOptions) validate(all bool) error {
 
 	var errors []error
 
-	if _, ok := enums.AdminResourceCategory_name[int32(m.GetCategory())]; !ok {
+	if _, ok := enums.Admin_ResourceCategory_name[int32(m.GetCategory())]; !ok {
 		err := SysResourceOptionsValidationError{
 			field:  "Category",
 			reason: "value must be one of the defined enum values",

@@ -24,8 +24,11 @@ const OperationTenantAPIPaging = "/rockim.api.admin.manager.v1.TenantAPI/Paging"
 const OperationTenantAPIUpdate = "/rockim.api.admin.manager.v1.TenantAPI/Update"
 
 type TenantAPIHTTPServer interface {
+	// Create 创建商户
 	Create(context.Context, *TenantCreateRequest) (*TenantCreateResponse, error)
+	// Paging 分页获取商户列表
 	Paging(context.Context, *TenantPagingRequest) (*TenantPagingResponse, error)
+	// Update 修改商户
 	Update(context.Context, *TenantUpdateRequest) (*TenantUpdateResponse, error)
 }
 

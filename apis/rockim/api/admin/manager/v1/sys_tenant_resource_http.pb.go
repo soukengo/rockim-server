@@ -25,9 +25,13 @@ const OperationSysTenantResourceAPIListTree = "/rockim.api.admin.manager.v1.SysT
 const OperationSysTenantResourceAPIUpdate = "/rockim.api.admin.manager.v1.SysTenantResourceAPI/Update"
 
 type SysTenantResourceAPIHTTPServer interface {
+	// Create 创建资源
 	Create(context.Context, *TenantResourceCreateRequest) (*TenantResourceCreateResponse, error)
+	// Delete 删除资源
 	Delete(context.Context, *TenantResourceDeleteRequest) (*TenantResourceDeleteResponse, error)
+	// ListTree 获取资源列表
 	ListTree(context.Context, *TenantResourceTreeRequest) (*TenantResourceTreeResponse, error)
+	// Update 修改资源
 	Update(context.Context, *TenantResourceUpdateRequest) (*TenantResourceUpdateResponse, error)
 }
 

@@ -36,7 +36,7 @@ var (
 	_ = anypb.Any{}
 	_ = sort.Sort
 
-	_ = enums.AdminResourceCategory(0)
+	_ = enums.Admin_ResourceCategory(0)
 )
 
 // Validate checks the field values on SysTenantResource with the rules defined

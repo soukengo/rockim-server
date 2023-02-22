@@ -1,0 +1,32 @@
+discovery:
+  engine: etcd
+  etcd:
+    nodes:
+      - 127.0.0.1:2379
+server:
+  grpc:
+    addr: :6102
+    timeout: "10s"
+database:
+  mongodb:
+    address: mongodb://127.0.0.1:27017
+    username: rockim
+    password: rockim2022
+    database: rockim
+    authSource: admin
+  redis:
+    prefix: "ROCKIM:"
+    addr:
+      - 127.0.0.1:6379
+    password: ""
+cache:
+  default:
+    expires: "24h"
+    codec: "json"
+  categories:
+    - category: "user"
+      expire: "24h"
+    - category: "auth.code"
+      expire: "10m"
+    - category: "auth.token"
+      expire: "24h"

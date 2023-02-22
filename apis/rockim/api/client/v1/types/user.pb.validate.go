@@ -36,7 +36,7 @@ var (
 	_ = anypb.Any{}
 	_ = sort.Sort
 
-	_ = enums.UserStatus(0)
+	_ = enums.User_Status(0)
 )
 
 // Validate checks the field values on User with the rules defined in the proto

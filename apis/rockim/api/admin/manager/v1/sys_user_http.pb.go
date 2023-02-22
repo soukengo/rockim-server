@@ -27,11 +27,17 @@ const OperationSysUserAPISaveRoleId = "/rockim.api.admin.manager.v1.SysUserAPI/S
 const OperationSysUserAPIUpdate = "/rockim.api.admin.manager.v1.SysUserAPI/Update"
 
 type SysUserAPIHTTPServer interface {
+	// Create 创建用户
 	Create(context.Context, *SysUserCreateRequest) (*SysUserCreateResponse, error)
+	// Delete 删除用户
 	Delete(context.Context, *SysUserDeleteRequest) (*SysUserDeleteResponse, error)
+	// ListRoleId 获取用户角色ID列表
 	ListRoleId(context.Context, *SysUserRoleIdListRequest) (*SysUserRoleIdListResponse, error)
+	// Paging 获取用户列表
 	Paging(context.Context, *SysUserPagingRequest) (*SysUserPagingResponse, error)
+	// SaveRoleId 获取用户角色ID列表
 	SaveRoleId(context.Context, *SysUserRoleIdSaveRequest) (*SysUserRoleIdSaveResponse, error)
+	// Update 修改用户
 	Update(context.Context, *SysUserUpdateRequest) (*SysUserUpdateResponse, error)
 }
 

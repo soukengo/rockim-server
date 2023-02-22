@@ -19,12 +19,16 @@ func NewUserData(redisCli *redis.Client, cfg *cache.Config) *UserData {
 	}
 }
 
-func (d *UserData) FindUserByID(ctx context.Context, productId string, uid string) (*types.User, error) {
+func (d *UserData) FindByID(ctx context.Context, productId string, uid string) (*types.User, error) {
 	val, err := d.cache.Get(ctx, genKey(productId, uid))
 	return val, err
 }
 func (d *UserData) SaveUser(ctx context.Context, productId string, uid string, record *types.User) error {
 	return d.cache.Set(ctx, genKey(productId, uid), record)
+}
+
+func (d *UserData) DeleteUser(ctx context.Context, productId string, uid string) error {
+	return d.cache.Delete(ctx, genKey(productId, uid))
 }
 
 func (d *UserData) FindUidByAccount(ctx context.Context, productId string, account string) (id string, err error) {

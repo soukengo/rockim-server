@@ -14,7 +14,7 @@ func TenantProto(source *entity.Tenant) *types.Tenant {
 		Name:       source.Name,
 		Email:      source.Email,
 		Password:   source.Password,
-		Status:     enums.TenantStatus(source.Status),
+		Status:     enums.Tenant_Status(source.Status),
 	}
 }
 func TenantEntity(source *types.Tenant) *entity.Tenant {

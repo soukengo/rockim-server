@@ -11,7 +11,7 @@ func SysTenantResourceProto(source *entity.SysTenantResource) *types.SysTenantRe
 		Id:         source.Id.Hex(),
 		CreateTime: source.CreateTime,
 		UpdateTime: source.UpdateTime,
-		Category:   enums.AdminResourceCategory(source.Category),
+		Category:   enums.Admin_ResourceCategory(source.Category),
 		ParentId:   source.ParentId,
 		Name:       source.Name,
 		Url:        source.Url,

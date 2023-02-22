@@ -23,6 +23,7 @@ const OperationSessionAPICheck = "/rockim.api.admin.manager.v1.SessionAPI/Check"
 const OperationSessionAPIListResource = "/rockim.api.admin.manager.v1.SessionAPI/ListResource"
 
 type SessionAPIHTTPServer interface {
+	// Check 验证登录信息
 	Check(context.Context, *SessionCheckRequest) (*SessionCheckResponse, error)
 	ListResource(context.Context, *SessionListResourceRequest) (*SessionListResourceResponse, error)
 }

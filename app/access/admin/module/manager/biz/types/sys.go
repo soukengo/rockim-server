@@ -43,7 +43,7 @@ type SysResource struct {
 	// 创建时间
 	UpdateTime int64
 	// 分类
-	Category enums.AdminResourceCategory
+	Category enums.Admin_ResourceCategory
 	// 资源名称
 	Name string
 	// 上级ID
@@ -65,7 +65,7 @@ type SysTenantResource struct {
 	// 更新时间
 	UpdateTime int64
 	// 分类
-	Category enums.AdminResourceCategory
+	Category enums.Admin_ResourceCategory
 	// 资源名称
 	Name string
 	// 上级ID

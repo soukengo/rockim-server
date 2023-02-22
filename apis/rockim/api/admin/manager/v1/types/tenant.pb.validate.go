@@ -36,7 +36,7 @@ var (
 	_ = anypb.Any{}
 	_ = sort.Sort
 
-	_ = enums.TenantStatus(0)
+	_ = enums.Tenant_Status(0)
 )
 
 // Validate checks the field values on Tenant with the rules defined in the
