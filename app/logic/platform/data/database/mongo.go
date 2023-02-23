@@ -4,7 +4,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"rockimserver/app/logic/user/data/database/entity"
+	"rockimserver/app/logic/platform/data/database/entity"
 	"rockimserver/pkg/component/database/mongo"
 	"rockimserver/pkg/errors"
 )

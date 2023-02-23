@@ -8,19 +8,19 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/http"
 	jwtV4 "github.com/golang-jwt/jwt/v4"
 	v1 "rockimserver/apis/rockim/api/admin/tenant/v1"
-	"rockimserver/app/access/admin/conf"
 	"rockimserver/app/access/admin/module/tenant/biz"
 	"rockimserver/app/access/admin/module/tenant/service"
+	"rockimserver/pkg/component/auth"
 )
 
 type TenantServiceGroup struct {
-	authCfg    *conf.Auth
+	authCfg    *auth.Config
 	authSrv    *service.AuthService
 	sessionSrv *service.SessionService
 	productSrv *service.ProductService
 }
 
-func NewTenantServiceGroup(authCfg *conf.Auth, authSrv *service.AuthService, sessionSrv *service.SessionService, productSrv *service.ProductService) *TenantServiceGroup {
+func NewTenantServiceGroup(authCfg *auth.Config, authSrv *service.AuthService, sessionSrv *service.SessionService, productSrv *service.ProductService) *TenantServiceGroup {
 	return &TenantServiceGroup{authCfg: authCfg, authSrv: authSrv, sessionSrv: sessionSrv, productSrv: productSrv}
 }
 

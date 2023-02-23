@@ -25,7 +25,7 @@ func NewUserRepo(db *database.UserData, cache *cache.UserData) biz.UserRepo {
 
 func (r *userRepo) FindByID(ctx context.Context, productId string, uid string) (ret *types.User, err error) {
 	// 链式调用，先查缓存，再查数据库，最后回写缓存
-	ret, err = chain.Call[*types.User](func() (ret *types.User, cont bool, err error) {
+	ret, err = chain.CallWithResult[*types.User](func() (ret *types.User, cont bool, err error) {
 		ret, err = r.cache.FindByID(ctx, productId, uid)
 		// 正常查下到结果|没有缓存,不再查询数据库
 		cont = cache.IsErrNoCache(err)
@@ -45,7 +45,7 @@ func (r *userRepo) FindByID(ctx context.Context, productId string, uid string) (
 
 func (r *userRepo) FindUidByAccount(ctx context.Context, productId string, account string) (uid string, err error) {
 	// 链式调用，先查缓存，再查数据库，最后回写缓存
-	uid, err = chain.Call[string](func() (ret string, cont bool, err error) {
+	uid, err = chain.CallWithResult[string](func() (ret string, cont bool, err error) {
 		ret, err = r.cache.FindUidByAccount(ctx, productId, account)
 		// 正常查下到结果|没有缓存,不再查询数据库
 		cont = cache.IsErrNoCache(err)

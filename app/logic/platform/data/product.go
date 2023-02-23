@@ -38,7 +38,7 @@ func (r *productRepo) Update(ctx context.Context, record *types.Product) error {
 
 func (r *productRepo) FindById(ctx context.Context, id string) (out *types.Product, err error) {
 	// 链式调用，先查缓存，再查数据库，最后回写缓存
-	out, err = chain.Call[*types.Product](func() (ret *types.Product, cont bool, err error) {
+	out, err = chain.CallWithResult[*types.Product](func() (ret *types.Product, cont bool, err error) {
 		ret, err = r.cache.FindByID(ctx, id)
 		// 正常查下到结果|没有缓存,不再查询数据库
 		cont = cache.IsErrNoCache(err)

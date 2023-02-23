@@ -12,10 +12,13 @@ import (
 	"rockimserver/app/access/admin/infra"
 	"rockimserver/app/access/admin/module"
 	"rockimserver/app/access/admin/server"
+	"rockimserver/pkg/component/auth"
+	"rockimserver/pkg/component/database"
 	"rockimserver/pkg/component/discovery"
+	servercomponent "rockimserver/pkg/component/server"
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Env, *discovery.Config, *conf.Server, *conf.Auth, *conf.Database) (*kratos.App, error) {
+func wireApp(*conf.Config, *discovery.Config, *servercomponent.Config, *auth.Config, *database.Config) (*kratos.App, error) {
 	panic(wire.Build(infra.ProviderSet, module.ProviderSet, server.ProviderSet, newApp))
 }

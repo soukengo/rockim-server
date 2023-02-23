@@ -1,58 +1,45 @@
 package conf
 
 import (
-	"flag"
 	"rockimserver/apis/rockim/service"
+	"rockimserver/conf"
 	"rockimserver/pkg/component/config"
-	"rockimserver/pkg/component/discovery"
+	"rockimserver/pkg/component/server"
 	"rockimserver/pkg/log"
-	"time"
 )
 
-var (
-	configPath = ""
+const (
+	configName = "access-gateway.yaml"
 )
 
-func init() {
-	flag.StringVar(&configPath, "conf", "config/access/gateway.yaml", "config path, eg: -conf config.yaml")
-}
-
-func Load() (conf *Config, err error) {
-	conf = &Config{
-		Env: &Env{AppId: service.AppGateway},
+func Load() (cfg *Config, err error) {
+	global, err := conf.Load(service.AppPlatform)
+	if err != nil {
+		return
+	}
+	cfg = &Config{
 		Log: &log.Config{
 			LoggerConfig: log.LoggerConfig{
 				Level: "info",
-				Split: true,
+			},
+			Loggers: []log.LoggerConfig{
+				{Name: "mongo", Level: "info"},
 			},
 		},
 	}
-	source := config.NewFileSource(configPath)
+	source := config.NewEnvSource(global.Config, configName)
 	defer source.Close()
 	loader := config.NewLoader(source)
-	err = loader.Load(conf)
+	err = loader.Load(cfg)
+	if err != nil {
+		return
+	}
+	cfg.Global = global
 	return
 }
 
 type Config struct {
-	Env       *Env
-	Discovery *discovery.Config
-	Server    *Server
-	Log       *log.Config
-}
-
-type Env struct {
-	AppId   string
-	Env     string
-	Version string
-}
-
-type Server struct {
-	Http *Http
-}
-
-type Http struct {
-	Network string
-	Addr    string
-	Timeout time.Duration
+	Global *conf.Global
+	Server *server.Config
+	Log    *log.Config
 }

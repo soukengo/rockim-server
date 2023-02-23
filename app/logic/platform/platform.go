@@ -16,12 +16,12 @@ func New(version string) (app *kratos.App, err error) {
 		return
 	}
 	version = rockimserver.SetVersion(version)
-	cfg.Env.Version = version
+	cfg.Global.Version = version
 	err = configure(cfg)
 	if err != nil {
 		return
 	}
-	app, err = wireApp(cfg.Env, cfg.Discovery, cfg.Server, cfg.Database.Mongodb)
+	app, err = wireApp(cfg, cfg.Global.Discovery, cfg.Server, cfg.Database.Mongodb, cfg.Database.Redis, cfg.Cache)
 	if err != nil {
 		//err = errors.New(errors.UnknownCode, "", "wireApp error")
 		return
@@ -30,18 +30,18 @@ func New(version string) (app *kratos.App, err error) {
 }
 
 func configure(cfg *conf.Config) (err error) {
-	cfg.Log.AppId = cfg.Env.AppId
-	cfg.Log.AppVersion = cfg.Env.Version
+	cfg.Log.AppId = cfg.Global.AppId
+	cfg.Log.AppVersion = cfg.Global.Version
 	err = log.Configure(cfg.Log)
 	if err != nil {
 		return
 	}
 	return
 }
-func newApp(env *conf.Env, gs *grpc.Server, registrar registry.Registrar) *kratos.App {
+func newApp(env *conf.Config, gs *grpc.Server, registrar registry.Registrar) *kratos.App {
 	return kratos.New(
-		kratos.Name(env.AppId),
-		kratos.Version(env.Version),
+		kratos.Name(env.Global.AppId),
+		kratos.Version(env.Global.Version),
 		kratos.Registrar(registrar),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(

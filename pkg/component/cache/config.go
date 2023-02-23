@@ -12,7 +12,7 @@ type Config struct {
 }
 
 func NewConfig(defaultCategory Category, categories ...*Category) *Config {
-	return &Config{Default: defaultCategory, Categories: categories}
+	return &Config{Default: defaultCategory, Categories: categories, cateMap: make(map[string]*Category)}
 }
 
 func (c *Config) Parse() (err error) {
@@ -47,6 +47,9 @@ func (c *Config) Category(category string) *Category {
 func (c *Config) new(category string) *Category {
 	c.lock.Lock()
 	cate := c.Default.CopyFrom(&Category{Category: category})
+	if c.cateMap == nil {
+		c.cateMap = make(map[string]*Category)
+	}
 	c.cateMap[category] = cate
 	c.lock.Unlock()
 	return cate

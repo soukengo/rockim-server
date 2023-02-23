@@ -21,11 +21,12 @@ func NewLoader(source Source) Loader {
 }
 
 func (l *viperLoader) Load(v any) (err error) {
-	if err = l.source.Error(); err != nil {
+	r, err := l.source.From()
+	if err != nil {
 		return
 	}
 	l.vp.SetConfigType(l.source.ConfigType())
-	err = l.vp.ReadConfig(l.source.From())
+	err = l.vp.ReadConfig(r)
 	if err != nil {
 		return
 	}

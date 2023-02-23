@@ -1,10 +1,11 @@
+env: dev
+config:
+  engine: "file"
+  file:
+    dir: conf/rockim
+
 discovery:
   engine: etcd
   etcd:
     nodes:
       - 127.0.0.1:2379
-
-server:
-  http:
-    addr: :6002
-    timeout: "10s"

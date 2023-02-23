@@ -3,17 +3,17 @@ package biz
 import (
 	"context"
 	"github.com/golang-jwt/jwt/v4"
-	"rockimserver/app/access/admin/conf"
+	"rockimserver/pkg/component/auth"
 	"rockimserver/pkg/util/encrypt"
 	"time"
 )
 
 type AuthUseCase struct {
-	authCfg *conf.Auth
+	authCfg *auth.Config
 	repo    TenantRepo
 }
 
-func NewAuthUseCase(authCfg *conf.Auth, repo TenantRepo) *AuthUseCase {
+func NewAuthUseCase(authCfg *auth.Config, repo TenantRepo) *AuthUseCase {
 	return &AuthUseCase{authCfg: authCfg, repo: repo}
 }
 

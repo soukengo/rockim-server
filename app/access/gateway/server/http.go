@@ -3,12 +3,12 @@ package server
 import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"rockimserver/app/access/gateway/conf"
+	"rockimserver/pkg/component/server"
 	_ "rockimserver/pkg/util/encoding/proto"
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Server, clientGroup *ClientServiceGroup, openapiGroup *OpenApiServiceGroup) *http.Server {
+func NewHTTPServer(c *server.Config, clientGroup *ClientServiceGroup, openapiGroup *OpenApiServiceGroup) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),

@@ -13,18 +13,19 @@ import (
 	"rockimserver/app/logic/user/data"
 	cache2 "rockimserver/app/logic/user/data/cache"
 	"rockimserver/app/logic/user/data/database"
-	"rockimserver/app/logic/user/server"
+	server2 "rockimserver/app/logic/user/server"
 	"rockimserver/app/logic/user/service"
 	"rockimserver/pkg/component/cache"
 	"rockimserver/pkg/component/database/mongo"
 	"rockimserver/pkg/component/database/redis"
 	"rockimserver/pkg/component/discovery"
+	"rockimserver/pkg/component/server"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
+func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
 	client := mongo.NewClient(mongoConfig)
 	userData := database.NewUserData(client)
 	redisClient := redis.NewClient(redisConfig)
@@ -38,11 +39,11 @@ func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, m
 	accessTokenRepo := data.NewAccessTokenRepo(accessTokenData)
 	authUseCase := biz.NewAuthUseCase(authCodeRepo, accessTokenRepo, userRepo)
 	authService := service.NewAuthService(authUseCase)
-	grpcServer := server.NewGRPCServer(confServer, userService, authService)
-	registrar, err := discovery.NewRegistrar(config)
+	grpcServer := server2.NewGRPCServer(serverConfig, userService, authService)
+	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {
 		return nil, err
 	}
-	app := newApp(env, grpcServer, registrar)
+	app := newApp(config, grpcServer, registrar)
 	return app, nil
 }

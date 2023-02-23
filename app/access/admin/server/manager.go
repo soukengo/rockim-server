@@ -8,13 +8,13 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/http"
 	jwtV4 "github.com/golang-jwt/jwt/v4"
 	v1 "rockimserver/apis/rockim/api/admin/manager/v1"
-	"rockimserver/app/access/admin/conf"
 	"rockimserver/app/access/admin/module/manager/biz"
 	"rockimserver/app/access/admin/module/manager/service"
+	"rockimserver/pkg/component/auth"
 )
 
 type ManagerServiceGroup struct {
-	authCfg           *conf.Auth
+	authCfg           *auth.Config
 	authSrv           *service.AuthService
 	sessionSrv        *service.SessionService
 	platUserSrv       *service.SysUserService
@@ -24,7 +24,7 @@ type ManagerServiceGroup struct {
 	tenantResourceSrv *service.SysTenantResourceService
 }
 
-func NewManagerServiceGroup(authCfg *conf.Auth, authSrv *service.AuthService, sessionSrv *service.SessionService, platUserSrv *service.SysUserService, platRoleSrv *service.SysRoleService, platResourceSrv *service.SysResourceService, tenantSrv *service.TenantService, tenantResourceSrv *service.SysTenantResourceService) *ManagerServiceGroup {
+func NewManagerServiceGroup(authCfg *auth.Config, authSrv *service.AuthService, sessionSrv *service.SessionService, platUserSrv *service.SysUserService, platRoleSrv *service.SysRoleService, platResourceSrv *service.SysResourceService, tenantSrv *service.TenantService, tenantResourceSrv *service.SysTenantResourceService) *ManagerServiceGroup {
 	return &ManagerServiceGroup{authCfg: authCfg, authSrv: authSrv, sessionSrv: sessionSrv, platUserSrv: platUserSrv, platRoleSrv: platRoleSrv, platResourceSrv: platResourceSrv, tenantSrv: tenantSrv, tenantResourceSrv: tenantResourceSrv}
 }
 

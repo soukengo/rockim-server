@@ -1,74 +1,49 @@
 package conf
 
 import (
-	"flag"
 	"rockimserver/apis/rockim/service"
+	"rockimserver/conf"
+	"rockimserver/pkg/component/auth"
 	"rockimserver/pkg/component/config"
-	"rockimserver/pkg/component/database/mongo"
-	"rockimserver/pkg/component/discovery"
+	"rockimserver/pkg/component/database"
+	"rockimserver/pkg/component/server"
 	"rockimserver/pkg/log"
-	"time"
 )
 
-var (
-	configPath = ""
+const (
+	configName = "access-admin.yaml"
 )
 
-func init() {
-	flag.StringVar(&configPath, "conf", "config/access/admin.yaml", "config path, eg: -conf config.yaml")
-}
-
-func Load() (conf *Config, err error) {
-	conf = &Config{
-		Env: &Env{AppId: service.AppAdmin},
+func Load() (cfg *Config, err error) {
+	global, err := conf.Load(service.AppAdmin)
+	if err != nil {
+		return
+	}
+	cfg = &Config{
 		Log: &log.Config{
 			LoggerConfig: log.LoggerConfig{
 				Level: "info",
-				Split: true,
+			},
+			Loggers: []log.LoggerConfig{
+				{Name: "mongo", Level: "info"},
 			},
 		},
 	}
-	source := config.NewFileSource(configPath)
+	source := config.NewEnvSource(global.Config, configName)
 	defer source.Close()
 	loader := config.NewLoader(source)
-	err = loader.Load(conf)
+	err = loader.Load(cfg)
+	if err != nil {
+		return
+	}
+	cfg.Global = global
 	return
 }
 
 type Config struct {
-	Env       *Env
-	Discovery *discovery.Config
-	Log       *log.Config
-	Server    *Server
-	Auth      *Auth
-	Database  *Database
-}
-
-type Env struct {
-	AppId   string
-	Env     string
-	Version string
-}
-
-type Server struct {
-	Http *Http
-}
-
-type Http struct {
-	Network string
-	Addr    string
-	Timeout time.Duration
-}
-
-type Auth struct {
-	Jwt *Jwt
-}
-
-type Jwt struct {
-	AppKey  string
-	Expires time.Duration
-}
-
-type Database struct {
-	Mongodb *mongo.Config
+	Global   *conf.Global
+	Log      *log.Config
+	Server   *server.Config
+	Auth     *auth.Config
+	Database *database.Config
 }

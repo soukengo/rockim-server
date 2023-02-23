@@ -11,32 +11,38 @@ import (
 	"rockimserver/app/logic/platform/biz"
 	"rockimserver/app/logic/platform/conf"
 	"rockimserver/app/logic/platform/data"
+	cache2 "rockimserver/app/logic/platform/data/cache"
 	"rockimserver/app/logic/platform/data/database"
-	"rockimserver/app/logic/platform/server"
+	server2 "rockimserver/app/logic/platform/server"
 	"rockimserver/app/logic/platform/service"
+	"rockimserver/pkg/component/cache"
 	"rockimserver/pkg/component/database/mongo"
+	"rockimserver/pkg/component/database/redis"
 	"rockimserver/pkg/component/discovery"
+	"rockimserver/pkg/component/server"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(env *conf.Env, config *discovery.Config, confServer *conf.Server, mongoConfig *mongo.Config) (*kratos.App, error) {
+func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
 	client := mongo.NewClient(mongoConfig)
 	tenantData := database.NewTenantData(client)
 	tenantRepo := data.NewTenantRepo(tenantData)
 	tenantUseCase := biz.NewTenantUseCase(tenantRepo)
 	tenantService := service.NewTenantService(tenantUseCase)
 	productData := database.NewProductData(client)
-	productRepo := data.NewProductRepo(productData)
+	redisClient := redis.NewClient(redisConfig)
+	cacheProductData := cache2.NewProductData(redisClient, cacheConfig)
+	productRepo := data.NewProductRepo(productData, cacheProductData)
 	productUseCase := biz.NewProductUseCase(productRepo)
 	productService := service.NewProductService(productUseCase)
-	serviceGroup := server.NewServiceGroup(tenantService, productService)
-	grpcServer := server.NewGRPCServer(confServer, serviceGroup)
-	registrar, err := discovery.NewRegistrar(config)
+	serviceGroup := server2.NewServiceGroup(tenantService, productService)
+	grpcServer := server2.NewGRPCServer(serverConfig, serviceGroup)
+	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {
 		return nil, err
 	}
-	app := newApp(env, grpcServer, registrar)
+	app := newApp(config, grpcServer, registrar)
 	return app, nil
 }
