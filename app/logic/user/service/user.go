@@ -20,9 +20,9 @@ func NewUserService(uc *biz.UserUseCase) *UserService {
 func (s *UserService) Register(ctx context.Context, in *v1.UserRegisterRequest) (*v1.UserRegisterResponse, error) {
 	user, err := s.uc.Register(ctx, &types.User{
 		ProductId: in.ProductId,
-		Bucket:    in.Bucket,
 		Account:   in.Account,
 		Name:      in.Name,
+		AvatarUrl: in.AvatarUrl,
 		Fields:    in.Fields,
 	})
 	if err != nil {

@@ -68,12 +68,10 @@ func (m *UserRegisterRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	// no validation rules for Bucket
-
-	if utf8.RuneCountInString(m.GetAccount()) < 1 {
+	if l := utf8.RuneCountInString(m.GetAccount()); l < 1 || l > 64 {
 		err := UserRegisterRequestValidationError{
 			field:  "Account",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 64 runes, inclusive",
 		}
 		if !all {
 			return err
@@ -81,10 +79,10 @@ func (m *UserRegisterRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if utf8.RuneCountInString(m.GetName()) < 1 {
+	if l := utf8.RuneCountInString(m.GetName()); l < 1 || l > 256 {
 		err := UserRegisterRequestValidationError{
 			field:  "Name",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 256 runes, inclusive",
 		}
 		if !all {
 			return err
@@ -92,7 +90,64 @@ func (m *UserRegisterRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	// no validation rules for Fields
+	if utf8.RuneCountInString(m.GetAvatarUrl()) > 256 {
+		err := UserRegisterRequestValidationError{
+			field:  "AvatarUrl",
+			reason: "value length must be at most 256 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(m.GetFields()) > 100 {
+		err := UserRegisterRequestValidationError{
+			field:  "Fields",
+			reason: "value must contain no more than 100 pair(s)",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	{
+		sorted_keys := make([]string, len(m.GetFields()))
+		i := 0
+		for key := range m.GetFields() {
+			sorted_keys[i] = key
+			i++
+		}
+		sort.Slice(sorted_keys, func(i, j int) bool { return sorted_keys[i] < sorted_keys[j] })
+		for _, key := range sorted_keys {
+			val := m.GetFields()[key]
+			_ = val
+
+			if utf8.RuneCountInString(key) > 64 {
+				err := UserRegisterRequestValidationError{
+					field:  fmt.Sprintf("Fields[%v]", key),
+					reason: "value length must be at most 64 runes",
+				}
+				if !all {
+					return err
+				}
+				errors = append(errors, err)
+			}
+
+			if utf8.RuneCountInString(val) > 512 {
+				err := UserRegisterRequestValidationError{
+					field:  fmt.Sprintf("Fields[%v]", key),
+					reason: "value length must be at most 512 runes",
+				}
+				if !all {
+					return err
+				}
+				errors = append(errors, err)
+			}
+
+		}
+	}
 
 	if len(errors) > 0 {
 		return UserRegisterRequestMultiError(errors)

@@ -10,9 +10,9 @@ func ToClientUser(user *types.User) *clienttypes.User {
 		Id:         user.Id,
 		CreateTime: user.CreateTime,
 		ProductId:  user.ProductId,
-		Bucket:     user.Bucket,
 		Account:    user.Account,
 		Name:       user.Name,
+		AvatarUrl:  user.AvatarUrl,
 		Fields:     user.Fields,
 		Status:     user.Status,
 	}

@@ -10,12 +10,7 @@ import (
 const keySplit = ":"
 
 const (
-	keyUser             = "user"
-	keyUserAccount      = "user.account"
-	keyAuthCode         = "auth.code"
-	keyAuthCodeReverse  = "auth.code.reverse"
-	keyAuthToken        = "auth.token"
-	keyAuthTokenReverse = "auth.token.reverse"
+	keyProduct = "product"
 )
 
 func genKey(keys ...string) string {

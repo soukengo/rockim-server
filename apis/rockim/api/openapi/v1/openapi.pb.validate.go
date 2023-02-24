@@ -57,10 +57,10 @@ func (m *APIRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetProductId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetProductId()); l < 1 || l > 20 {
 		err := APIRequestValidationError{
 			field:  "ProductId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 20 runes, inclusive",
 		}
 		if !all {
 			return err

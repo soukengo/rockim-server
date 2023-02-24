@@ -13,7 +13,7 @@ type ProductData struct {
 
 func NewProductData(redisCli *redis.Client, cfg *cache.Config) *ProductData {
 	return &ProductData{
-		cache: newValueCache[types.Product](redisCli, cfg.Category(keyUser)),
+		cache: newValueCache[types.Product](redisCli, cfg.Category(keyProduct)),
 	}
 }
 

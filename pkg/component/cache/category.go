@@ -27,10 +27,10 @@ func (c *Category) GenKey(keySuffix string) string {
 
 func (c *Category) CopyFrom(source *Category) (ret *Category) {
 	ret = &Category{Category: source.Category, Expire: c.Expire, EmptyExpire: c.EmptyExpire}
-	if c.Expire > 0 {
+	if source.Expire > 0 {
 		ret.Expire = source.Expire
 	}
-	if c.EmptyExpire > 0 {
+	if source.EmptyExpire > 0 {
 		ret.EmptyExpire = source.EmptyExpire
 	}
 	return

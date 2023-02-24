@@ -66,11 +66,11 @@ func (m *User) validate(all bool) error {
 
 	// no validation rules for ProductId
 
-	// no validation rules for Bucket
-
 	// no validation rules for Account
 
 	// no validation rules for Name
+
+	// no validation rules for AvatarUrl
 
 	// no validation rules for Status
 

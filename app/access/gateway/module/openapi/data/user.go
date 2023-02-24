@@ -20,9 +20,9 @@ func NewUserRepo(uac v1.UserAPIClient, aac v1.AuthAPIClient) biz.UserRepo {
 func (r *userRepo) Register(ctx context.Context, opts *options.UserRegisterOptions) (*types.User, error) {
 	ret, err := r.uac.Register(ctx, &v1.UserRegisterRequest{
 		ProductId: opts.ProductId,
-		Bucket:    opts.Bucket,
 		Account:   opts.Account,
 		Name:      opts.Name,
+		AvatarUrl: opts.AvatarUrl,
 		Fields:    opts.Fields,
 	})
 	if err != nil {

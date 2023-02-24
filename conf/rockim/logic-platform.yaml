@@ -16,7 +16,5 @@ database:
     password: ""
 cache:
   default:
-    expires: "72h"
+    expire: "72h"
   categories:
-    - category: "auth.code"
-      expire: "10m"
