@@ -1,70 +1,46 @@
 package conf
 
 import (
-	"flag"
 	"rockimserver/apis/rockim/service"
+	"rockimserver/conf"
 	"rockimserver/pkg/component/cache"
 	"rockimserver/pkg/component/config"
-	"rockimserver/pkg/component/database/mongo"
-	"rockimserver/pkg/component/database/redis"
-	"rockimserver/pkg/component/discovery"
+	"rockimserver/pkg/component/database"
+	"rockimserver/pkg/component/server"
 	"rockimserver/pkg/log"
-	"time"
 )
 
-var (
-	configPath = ""
+const (
+	configName = "logic-group.yaml"
 )
 
-func init() {
-	flag.StringVar(&configPath, "conf", "config/logic/group.yaml", "config path, eg: -conf config.yaml")
-}
-
-func Load() (conf *Config, err error) {
-	conf = &Config{
-		Env: &Env{AppId: service.AppGroup},
+func Load() (cfg *Config, err error) {
+	global, err := conf.Load(service.AppGroup)
+	if err != nil {
+		return
+	}
+	cfg = &Config{
 		Log: &log.Config{
 			LoggerConfig: log.LoggerConfig{
 				Level: "info",
 			},
 		},
 	}
-	source := config.NewFileSource(configPath)
+	source := config.NewEnvSource(global.Config, configName)
 	defer source.Close()
 	loader := config.NewLoader(source)
-	err = loader.Load(conf)
+	err = loader.Load(cfg)
 	if err != nil {
 		return
 	}
+	cfg.Global = global
 	return
 }
 
 type Config struct {
-	Env       *Env
-	Server    *Server
-	Discovery *discovery.Config
-	Log       *log.Config
-	Database  *Database
-	Cache     *cache.Config
-}
-
-type Env struct {
-	AppId   string
-	Env     string
-	Version string
-}
-
-type Server struct {
-	Grpc *Grpc
-}
-
-type Grpc struct {
-	Network string
-	Addr    string
-	Timeout time.Duration
-}
-
-type Database struct {
-	Mongodb *mongo.Config
-	Redis   *redis.Config
+	Global   *conf.Global
+	Server   *server.Config
+	Log      *log.Config
+	Database *database.Config
+	Cache    *cache.Config
 }
