@@ -5,5 +5,5 @@ import (
 )
 
 const (
-	LockKeyUserCreate lock.Key = "UserCreate"
+	LockKeyUserCreate lock.Key = "User.Create"
 )
