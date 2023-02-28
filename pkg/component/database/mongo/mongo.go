@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+var (
+	FieldId = "_id"
+)
+
 type Client struct {
 	config *Config
 	client *mongo.Client

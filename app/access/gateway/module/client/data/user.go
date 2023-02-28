@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"rockimserver/apis/rockim/service"
 	v1 "rockimserver/apis/rockim/service/user/v1"
 	"rockimserver/apis/rockim/service/user/v1/types"
 	"rockimserver/app/access/gateway/module/client/biz"
@@ -17,7 +18,7 @@ func NewUserRepo(uac v1.UserAPIClient, aac v1.AuthAPIClient) biz.UserRepo {
 }
 
 func (r *userRepo) Find(ctx context.Context, productId string, account string) (ret *types.User, err error) {
-	sret, err := r.uac.Find(ctx, &v1.UserFindRequest{ProductId: productId, Account: account})
+	sret, err := r.uac.Find(ctx, &v1.UserFindRequest{Base: service.GenServiceRequest(productId), Account: account})
 	if err != nil {
 		return
 	}

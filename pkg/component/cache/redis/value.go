@@ -19,8 +19,8 @@ func newValueCache[T any](cli *redis.Client, category *cache.Category, opts *cac
 	return &valueCache[T]{redisCache: newRedisCache[T](cli, category, opts)}
 }
 
-func (c *valueCache[T]) Get(ctx context.Context, keySuffix string) (ret *T, err error) {
-	v, err := c.cli.Get(ctx, c.key(keySuffix))
+func (c *valueCache[T]) Get(ctx context.Context, parts cache.KeyParts) (ret *T, err error) {
+	v, err := c.cli.Get(ctx, c.key(parts))
 	if err != nil {
 		if errors.IsNotFound(err) {
 			err = cache.ErrNoCache
@@ -31,7 +31,7 @@ func (c *valueCache[T]) Get(ctx context.Context, keySuffix string) (ret *T, err 
 	return
 }
 
-func (c *valueCache[T]) Set(ctx context.Context, keySuffix string, v *T) (err error) {
+func (c *valueCache[T]) Set(ctx context.Context, parts cache.KeyParts, v *T) (err error) {
 	data, err := c.encode(v)
 	if err != nil {
 		return
@@ -40,6 +40,6 @@ func (c *valueCache[T]) Set(ctx context.Context, keySuffix string, v *T) (err er
 	if len(data) == 0 {
 		expire = c.opts.EmptyExpire()
 	}
-	_, err = c.cli.Set(ctx, c.key(keySuffix), data, expire)
+	_, err = c.cli.Set(ctx, c.key(parts), data, expire)
 	return
 }

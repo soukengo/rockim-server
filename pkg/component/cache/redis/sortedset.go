@@ -20,16 +20,16 @@ func newSortedSetCache[T any](cli *redis.Client, category *cache.Category, opts 
 	return &sortedSetCache[T]{redisCache: newRedisCache[T](cli, category, opts)}
 }
 
-func (c *sortedSetCache[T]) Add(ctx context.Context, keySuffix string, member *cache.SortedMember[T]) (err error) {
+func (c *sortedSetCache[T]) Add(ctx context.Context, parts cache.KeyParts, member *cache.SortedMember[T]) (err error) {
 	data, err := c.encode(member.Value)
 	if err != nil {
 		return
 	}
-	_, err = c.cli.ZAdd(ctx, c.key(keySuffix), &rds.Z{Score: member.Score, Member: data})
+	_, err = c.cli.ZAdd(ctx, c.key(parts), &rds.Z{Score: member.Score, Member: data})
 	return
 }
 
-func (c *sortedSetCache[T]) AddSlice(ctx context.Context, keySuffix string, values []*cache.SortedMember[T]) (err error) {
+func (c *sortedSetCache[T]) AddSlice(ctx context.Context, parts cache.KeyParts, values []*cache.SortedMember[T]) (err error) {
 	var records = make([]any, 0)
 	for i, v := range values {
 		var data []byte
@@ -39,18 +39,18 @@ func (c *sortedSetCache[T]) AddSlice(ctx context.Context, keySuffix string, valu
 		}
 		records[i] = data
 	}
-	_, err = c.cli.SAdd(ctx, c.key(keySuffix), records...)
+	_, err = c.cli.SAdd(ctx, c.key(parts), records...)
 	return
 }
 
-func (c *sortedSetCache[T]) Paginate(ctx context.Context, keySuffix string, cursor uint64, count int64) (ret []*T, retCursor uint64, err error) {
-	values, retCursor, err := c.cli.SScan(ctx, c.key(keySuffix), cursor, "*", count)
+func (c *sortedSetCache[T]) Paginate(ctx context.Context, parts cache.KeyParts, cursor uint64, count int64) (ret []*T, retCursor uint64, err error) {
+	values, retCursor, err := c.cli.SScan(ctx, c.key(parts), cursor, "*", count)
 	if err != nil {
 		return
 	}
 	if retCursor == 0 {
 		var exists bool
-		exists, err = c.Exists(ctx, keySuffix)
+		exists, err = c.Exists(ctx, parts)
 		if err != nil {
 			return
 		}
@@ -71,25 +71,25 @@ func (c *sortedSetCache[T]) Paginate(ctx context.Context, keySuffix string, curs
 	return
 }
 
-func (c *sortedSetCache[T]) DeleteMember(ctx context.Context, keySuffix string, v *T) (err error) {
+func (c *sortedSetCache[T]) DeleteMember(ctx context.Context, parts cache.KeyParts, v *T) (err error) {
 	data, err := c.encode(v)
 	if err != nil {
 		return
 	}
-	_, err = c.cli.ZRem(ctx, c.key(keySuffix), data)
+	_, err = c.cli.ZRem(ctx, c.key(parts), data)
 	return
 }
 
-func (c *sortedSetCache[T]) ExistsMember(ctx context.Context, keySuffix string, v *T) (isMember bool, err error) {
+func (c *sortedSetCache[T]) ExistsMember(ctx context.Context, parts cache.KeyParts, v *T) (isMember bool, err error) {
 	data, err := c.encode(v)
 	if err != nil {
 		return
 	}
-	_, err = c.cli.ZRank(ctx, c.key(keySuffix), string(data))
+	_, err = c.cli.ZRank(ctx, c.key(parts), string(data))
 	if err != nil {
 		if errors.IsNotFound(err) {
 			var exists bool
-			exists, err = c.Exists(ctx, keySuffix)
+			exists, err = c.Exists(ctx, parts)
 			if err != nil {
 				return
 			}
@@ -103,14 +103,14 @@ func (c *sortedSetCache[T]) ExistsMember(ctx context.Context, keySuffix string, 
 	return
 }
 
-func (c *sortedSetCache[T]) Count(ctx context.Context, keySuffix string) (count int64, err error) {
-	count, err = c.cli.ZCard(ctx, c.key(keySuffix))
+func (c *sortedSetCache[T]) Count(ctx context.Context, parts cache.KeyParts) (count int64, err error) {
+	count, err = c.cli.ZCard(ctx, c.key(parts))
 	if err != nil {
 		return
 	}
 	if count == 0 {
 		var exists bool
-		exists, err = c.Exists(ctx, keySuffix)
+		exists, err = c.Exists(ctx, parts)
 		if err != nil {
 			return
 		}

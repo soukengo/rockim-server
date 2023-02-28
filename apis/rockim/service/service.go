@@ -10,3 +10,7 @@ const (
 	AppRelationship = "rockim.relationship"
 	AppMessage      = "rockim.message"
 )
+
+func GenServiceRequest(productId string) *ServiceRequest {
+	return &ServiceRequest{ProductId: productId}
+}

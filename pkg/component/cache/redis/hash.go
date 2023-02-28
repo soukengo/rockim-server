@@ -19,16 +19,16 @@ func newHashCache[T any](cli *redis.Client, category *cache.Category, opts *cach
 	return &hashCache[T]{redisCache: newRedisCache[T](cli, category, opts)}
 }
 
-func (c *hashCache[T]) Put(ctx context.Context, keySuffix string, field string, v *T) (err error) {
+func (c *hashCache[T]) Put(ctx context.Context, parts cache.KeyParts, field string, v *T) (err error) {
 	data, err := c.encode(v)
 	if err != nil {
 		return
 	}
-	_, err = c.cli.HSet(ctx, c.key(keySuffix), field, data)
+	_, err = c.cli.HSet(ctx, c.key(parts), field, data)
 	return
 }
 
-func (c *hashCache[T]) PutMap(ctx context.Context, keySuffix string, hash map[string]*T) (err error) {
+func (c *hashCache[T]) PutMap(ctx context.Context, parts cache.KeyParts, hash map[string]*T) (err error) {
 	var records = make(map[string]any)
 	for k, v := range hash {
 		var data []byte
@@ -38,16 +38,16 @@ func (c *hashCache[T]) PutMap(ctx context.Context, keySuffix string, hash map[st
 		}
 		records[k] = data
 	}
-	_, err = c.cli.HMSet(ctx, c.key(keySuffix), records)
+	_, err = c.cli.HMSet(ctx, c.key(parts), records)
 	return
 }
 
-func (c *hashCache[T]) Get(ctx context.Context, keySuffix string, field string) (ret *T, err error) {
-	v, err := c.cli.HGet(ctx, c.key(keySuffix), field)
+func (c *hashCache[T]) Get(ctx context.Context, parts cache.KeyParts, field string) (ret *T, err error) {
+	v, err := c.cli.HGet(ctx, c.key(parts), field)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			var exists bool
-			exists, err = c.Exists(ctx, keySuffix)
+			exists, err = c.Exists(ctx, parts)
 			if err != nil {
 				return
 			}
@@ -61,8 +61,8 @@ func (c *hashCache[T]) Get(ctx context.Context, keySuffix string, field string) 
 	return c.decodeStr(v)
 }
 
-func (c *hashCache[T]) GetAll(ctx context.Context, keySuffix string) (ret map[string]*T, err error) {
-	hash, err := c.cli.HGetAll(ctx, c.key(keySuffix))
+func (c *hashCache[T]) GetAll(ctx context.Context, parts cache.KeyParts) (ret map[string]*T, err error) {
+	hash, err := c.cli.HGetAll(ctx, c.key(parts))
 	if err != nil {
 		if errors.IsNotFound(err) {
 			err = cache.ErrNoCache
@@ -81,14 +81,14 @@ func (c *hashCache[T]) GetAll(ctx context.Context, keySuffix string) (ret map[st
 	return
 }
 
-func (c *hashCache[T]) ExistsField(ctx context.Context, keySuffix string, field string) (existsField bool, err error) {
-	existsField, err = c.cli.HExists(ctx, c.key(keySuffix), field)
+func (c *hashCache[T]) ExistsField(ctx context.Context, parts cache.KeyParts, field string) (existsField bool, err error) {
+	existsField, err = c.cli.HExists(ctx, c.key(parts), field)
 	if err != nil {
 		return
 	}
 	if !existsField {
 		var exists bool
-		exists, err = c.Exists(ctx, keySuffix)
+		exists, err = c.Exists(ctx, parts)
 		if err != nil {
 			return
 		}
@@ -100,7 +100,7 @@ func (c *hashCache[T]) ExistsField(ctx context.Context, keySuffix string, field 
 	return
 }
 
-func (c *hashCache[T]) DeleteField(ctx context.Context, keySuffix string, field string) (err error) {
-	_, err = c.cli.HDel(ctx, c.key(keySuffix), field)
+func (c *hashCache[T]) DeleteField(ctx context.Context, parts cache.KeyParts, field string) (err error) {
+	_, err = c.cli.HDel(ctx, c.key(parts), field)
 	return
 }

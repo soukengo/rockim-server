@@ -4,6 +4,10 @@ import (
 	"context"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/apis/rockim/shared/reasons"
+	"rockimserver/app/logic/user/biz/consts"
+	"rockimserver/app/logic/user/biz/options"
+	"rockimserver/pkg/component/idgen"
+	"rockimserver/pkg/component/lock"
 	"rockimserver/pkg/errors"
 	"time"
 
@@ -20,26 +24,34 @@ var (
 type UserRepo interface {
 	FindByID(ctx context.Context, productId string, id string) (*types.User, error)
 	FindUidByAccount(ctx context.Context, productId string, account string) (uid string, err error)
-	GenID(ctx context.Context) (string, error)
 	Create(context.Context, *types.User) error
 	Update(context.Context, *types.User) error
 }
 
 // UserUseCase is a User use case.
 type UserUseCase struct {
-	repo UserRepo
+	repo    UserRepo
+	lockBdr lock.Builder
+	idgen   idgen.Generator
 }
 
 // NewUserUseCase new a User use case.
-func NewUserUseCase(repo UserRepo) *UserUseCase {
-	return &UserUseCase{repo: repo}
+func NewUserUseCase(repo UserRepo, idgen idgen.Generator, lockBdr lock.Builder) *UserUseCase {
+	return &UserUseCase{repo: repo, idgen: idgen}
 }
 
 // Register register a new user
-func (uc *UserUseCase) Register(ctx context.Context, u *types.User) (*types.User, error) {
-	// TODO: 分布式锁
+func (uc *UserUseCase) Register(ctx context.Context, opts *options.UserCreateOptions) (out *types.User, err error) {
+	productId := opts.ProductId
+	account := opts.Account
+	distributedLock := uc.lockBdr.Build(consts.LockKeyUserCreate, productId, account)
+	locked := distributedLock.TryLock(ctx)
+	defer distributedLock.UnLock()
+	if !locked {
+		return
+	}
 	// 检查是否已经注册
-	exists, err := uc.existsAccount(ctx, u.ProductId, u.Account)
+	exists, err := uc.existsAccount(ctx, productId, account)
 	if err != nil {
 		return nil, err
 	}
@@ -47,13 +59,20 @@ func (uc *UserUseCase) Register(ctx context.Context, u *types.User) (*types.User
 	if exists {
 		return nil, ErrAccountRegistered
 	}
-	uid, err := uc.repo.GenID(ctx)
+	uid, err := uc.idgen.GenID()
 	if err != nil {
 		return nil, err
 	}
-	u.Id = uid
-	u.CreateTime = time.Now().UnixMilli()
-	u.Status = enums.User_USER_STATUS_NORMAL
+	u := &types.User{
+		Id:         uid,
+		CreateTime: time.Now().UnixMilli(),
+		ProductId:  opts.ProductId,
+		Account:    opts.Account,
+		Name:       opts.Name,
+		AvatarUrl:  opts.AvatarUrl,
+		Fields:     opts.Fields,
+		Status:     enums.User_NORMAL,
+	}
 	err = uc.repo.Create(ctx, u)
 	if err != nil {
 		return nil, err

@@ -20,7 +20,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// TenantStatus 商户状态
+// Status 商户状态
 type Tenant_Status int32
 
 const (

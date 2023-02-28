@@ -15,7 +15,6 @@ type userRepo struct {
 	cache *cache.UserData
 }
 
-// NewUserRepo .
 func NewUserRepo(db *database.UserData, cache *cache.UserData) biz.UserRepo {
 	return &userRepo{
 		db:    db,
@@ -61,10 +60,6 @@ func (r *userRepo) FindUidByAccount(ctx context.Context, productId string, accou
 		err = biz.ErrUserNotFound
 	}
 	return
-}
-
-func (r *userRepo) GenID(ctx context.Context) (string, error) {
-	return r.db.GenID(ctx)
 }
 
 func (r *userRepo) Create(ctx context.Context, user *types.User) (err error) {

@@ -18,16 +18,16 @@ func newSetCache[T any](cli *redis.Client, category *cache.Category, opts *cache
 	return &setCache[T]{redisCache: newRedisCache[T](cli, category, opts)}
 }
 
-func (c *setCache[T]) Add(ctx context.Context, keySuffix string, v *T) (err error) {
+func (c *setCache[T]) Add(ctx context.Context, parts cache.KeyParts, v *T) (err error) {
 	data, err := c.encode(v)
 	if err != nil {
 		return
 	}
-	_, err = c.cli.SAdd(ctx, c.key(keySuffix), data)
+	_, err = c.cli.SAdd(ctx, c.key(parts), data)
 	return
 }
 
-func (c *setCache[T]) AddSlice(ctx context.Context, keySuffix string, values []*T) (err error) {
+func (c *setCache[T]) AddSlice(ctx context.Context, parts cache.KeyParts, values []*T) (err error) {
 	var records = make([]any, 0)
 	for i, v := range values {
 		var data []byte
@@ -37,18 +37,18 @@ func (c *setCache[T]) AddSlice(ctx context.Context, keySuffix string, values []*
 		}
 		records[i] = data
 	}
-	_, err = c.cli.SAdd(ctx, c.key(keySuffix), records...)
+	_, err = c.cli.SAdd(ctx, c.key(parts), records...)
 	return
 }
 
-func (c *setCache[T]) Paginate(ctx context.Context, keySuffix string, cursor uint64, count int64) (ret []*T, retCursor uint64, err error) {
-	values, retCursor, err := c.cli.SScan(ctx, c.key(keySuffix), cursor, "*", count)
+func (c *setCache[T]) Paginate(ctx context.Context, parts cache.KeyParts, cursor uint64, count int64) (ret []*T, retCursor uint64, err error) {
+	values, retCursor, err := c.cli.SScan(ctx, c.key(parts), cursor, "*", count)
 	if err != nil {
 		return
 	}
 	if retCursor == 0 {
 		var exists bool
-		exists, err = c.Exists(ctx, keySuffix)
+		exists, err = c.Exists(ctx, parts)
 		if err != nil {
 			return
 		}
@@ -69,27 +69,27 @@ func (c *setCache[T]) Paginate(ctx context.Context, keySuffix string, cursor uin
 	return
 }
 
-func (c *setCache[T]) DeleteMember(ctx context.Context, keySuffix string, v *T) (err error) {
+func (c *setCache[T]) DeleteMember(ctx context.Context, parts cache.KeyParts, v *T) (err error) {
 	data, err := c.encode(v)
 	if err != nil {
 		return
 	}
-	_, err = c.cli.SRem(ctx, c.key(keySuffix), data)
+	_, err = c.cli.SRem(ctx, c.key(parts), data)
 	return
 }
 
-func (c *setCache[T]) ExistsMember(ctx context.Context, keySuffix string, v *T) (isMember bool, err error) {
+func (c *setCache[T]) ExistsMember(ctx context.Context, parts cache.KeyParts, v *T) (isMember bool, err error) {
 	data, err := c.encode(v)
 	if err != nil {
 		return
 	}
-	isMember, err = c.cli.SIsMember(ctx, c.key(keySuffix), data)
+	isMember, err = c.cli.SIsMember(ctx, c.key(parts), data)
 	if err != nil {
 		return
 	}
 	if !isMember {
 		var exists bool
-		exists, err = c.Exists(ctx, keySuffix)
+		exists, err = c.Exists(ctx, parts)
 		if err != nil {
 			return
 		}
@@ -101,14 +101,14 @@ func (c *setCache[T]) ExistsMember(ctx context.Context, keySuffix string, v *T) 
 	return
 }
 
-func (c *setCache[T]) Count(ctx context.Context, keySuffix string) (count int64, err error) {
-	count, err = c.cli.SCard(ctx, c.key(keySuffix))
+func (c *setCache[T]) Count(ctx context.Context, parts cache.KeyParts) (count int64, err error) {
+	count, err = c.cli.SCard(ctx, c.key(parts))
 	if err != nil {
 		return
 	}
 	if count == 0 {
 		var exists bool
-		exists, err = c.Exists(ctx, keySuffix)
+		exists, err = c.Exists(ctx, parts)
 		if err != nil {
 			return
 		}

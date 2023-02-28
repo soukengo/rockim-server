@@ -18,5 +18,5 @@ cache:
   default:
     expire: "72h"
   categories:
-    - category: "auth.code"
+    - key: "auth.code"
       expire: "10m"

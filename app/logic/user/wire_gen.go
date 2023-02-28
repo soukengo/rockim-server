@@ -19,6 +19,8 @@ import (
 	"rockimserver/pkg/component/database/mongo"
 	"rockimserver/pkg/component/database/redis"
 	"rockimserver/pkg/component/discovery"
+	"rockimserver/pkg/component/idgen"
+	"rockimserver/pkg/component/lock"
 	"rockimserver/pkg/component/server"
 )
 
@@ -31,7 +33,9 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	redisClient := redis.NewClient(redisConfig)
 	cacheUserData := cache2.NewUserData(redisClient, cacheConfig)
 	userRepo := data.NewUserRepo(userData, cacheUserData)
-	userUseCase := biz.NewUserUseCase(userRepo)
+	generator := idgen.NewMongoGenerator()
+	builder := lock.NewRedisBuilder(redisClient)
+	userUseCase := biz.NewUserUseCase(userRepo, generator, builder)
 	userService := service.NewUserService(userUseCase)
 	authCodeData := cache2.NewAuthCodeData(redisClient, cacheConfig)
 	authCodeRepo := data.NewAuthCodeRepo(authCodeData)

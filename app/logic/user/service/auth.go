@@ -17,7 +17,7 @@ func NewAuthService(uc *biz.AuthUseCase) *AuthService {
 }
 
 func (s *AuthService) CreateAuthCode(ctx context.Context, in *v1.AuthCodeRequest) (out *v1.AuthCodeResponse, err error) {
-	code, err := s.uc.CreateAuthCode(ctx, &options.AuthCodeCreateOptions{ProductId: in.ProductId, Account: in.Account})
+	code, err := s.uc.CreateAuthCode(ctx, &options.AuthCodeCreateOptions{ProductId: in.Base.ProductId, Account: in.Account})
 	if err != nil {
 		return
 	}
@@ -25,7 +25,7 @@ func (s *AuthService) CreateAuthCode(ctx context.Context, in *v1.AuthCodeRequest
 }
 
 func (s *AuthService) Login(ctx context.Context, in *v1.LoginRequest) (out *v1.LoginResponse, err error) {
-	token, err := s.uc.Login(ctx, &options.LoginOptions{ProductId: in.ProductId, AuthCode: in.AuthCode})
+	token, err := s.uc.Login(ctx, &options.LoginOptions{ProductId: in.Base.ProductId, AuthCode: in.AuthCode})
 	if err != nil {
 		return
 	}
@@ -33,7 +33,7 @@ func (s *AuthService) Login(ctx context.Context, in *v1.LoginRequest) (out *v1.L
 }
 
 func (s *AuthService) CheckToken(ctx context.Context, in *v1.TokenCheckRequest) (out *v1.TokenCheckResponse, err error) {
-	uid, err := s.uc.CheckToken(ctx, &options.TokenCheckOptions{ProductId: in.ProductId, Token: in.Token})
+	uid, err := s.uc.CheckToken(ctx, &options.TokenCheckOptions{ProductId: in.Base.ProductId, Token: in.Token})
 	if err != nil {
 		return
 	}

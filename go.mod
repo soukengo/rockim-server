@@ -23,6 +23,9 @@ require (
 	github.com/json-iterator/go v1.1.12
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/nacos-group/nacos-sdk-go v1.1.4
+	github.com/rs/xid v1.4.0
+	github.com/sony/sonyflake v1.1.0
+	github.com/speps/go-hashids/v2 v2.0.1
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.0
 	go.etcd.io/etcd/client/v3 v3.5.4

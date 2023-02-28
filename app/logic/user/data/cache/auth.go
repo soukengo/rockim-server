@@ -31,14 +31,14 @@ func NewAccessTokenData(redisCli *redis.Client, cfg *cache.Config) *AccessTokenD
 }
 
 func (d *AuthCodeData) SaveAuthCode(ctx context.Context, productId string, uid string, code string) (err error) {
-	keySuffix := genKey(productId, uid)
+	keySuffix := cache.Parts(productId, uid)
 	oldCode, err := d.cache.Get(ctx, keySuffix)
 	if err != nil && !errors.IsNotFound(err) {
 		return
 	}
 	// 删除旧的code
 	if oldCode != nil {
-		err1 := d.reverseCache.Delete(ctx, genKey(productId, *oldCode))
+		err1 := d.reverseCache.Delete(ctx, cache.Parts(productId, *oldCode))
 		if err1 != nil {
 			log.WithContext(ctx).Errorf("d.reverseCache.Delete productId: %s, oldCode: %s, err: %v", productId, *oldCode, err1)
 		}
@@ -51,11 +51,11 @@ func (d *AuthCodeData) SaveAuthCode(ctx context.Context, productId string, uid s
 	if err != nil {
 		return
 	}
-	return d.reverseCache.Set(ctx, genKey(productId, code), &uid)
+	return d.reverseCache.Set(ctx, cache.Parts(productId, code), &uid)
 }
 
 func (d *AuthCodeData) FindUidByAuthCode(ctx context.Context, productId string, code string) (id string, err error) {
-	val, err := d.reverseCache.Get(ctx, genKey(productId, code))
+	val, err := d.reverseCache.Get(ctx, cache.Parts(productId, code))
 	if err != nil {
 		return
 	}
@@ -63,18 +63,18 @@ func (d *AuthCodeData) FindUidByAuthCode(ctx context.Context, productId string, 
 	return
 }
 func (d *AuthCodeData) DeleteAuthCode(ctx context.Context, productId string, code string) (err error) {
-	return d.reverseCache.Delete(ctx, genKey(productId, code))
+	return d.reverseCache.Delete(ctx, cache.Parts(productId, code))
 }
 
 func (d *AccessTokenData) SaveAccessToken(ctx context.Context, productId string, uid string, token string) (err error) {
-	keySuffix := genKey(productId, uid)
+	keySuffix := cache.Parts(productId, uid)
 	oldToken, err := d.cache.Get(ctx, keySuffix)
 	if err != nil && !errors.IsNotFound(err) {
 		return
 	}
 	// 删除旧的token
 	if oldToken != nil {
-		err1 := d.reverseCache.Delete(ctx, genKey(productId, *oldToken))
+		err1 := d.reverseCache.Delete(ctx, cache.Parts(productId, *oldToken))
 		if err1 != nil {
 			log.WithContext(ctx).Errorf("d.reverseCache.Delete productId: %s, oldToken: %s, err: %v", productId, *oldToken, err1)
 		}
@@ -87,11 +87,11 @@ func (d *AccessTokenData) SaveAccessToken(ctx context.Context, productId string,
 	if err != nil {
 		return
 	}
-	return d.reverseCache.Set(ctx, genKey(productId, token), &uid)
+	return d.reverseCache.Set(ctx, cache.Parts(productId, token), &uid)
 }
 
 func (d *AccessTokenData) FindUidByAccessToken(ctx context.Context, productId string, token string) (id string, err error) {
-	val, err := d.reverseCache.Get(ctx, genKey(productId, token))
+	val, err := d.reverseCache.Get(ctx, cache.Parts(productId, token))
 	if err != nil {
 		return
 	}

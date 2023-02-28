@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"rockimserver/apis/rockim/service"
 	v1 "rockimserver/apis/rockim/service/user/v1"
 	"rockimserver/apis/rockim/service/user/v1/types"
 	"rockimserver/app/access/gateway/module/openapi/biz"
@@ -19,7 +20,7 @@ func NewUserRepo(uac v1.UserAPIClient, aac v1.AuthAPIClient) biz.UserRepo {
 
 func (r *userRepo) Register(ctx context.Context, opts *options.UserRegisterOptions) (*types.User, error) {
 	ret, err := r.uac.Register(ctx, &v1.UserRegisterRequest{
-		ProductId: opts.ProductId,
+		Base:      service.GenServiceRequest(opts.ProductId),
 		Account:   opts.Account,
 		Name:      opts.Name,
 		AvatarUrl: opts.AvatarUrl,

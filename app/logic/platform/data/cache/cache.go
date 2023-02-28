@@ -4,18 +4,11 @@ import (
 	"rockimserver/pkg/component/cache"
 	rediscache "rockimserver/pkg/component/cache/redis"
 	"rockimserver/pkg/component/database/redis"
-	"strings"
 )
-
-const keySplit = ":"
 
 const (
-	keyProduct = "product"
+	keyProduct cache.Key = "product"
 )
-
-func genKey(keys ...string) string {
-	return strings.Join(keys, keySplit)
-}
 
 func newValueCache[T any](client *redis.Client, category *cache.Category, opts ...cache.Option) cache.ValueCache[T] {
 	return rediscache.NewValueCache[T](client, category, opts...)

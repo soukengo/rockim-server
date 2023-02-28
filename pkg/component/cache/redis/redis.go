@@ -20,21 +20,21 @@ func newRedisCache[T any](cli *redis.Client, category *cache.Category, opts *cac
 	return redisCache[T]{cli: cli, category: category, opts: opts}
 }
 
-func (c *redisCache[T]) Exists(ctx context.Context, keySuffix string) (bool, error) {
-	exists, err := c.cli.Exists(ctx, c.key(keySuffix))
+func (c *redisCache[T]) Exists(ctx context.Context, parts cache.KeyParts) (bool, error) {
+	exists, err := c.cli.Exists(ctx, c.key(parts))
 	if err != nil {
 		return false, err
 	}
 	return exists > 0, nil
 }
 
-func (c *redisCache[T]) Delete(ctx context.Context, keySuffix string) (err error) {
-	_, err = c.cli.Del(ctx, c.key(keySuffix))
+func (c *redisCache[T]) Delete(ctx context.Context, parts cache.KeyParts) (err error) {
+	_, err = c.cli.Del(ctx, c.key(parts))
 	return
 }
 
-func (c *redisCache[T]) key(keySuffix string) string {
-	return c.category.GenKey(keySuffix)
+func (c *redisCache[T]) key(parts cache.KeyParts) string {
+	return c.category.GenKey(parts)
 }
 
 func (c *redisCache[T]) encode(v any) (data []byte, err error) {

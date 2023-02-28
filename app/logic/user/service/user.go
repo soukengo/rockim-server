@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"rockimserver/apis/rockim/service/user/v1"
-	"rockimserver/apis/rockim/service/user/v1/types"
 	"rockimserver/app/logic/user/biz"
+	"rockimserver/app/logic/user/biz/options"
 )
 
 type UserService struct {
@@ -18,8 +18,8 @@ func NewUserService(uc *biz.UserUseCase) *UserService {
 }
 
 func (s *UserService) Register(ctx context.Context, in *v1.UserRegisterRequest) (*v1.UserRegisterResponse, error) {
-	user, err := s.uc.Register(ctx, &types.User{
-		ProductId: in.ProductId,
+	user, err := s.uc.Register(ctx, &options.UserCreateOptions{
+		ProductId: in.Base.ProductId,
 		Account:   in.Account,
 		Name:      in.Name,
 		AvatarUrl: in.AvatarUrl,
@@ -32,7 +32,7 @@ func (s *UserService) Register(ctx context.Context, in *v1.UserRegisterRequest) 
 }
 
 func (s *UserService) Find(ctx context.Context, in *v1.UserFindRequest) (out *v1.UserFindResponse, err error) {
-	user, err := s.uc.Find(ctx, in.ProductId, in.Account)
+	user, err := s.uc.Find(ctx, in.Base.ProductId, in.Account)
 	if err != nil {
 		return
 	}

@@ -8,7 +8,7 @@ import (
 
 func UserProto(source *entity.ImUser) *types.User {
 	return &types.User{
-		Id:         source.Id.Hex(),
+		Id:         source.Id,
 		CreateTime: source.CreateTime,
 		ProductId:  source.ProductId,
 		Account:    source.Account,
@@ -20,6 +20,7 @@ func UserProto(source *entity.ImUser) *types.User {
 }
 func UserEntity(source *types.User) *entity.ImUser {
 	return &entity.ImUser{
+		Id:         source.Id,
 		CreateTime: source.CreateTime,
 		ProductId:  source.ProductId,
 		Account:    source.Account,

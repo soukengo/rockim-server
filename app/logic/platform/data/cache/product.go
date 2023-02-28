@@ -18,13 +18,13 @@ func NewProductData(redisCli *redis.Client, cfg *cache.Config) *ProductData {
 }
 
 func (d *ProductData) FindByID(ctx context.Context, productId string) (*types.Product, error) {
-	val, err := d.cache.Get(ctx, productId)
+	val, err := d.cache.Get(ctx, cache.Parts(productId))
 	return val, err
 }
 func (d *ProductData) Save(ctx context.Context, productId string, record *types.Product) error {
-	return d.cache.Set(ctx, productId, record)
+	return d.cache.Set(ctx, cache.Parts(productId), record)
 }
 
 func (d *ProductData) Delete(ctx context.Context, productId string) error {
-	return d.cache.Delete(ctx, productId)
+	return d.cache.Delete(ctx, cache.Parts(productId))
 }

@@ -4,12 +4,11 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"rockimserver/app/logic/group/service"
 	"rockimserver/pkg/component/server"
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *server.Config, chatroom *service.ChatRoomService) *grpc.Server {
+func NewGRPCServer(c *server.Config, group *ServiceGroup) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -26,5 +25,6 @@ func NewGRPCServer(c *server.Config, chatroom *service.ChatRoomService) *grpc.Se
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout))
 	}
 	srv := grpc.NewServer(opts...)
+	group.Register(srv)
 	return srv
 }
