@@ -34,14 +34,14 @@ func (c *Config) Parse() (err error) {
 	return
 }
 
-func (c *Config) Category(category Key) *Category {
+func (c *Config) Category(key Key) *Category {
 	c.lock.RLock()
-	cate, ok := c.cateMap[category]
+	cate, ok := c.cateMap[key]
 	c.lock.RUnlock()
 	if ok {
 		return cate
 	}
-	return c.new(category)
+	return c.new(key)
 }
 
 func (c *Config) new(key Key) *Category {

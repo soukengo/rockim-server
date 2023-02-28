@@ -29,7 +29,7 @@ type ChatRoomAPIClient interface {
 	// Find 查找聊天室
 	Find(ctx context.Context, in *ChatRoomFindRequest, opts ...grpc.CallOption) (*ChatRoomFindResponse, error)
 	// FindById 根据id查找聊天室
-	FindById(ctx context.Context, in *ChatRoomFindRequest, opts ...grpc.CallOption) (*ChatRoomFindResponse, error)
+	FindById(ctx context.Context, in *ChatRoomFindByIdRequest, opts ...grpc.CallOption) (*ChatRoomFindByIdResponse, error)
 }
 
 type chatRoomAPIClient struct {
@@ -67,8 +67,8 @@ func (c *chatRoomAPIClient) Find(ctx context.Context, in *ChatRoomFindRequest, o
 	return out, nil
 }
 
-func (c *chatRoomAPIClient) FindById(ctx context.Context, in *ChatRoomFindRequest, opts ...grpc.CallOption) (*ChatRoomFindResponse, error) {
-	out := new(ChatRoomFindResponse)
+func (c *chatRoomAPIClient) FindById(ctx context.Context, in *ChatRoomFindByIdRequest, opts ...grpc.CallOption) (*ChatRoomFindByIdResponse, error) {
+	out := new(ChatRoomFindByIdResponse)
 	err := c.cc.Invoke(ctx, "/rockim.service.group.v1.ChatRoomAPI/FindById", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -87,7 +87,7 @@ type ChatRoomAPIServer interface {
 	// Find 查找聊天室
 	Find(context.Context, *ChatRoomFindRequest) (*ChatRoomFindResponse, error)
 	// FindById 根据id查找聊天室
-	FindById(context.Context, *ChatRoomFindRequest) (*ChatRoomFindResponse, error)
+	FindById(context.Context, *ChatRoomFindByIdRequest) (*ChatRoomFindByIdResponse, error)
 	mustEmbedUnimplementedChatRoomAPIServer()
 }
 
@@ -104,7 +104,7 @@ func (UnimplementedChatRoomAPIServer) Dismiss(context.Context, *ChatRoomDismissR
 func (UnimplementedChatRoomAPIServer) Find(context.Context, *ChatRoomFindRequest) (*ChatRoomFindResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
 }
-func (UnimplementedChatRoomAPIServer) FindById(context.Context, *ChatRoomFindRequest) (*ChatRoomFindResponse, error) {
+func (UnimplementedChatRoomAPIServer) FindById(context.Context, *ChatRoomFindByIdRequest) (*ChatRoomFindByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindById not implemented")
 }
 func (UnimplementedChatRoomAPIServer) mustEmbedUnimplementedChatRoomAPIServer() {}
@@ -175,7 +175,7 @@ func _ChatRoomAPI_Find_Handler(srv interface{}, ctx context.Context, dec func(in
 }
 
 func _ChatRoomAPI_FindById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatRoomFindRequest)
+	in := new(ChatRoomFindByIdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -187,7 +187,7 @@ func _ChatRoomAPI_FindById_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/rockim.service.group.v1.ChatRoomAPI/FindById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatRoomAPIServer).FindById(ctx, req.(*ChatRoomFindRequest))
+		return srv.(ChatRoomAPIServer).FindById(ctx, req.(*ChatRoomFindByIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

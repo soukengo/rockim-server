@@ -31,17 +31,37 @@ func (s *ChatRoomService) Create(ctx context.Context, in *v1.ChatRoomCreateReque
 	return
 }
 
-func (s *ChatRoomService) Dismiss(ctx context.Context, request *v1.ChatRoomDismissRequest) (*v1.ChatRoomDismissResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (s *ChatRoomService) Dismiss(ctx context.Context, in *v1.ChatRoomDismissRequest) (out *v1.ChatRoomDismissResponse, err error) {
+	err = s.uc.Dismiss(ctx, &options.ChatRoomDismissOptions{
+		ProductId: in.Base.ProductId,
+		GroupId:   in.GroupId,
+	})
+	if err != nil {
+		return
+	}
+	out = &v1.ChatRoomDismissResponse{}
+	return
+
 }
 
-func (s *ChatRoomService) Find(ctx context.Context, request *v1.ChatRoomFindRequest) (*v1.ChatRoomFindResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (s *ChatRoomService) Find(ctx context.Context, in *v1.ChatRoomFindRequest) (out *v1.ChatRoomFindResponse, err error) {
+	groupId, err := s.uc.FindByCustomGroupId(ctx, in.Base.ProductId, in.CustomGroupId)
+	if err != nil {
+		return
+	}
+	group, err := s.uc.FindById(ctx, in.Base.ProductId, groupId)
+	if err != nil {
+		return
+	}
+	out = &v1.ChatRoomFindResponse{Group: group}
+	return
 }
 
-func (s *ChatRoomService) FindById(ctx context.Context, request *v1.ChatRoomFindRequest) (*v1.ChatRoomFindResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (s *ChatRoomService) FindById(ctx context.Context, in *v1.ChatRoomFindByIdRequest) (out *v1.ChatRoomFindByIdResponse, err error) {
+	group, err := s.uc.FindById(ctx, in.Base.ProductId, in.GroupId)
+	if err != nil {
+		return
+	}
+	out = &v1.ChatRoomFindByIdResponse{Group: group}
+	return
 }

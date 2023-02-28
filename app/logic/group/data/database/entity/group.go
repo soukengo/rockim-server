@@ -14,5 +14,5 @@ type ImGroup struct {
 }
 
 func (*ImGroup) TableName() string {
-	return TableImUser
+	return TableImGroup
 }

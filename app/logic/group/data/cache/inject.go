@@ -4,4 +4,4 @@ import (
 	"github.com/google/wire"
 )
 
-var ProviderSet = wire.NewSet(NewChatRoomData)
+var ProviderSet = wire.NewSet(NewGroupData, NewGroupMemberData, NewChatRoomMemberData)

@@ -11,6 +11,10 @@ type ChatRoomMemberService struct {
 	v1.UnimplementedChatRoomMemberAPIServer
 }
 
+func NewChatRoomMemberService(uc *biz.ChatRoomMemberUseCase) *ChatRoomMemberService {
+	return &ChatRoomMemberService{uc: uc}
+}
+
 func (s *ChatRoomMemberService) Join(ctx context.Context, request *v1.ChatRoomJoinRequest) (*v1.ChatRoomJoinResponse, error) {
 	//TODO implement me
 	panic("implement me")

@@ -148,7 +148,7 @@ func (x *Group) GetStatus() enums.Group_Status {
 	if x != nil {
 		return x.Status
 	}
-	return enums.Group_INVALID
+	return enums.Group_NORMAL
 }
 
 // GroupMember 群组成员
@@ -157,7 +157,7 @@ type GroupMember struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 群组ID
+	// ID
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// 创建时间
 	CreateTime int64 `protobuf:"varint,2,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`

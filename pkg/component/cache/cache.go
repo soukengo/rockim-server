@@ -44,6 +44,10 @@ type SortedSetCache[T any] interface {
 }
 
 type SortedMember[T any] struct {
-	Score float64
+	Score int64
 	Value *T
+}
+
+func Member[T any](score int64, value *T) *SortedMember[T] {
+	return &SortedMember[T]{Score: score, Value: value}
 }

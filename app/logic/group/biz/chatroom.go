@@ -4,7 +4,6 @@ import (
 	"context"
 	"rockimserver/apis/rockim/service/group/v1/types"
 	"rockimserver/apis/rockim/shared/enums"
-	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/logic/group/biz/consts"
 	"rockimserver/app/logic/group/biz/options"
 	"rockimserver/pkg/component/lock"
@@ -12,30 +11,13 @@ import (
 	"time"
 )
 
-var (
-	ErrChatRoomNotFound   = errors.NotFound(reasons.ChatRoom_CHATROOM_NOT_FOUND.String(), "chatroom not found")
-	ErrChatRoomDuplicated = errors.Conflict(reasons.ChatRoom_CHATROOM_DUPLICATED.String(), "chatroom already exists")
-)
-
-type ChatRoomRepo interface {
-	FindByCustomGroupId(ctx context.Context, productId string, customGroupId string) (string, error)
-	FindById(ctx context.Context, productId string, groupId string) (*types.Group, error)
-	Create(ctx context.Context, group *types.Group) error
-	Delete(ctx context.Context, productId string, groupId string) error
-}
-
-type GroupIDRepo interface {
-	GenerateID(ctx context.Context, productId string) (string, error)
-	GenerateCustomGroupID(ctx context.Context, productId string) (string, error)
-}
-
 type ChatRoomUseCase struct {
-	repo    ChatRoomRepo
+	repo    GroupRepo
 	idRepo  GroupIDRepo
 	lockBdr lock.Builder
 }
 
-func NewChatRoomUseCase(repo ChatRoomRepo, idRepo GroupIDRepo, lockBdr lock.Builder) *ChatRoomUseCase {
+func NewChatRoomUseCase(repo GroupRepo, idRepo GroupIDRepo, lockBdr lock.Builder) *ChatRoomUseCase {
 	return &ChatRoomUseCase{repo: repo, idRepo: idRepo, lockBdr: lockBdr}
 }
 
@@ -68,7 +50,7 @@ func (uc *ChatRoomUseCase) Create(ctx context.Context, opts *options.ChatRoomCre
 		return
 	}
 	if len(oldGroupId) > 0 {
-		err = ErrChatRoomDuplicated
+		err = ErrGroupDuplicated
 		return
 	}
 	groupId, err := uc.idRepo.GenerateCustomGroupID(ctx, productId)
@@ -91,5 +73,22 @@ func (uc *ChatRoomUseCase) Create(ctx context.Context, opts *options.ChatRoomCre
 	return
 }
 func (uc *ChatRoomUseCase) Dismiss(ctx context.Context, opts *options.ChatRoomDismissOptions) (err error) {
+	productId := opts.ProductId
+	groupId := opts.GroupId
+	distributedLock := uc.lockBdr.Build(consts.LockKeyChatRoomDismiss, productId, groupId)
+	locked := distributedLock.TryLock(ctx)
+	defer distributedLock.UnLock()
+	if !locked {
+		return
+	}
+	group, err := uc.repo.FindById(ctx, productId, groupId)
+	if err != nil {
+		return
+	}
+	err = uc.repo.Delete(ctx, group)
+	if err != nil {
+		return
+	}
+	// todo send notification
 	return
 }

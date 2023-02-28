@@ -1,7 +1,7 @@
 package entity
 
 const (
-	TableImUser = "im_group"
+	TableImGroup = "im_group"
 )
 
 type Table interface {

@@ -26,7 +26,7 @@ import (
 func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
 	client := mongo.NewClient(mongoConfig)
 	redisClient := redis.NewClient(redisConfig)
-	chatRoomRepo := data.NewChatRoomRepo(client, redisClient)
+	chatRoomRepo := data.NewGroupRepo(client, redisClient)
 	chatRoomUseCase := biz.NewChatRoomUseCase(chatRoomRepo)
 	chatRoomService := service.NewChatRoomService(chatRoomUseCase)
 	grpcServer := server2.NewGRPCServer(serverConfig, chatRoomService)
