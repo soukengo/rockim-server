@@ -97,10 +97,10 @@ func (m *UserRegisterRequest) validate(all bool) error {
 		}
 	}
 
-	if l := utf8.RuneCountInString(m.GetAccount()); l < 1 || l > 64 {
+	if !_UserRegisterRequest_Account_Pattern.MatchString(m.GetAccount()) {
 		err := UserRegisterRequestValidationError{
 			field:  "Account",
-			reason: "value length must be between 1 and 64 runes, inclusive",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_.-]{1,64}$\"",
 		}
 		if !all {
 			return err
@@ -108,10 +108,10 @@ func (m *UserRegisterRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if l := utf8.RuneCountInString(m.GetName()); l < 1 || l > 256 {
+	if l := utf8.RuneCountInString(m.GetName()); l < 1 || l > 64 {
 		err := UserRegisterRequestValidationError{
 			field:  "Name",
-			reason: "value length must be between 1 and 256 runes, inclusive",
+			reason: "value length must be between 1 and 64 runes, inclusive",
 		}
 		if !all {
 			return err
@@ -123,6 +123,27 @@ func (m *UserRegisterRequest) validate(all bool) error {
 		err := UserRegisterRequestValidationError{
 			field:  "AvatarUrl",
 			reason: "value length must be at most 256 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if uri, err := url.Parse(m.GetAvatarUrl()); err != nil {
+		err = UserRegisterRequestValidationError{
+			field:  "AvatarUrl",
+			reason: "value must be a valid URI",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	} else if !uri.IsAbs() {
+		err := UserRegisterRequestValidationError{
+			field:  "AvatarUrl",
+			reason: "value must be absolute",
 		}
 		if !all {
 			return err
@@ -257,6 +278,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = UserRegisterRequestValidationError{}
+
+var _UserRegisterRequest_Account_Pattern = regexp.MustCompile("^[a-zA-Z0-9_.-]{1,64}$")
 
 // Validate checks the field values on UserRegisterResponse with the rules
 // defined in the proto definition for this message. If any rules are

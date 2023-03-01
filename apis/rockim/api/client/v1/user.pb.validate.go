@@ -97,10 +97,10 @@ func (m *UserFindRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetAccount()) < 1 {
+	if utf8.RuneCountInString(m.GetAccount()) > 1 {
 		err := UserFindRequestValidationError{
 			field:  "Account",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be at most 1 runes",
 		}
 		if !all {
 			return err

@@ -57,10 +57,10 @@ func (m *APIRequest) validate(all bool) error {
 
 	var errors []error
 
-	if l := utf8.RuneCountInString(m.GetProductId()); l < 1 || l > 20 {
+	if !_APIRequest_ProductId_Pattern.MatchString(m.GetProductId()) {
 		err := APIRequestValidationError{
 			field:  "ProductId",
-			reason: "value length must be between 1 and 20 runes, inclusive",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_.-]{1,20}$\"",
 		}
 		if !all {
 			return err
@@ -144,3 +144,5 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = APIRequestValidationError{}
+
+var _APIRequest_ProductId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_.-]{1,20}$")

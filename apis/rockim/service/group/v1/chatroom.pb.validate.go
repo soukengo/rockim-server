@@ -97,10 +97,10 @@ func (m *ChatRoomCreateRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetCustomGroupId()) > 64 {
+	if !_ChatRoomCreateRequest_CustomGroupId_Pattern.MatchString(m.GetCustomGroupId()) {
 		err := ChatRoomCreateRequestValidationError{
 			field:  "CustomGroupId",
-			reason: "value length must be at most 64 runes",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_.-]{0,64}$\"",
 		}
 		if !all {
 			return err
@@ -108,10 +108,10 @@ func (m *ChatRoomCreateRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if l := utf8.RuneCountInString(m.GetName()); l < 1 || l > 256 {
+	if l := utf8.RuneCountInString(m.GetName()); l < 1 || l > 64 {
 		err := ChatRoomCreateRequestValidationError{
 			field:  "Name",
-			reason: "value length must be between 1 and 256 runes, inclusive",
+			reason: "value length must be between 1 and 64 runes, inclusive",
 		}
 		if !all {
 			return err
@@ -123,6 +123,27 @@ func (m *ChatRoomCreateRequest) validate(all bool) error {
 		err := ChatRoomCreateRequestValidationError{
 			field:  "IconUrl",
 			reason: "value length must be at most 256 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if uri, err := url.Parse(m.GetIconUrl()); err != nil {
+		err = ChatRoomCreateRequestValidationError{
+			field:  "IconUrl",
+			reason: "value must be a valid URI",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	} else if !uri.IsAbs() {
+		err := ChatRoomCreateRequestValidationError{
+			field:  "IconUrl",
+			reason: "value must be absolute",
 		}
 		if !all {
 			return err
@@ -257,6 +278,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ChatRoomCreateRequestValidationError{}
+
+var _ChatRoomCreateRequest_CustomGroupId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_.-]{0,64}$")
 
 // Validate checks the field values on ChatRoomCreateResponse with the rules
 // defined in the proto definition for this message. If any rules are
