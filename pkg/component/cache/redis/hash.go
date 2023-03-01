@@ -61,6 +61,29 @@ func (c *hashCache[T]) Get(ctx context.Context, parts cache.KeyParts, field stri
 	return c.decodeStr(v)
 }
 
+func (c *hashCache[T]) MGet(ctx context.Context, parts cache.KeyParts, fields []string) (ret []*T, err error) {
+	list, err := c.cli.HMGet(ctx, c.key(parts), fields...)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			err = cache.ErrNoCache
+		}
+		return
+	}
+	ret = make([]*T, 0)
+	for _, v := range list {
+		str, ok := v.(string)
+		if !ok {
+			continue
+		}
+		var item *T
+		item, err = c.decodeStr(str)
+		if err != nil {
+			return
+		}
+		ret = append(ret, item)
+	}
+	return
+}
 func (c *hashCache[T]) GetAll(ctx context.Context, parts cache.KeyParts) (ret map[string]*T, err error) {
 	hash, err := c.cli.HGetAll(ctx, c.key(parts))
 	if err != nil {

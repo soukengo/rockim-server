@@ -1,6 +1,6 @@
 server:
   grpc:
-    addr: :6102
+    addr: :6103
     timeout: "10s"
 database:
   mongodb:

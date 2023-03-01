@@ -30,8 +30,10 @@ type ChatRoomMemberAPIClient interface {
 	IsMember(ctx context.Context, in *ChatRoomMemberCheckRequest, opts ...grpc.CallOption) (*ChatRoomMemberCheckResponse, error)
 	// Find 获取成员信息
 	Find(ctx context.Context, in *ChatRoomMemberFindRequest, opts ...grpc.CallOption) (*ChatRoomMemberFindResponse, error)
-	// List 获取成员信息列表
-	List(ctx context.Context, in *ChatRoomMemberCheckRequest, opts ...grpc.CallOption) (*ChatRoomMemberCheckResponse, error)
+	// List 批量获取成员信息
+	List(ctx context.Context, in *ChatRoomMemberListRequest, opts ...grpc.CallOption) (*ChatRoomMemberListResponse, error)
+	// PaginateUid 获取成员ID列表
+	PaginateUid(ctx context.Context, in *ChatRoomMemberIdPaginateRequest, opts ...grpc.CallOption) (*ChatRoomMemberIdPaginateResponse, error)
 }
 
 type chatRoomMemberAPIClient struct {
@@ -78,9 +80,18 @@ func (c *chatRoomMemberAPIClient) Find(ctx context.Context, in *ChatRoomMemberFi
 	return out, nil
 }
 
-func (c *chatRoomMemberAPIClient) List(ctx context.Context, in *ChatRoomMemberCheckRequest, opts ...grpc.CallOption) (*ChatRoomMemberCheckResponse, error) {
-	out := new(ChatRoomMemberCheckResponse)
+func (c *chatRoomMemberAPIClient) List(ctx context.Context, in *ChatRoomMemberListRequest, opts ...grpc.CallOption) (*ChatRoomMemberListResponse, error) {
+	out := new(ChatRoomMemberListResponse)
 	err := c.cc.Invoke(ctx, "/rockim.service.group.v1.ChatRoomMemberAPI/List", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatRoomMemberAPIClient) PaginateUid(ctx context.Context, in *ChatRoomMemberIdPaginateRequest, opts ...grpc.CallOption) (*ChatRoomMemberIdPaginateResponse, error) {
+	out := new(ChatRoomMemberIdPaginateResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.group.v1.ChatRoomMemberAPI/PaginateUid", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +110,10 @@ type ChatRoomMemberAPIServer interface {
 	IsMember(context.Context, *ChatRoomMemberCheckRequest) (*ChatRoomMemberCheckResponse, error)
 	// Find 获取成员信息
 	Find(context.Context, *ChatRoomMemberFindRequest) (*ChatRoomMemberFindResponse, error)
-	// List 获取成员信息列表
-	List(context.Context, *ChatRoomMemberCheckRequest) (*ChatRoomMemberCheckResponse, error)
+	// List 批量获取成员信息
+	List(context.Context, *ChatRoomMemberListRequest) (*ChatRoomMemberListResponse, error)
+	// PaginateUid 获取成员ID列表
+	PaginateUid(context.Context, *ChatRoomMemberIdPaginateRequest) (*ChatRoomMemberIdPaginateResponse, error)
 	mustEmbedUnimplementedChatRoomMemberAPIServer()
 }
 
@@ -120,8 +133,11 @@ func (UnimplementedChatRoomMemberAPIServer) IsMember(context.Context, *ChatRoomM
 func (UnimplementedChatRoomMemberAPIServer) Find(context.Context, *ChatRoomMemberFindRequest) (*ChatRoomMemberFindResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
 }
-func (UnimplementedChatRoomMemberAPIServer) List(context.Context, *ChatRoomMemberCheckRequest) (*ChatRoomMemberCheckResponse, error) {
+func (UnimplementedChatRoomMemberAPIServer) List(context.Context, *ChatRoomMemberListRequest) (*ChatRoomMemberListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
+}
+func (UnimplementedChatRoomMemberAPIServer) PaginateUid(context.Context, *ChatRoomMemberIdPaginateRequest) (*ChatRoomMemberIdPaginateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PaginateUid not implemented")
 }
 func (UnimplementedChatRoomMemberAPIServer) mustEmbedUnimplementedChatRoomMemberAPIServer() {}
 
@@ -209,7 +225,7 @@ func _ChatRoomMemberAPI_Find_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _ChatRoomMemberAPI_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatRoomMemberCheckRequest)
+	in := new(ChatRoomMemberListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -221,7 +237,25 @@ func _ChatRoomMemberAPI_List_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/rockim.service.group.v1.ChatRoomMemberAPI/List",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatRoomMemberAPIServer).List(ctx, req.(*ChatRoomMemberCheckRequest))
+		return srv.(ChatRoomMemberAPIServer).List(ctx, req.(*ChatRoomMemberListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ChatRoomMemberAPI_PaginateUid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChatRoomMemberIdPaginateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatRoomMemberAPIServer).PaginateUid(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.group.v1.ChatRoomMemberAPI/PaginateUid",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatRoomMemberAPIServer).PaginateUid(ctx, req.(*ChatRoomMemberIdPaginateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -252,6 +286,10 @@ var ChatRoomMemberAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "List",
 			Handler:    _ChatRoomMemberAPI_List_Handler,
+		},
+		{
+			MethodName: "PaginateUid",
+			Handler:    _ChatRoomMemberAPI_PaginateUid_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

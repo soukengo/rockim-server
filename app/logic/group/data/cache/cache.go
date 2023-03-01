@@ -14,7 +14,7 @@ const (
 	keyGroupMemberInfo cache.Key = "group.member.info"
 
 	keyChatRoomMemberSet  cache.Key = "chatroom.member.set"
-	keyChatRoomMemberInfo cache.Key = "chatroom.member.info"
+	keyChatRoomMemberHash cache.Key = "chatroom.member.hash"
 )
 
 // todo golang 不支持 method type parameters，先这样写

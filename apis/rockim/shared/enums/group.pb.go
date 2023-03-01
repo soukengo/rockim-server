@@ -128,7 +128,7 @@ type Group_Status int32
 const (
 	// 正常
 	Group_NORMAL Group_Status = 0
-	// 无效
+	// 已删除
 	Group_DELETED Group_Status = 1
 )
 

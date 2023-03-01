@@ -6,19 +6,21 @@ import (
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/logic/group/biz/consts"
 	"rockimserver/app/logic/group/biz/options"
+	"rockimserver/pkg/component/idgen"
 	"rockimserver/pkg/component/lock"
 	"rockimserver/pkg/errors"
 	"time"
 )
 
 type ChatRoomUseCase struct {
-	repo    GroupRepo
-	idRepo  GroupIDRepo
-	lockBdr lock.Builder
+	repo       GroupRepo
+	memberRepo ChatRoomMemberRepo
+	idgen      idgen.Generator
+	lockBdr    lock.Builder
 }
 
-func NewChatRoomUseCase(repo GroupRepo, idRepo GroupIDRepo, lockBdr lock.Builder) *ChatRoomUseCase {
-	return &ChatRoomUseCase{repo: repo, idRepo: idRepo, lockBdr: lockBdr}
+func NewChatRoomUseCase(repo GroupRepo, memberRepo ChatRoomMemberRepo, idgen idgen.Generator, lockBdr lock.Builder) *ChatRoomUseCase {
+	return &ChatRoomUseCase{repo: repo, memberRepo: memberRepo, idgen: idgen, lockBdr: lockBdr}
 }
 
 func (uc *ChatRoomUseCase) FindByCustomGroupId(ctx context.Context, productId string, customGroupId string) (out string, err error) {
@@ -39,10 +41,11 @@ func (uc *ChatRoomUseCase) Create(ctx context.Context, opts *options.ChatRoomCre
 		return
 	}
 	if len(customGroupId) == 0 {
-		customGroupId, err = uc.idRepo.GenerateCustomGroupID(ctx, productId)
+		customGroupId, err = uc.idgen.GenID()
 		if err != nil {
 			return
 		}
+		customGroupId = consts.ChatRoomIDPrefix + customGroupId
 	}
 	oldGroupId, err := uc.repo.FindByCustomGroupId(ctx, opts.ProductId, customGroupId)
 	// 不是资源不存在的错误
@@ -53,7 +56,10 @@ func (uc *ChatRoomUseCase) Create(ctx context.Context, opts *options.ChatRoomCre
 		err = ErrGroupDuplicated
 		return
 	}
-	groupId, err := uc.idRepo.GenerateCustomGroupID(ctx, productId)
+	groupId, err := uc.idgen.GenID()
+	if err != nil {
+		return
+	}
 	group := &types.Group{
 		Id:            groupId,
 		CreateTime:    time.Now().UnixMilli(),
@@ -85,6 +91,12 @@ func (uc *ChatRoomUseCase) Dismiss(ctx context.Context, opts *options.ChatRoomDi
 	if err != nil {
 		return
 	}
+	// 移除所有成员
+	err = uc.memberRepo.DeleteAll(ctx, productId, groupId)
+	if err != nil {
+		return
+	}
+	// 删除群信息
 	err = uc.repo.Delete(ctx, group)
 	if err != nil {
 		return

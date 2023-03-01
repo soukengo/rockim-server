@@ -37,7 +37,7 @@ type UserUseCase struct {
 
 // NewUserUseCase new a User use case.
 func NewUserUseCase(repo UserRepo, idgen idgen.Generator, lockBdr lock.Builder) *UserUseCase {
-	return &UserUseCase{repo: repo, idgen: idgen}
+	return &UserUseCase{repo: repo, lockBdr: lockBdr, idgen: idgen}
 }
 
 // Register register a new user

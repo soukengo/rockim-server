@@ -1204,8 +1204,6 @@ func (m *ChatRoomMemberListRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	// no validation rules for NextSeq
-
 	if len(errors) > 0 {
 		return ChatRoomMemberListRequestMultiError(errors)
 	}
@@ -1342,8 +1340,6 @@ func (m *ChatRoomMemberListResponse) validate(all bool) error {
 
 	}
 
-	// no validation rules for NextSeq
-
 	if len(errors) > 0 {
 		return ChatRoomMemberListResponseMultiError(errors)
 	}
@@ -1423,3 +1419,331 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ChatRoomMemberListResponseValidationError{}
+
+// Validate checks the field values on ChatRoomMemberIdPaginateRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ChatRoomMemberIdPaginateRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ChatRoomMemberIdPaginateRequest with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// ChatRoomMemberIdPaginateRequestMultiError, or nil if none found.
+func (m *ChatRoomMemberIdPaginateRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ChatRoomMemberIdPaginateRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.GetBase() == nil {
+		err := ChatRoomMemberIdPaginateRequestValidationError{
+			field:  "Base",
+			reason: "value is required",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if all {
+		switch v := interface{}(m.GetBase()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ChatRoomMemberIdPaginateRequestValidationError{
+					field:  "Base",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ChatRoomMemberIdPaginateRequestValidationError{
+					field:  "Base",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetBase()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ChatRoomMemberIdPaginateRequestValidationError{
+				field:  "Base",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if utf8.RuneCountInString(m.GetGroupId()) > 64 {
+		err := ChatRoomMemberIdPaginateRequestValidationError{
+			field:  "GroupId",
+			reason: "value length must be at most 64 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetPaginate() == nil {
+		err := ChatRoomMemberIdPaginateRequestValidationError{
+			field:  "Paginate",
+			reason: "value is required",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if all {
+		switch v := interface{}(m.GetPaginate()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ChatRoomMemberIdPaginateRequestValidationError{
+					field:  "Paginate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ChatRoomMemberIdPaginateRequestValidationError{
+					field:  "Paginate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetPaginate()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ChatRoomMemberIdPaginateRequestValidationError{
+				field:  "Paginate",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return ChatRoomMemberIdPaginateRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// ChatRoomMemberIdPaginateRequestMultiError is an error wrapping multiple
+// validation errors returned by ChatRoomMemberIdPaginateRequest.ValidateAll()
+// if the designated constraints aren't met.
+type ChatRoomMemberIdPaginateRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ChatRoomMemberIdPaginateRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ChatRoomMemberIdPaginateRequestMultiError) AllErrors() []error { return m }
+
+// ChatRoomMemberIdPaginateRequestValidationError is the validation error
+// returned by ChatRoomMemberIdPaginateRequest.Validate if the designated
+// constraints aren't met.
+type ChatRoomMemberIdPaginateRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ChatRoomMemberIdPaginateRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ChatRoomMemberIdPaginateRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ChatRoomMemberIdPaginateRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ChatRoomMemberIdPaginateRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ChatRoomMemberIdPaginateRequestValidationError) ErrorName() string {
+	return "ChatRoomMemberIdPaginateRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ChatRoomMemberIdPaginateRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sChatRoomMemberIdPaginateRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ChatRoomMemberIdPaginateRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ChatRoomMemberIdPaginateRequestValidationError{}
+
+// Validate checks the field values on ChatRoomMemberIdPaginateResponse with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the first error encountered is returned, or nil if there are
+// no violations.
+func (m *ChatRoomMemberIdPaginateResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ChatRoomMemberIdPaginateResponse with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// ChatRoomMemberIdPaginateResponseMultiError, or nil if none found.
+func (m *ChatRoomMemberIdPaginateResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ChatRoomMemberIdPaginateResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetPaginate()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ChatRoomMemberIdPaginateResponseValidationError{
+					field:  "Paginate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ChatRoomMemberIdPaginateResponseValidationError{
+					field:  "Paginate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetPaginate()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ChatRoomMemberIdPaginateResponseValidationError{
+				field:  "Paginate",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return ChatRoomMemberIdPaginateResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// ChatRoomMemberIdPaginateResponseMultiError is an error wrapping multiple
+// validation errors returned by
+// ChatRoomMemberIdPaginateResponse.ValidateAll() if the designated
+// constraints aren't met.
+type ChatRoomMemberIdPaginateResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ChatRoomMemberIdPaginateResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ChatRoomMemberIdPaginateResponseMultiError) AllErrors() []error { return m }
+
+// ChatRoomMemberIdPaginateResponseValidationError is the validation error
+// returned by ChatRoomMemberIdPaginateResponse.Validate if the designated
+// constraints aren't met.
+type ChatRoomMemberIdPaginateResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ChatRoomMemberIdPaginateResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ChatRoomMemberIdPaginateResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ChatRoomMemberIdPaginateResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ChatRoomMemberIdPaginateResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ChatRoomMemberIdPaginateResponseValidationError) ErrorName() string {
+	return "ChatRoomMemberIdPaginateResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ChatRoomMemberIdPaginateResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sChatRoomMemberIdPaginateResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ChatRoomMemberIdPaginateResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ChatRoomMemberIdPaginateResponseValidationError{}

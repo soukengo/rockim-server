@@ -3,6 +3,7 @@ package redis
 import (
 	"context"
 	rds "github.com/go-redis/redis/v8"
+	"rockimserver/apis/rockim/shared"
 	"rockimserver/pkg/component/cache"
 	"rockimserver/pkg/component/database/redis"
 	"rockimserver/pkg/errors"
@@ -25,7 +26,7 @@ func (c *sortedSetCache[T]) Add(ctx context.Context, parts cache.KeyParts, membe
 	if err != nil {
 		return
 	}
-	_, err = c.cli.ZAdd(ctx, c.key(parts), &rds.Z{Score: member.Score, Member: data})
+	_, err = c.cli.ZAdd(ctx, c.key(parts), &rds.Z{Score: float64(member.Score), Member: data})
 	return
 }
 
@@ -43,12 +44,14 @@ func (c *sortedSetCache[T]) AddSlice(ctx context.Context, parts cache.KeyParts, 
 	return
 }
 
-func (c *sortedSetCache[T]) Paginate(ctx context.Context, parts cache.KeyParts, cursor uint64, count int64) (ret []*T, retCursor uint64, err error) {
-	values, retCursor, err := c.cli.SScan(ctx, c.key(parts), cursor, "*", count)
+func (c *sortedSetCache[T]) Paginate(ctx context.Context, parts cache.KeyParts, paginate *shared.Paginating) (ret []*T, paginated *shared.Paginated, err error) {
+	key := c.key(parts)
+	total, err := c.cli.ZCard(ctx, key)
 	if err != nil {
 		return
 	}
-	if retCursor == 0 {
+	paginated = &shared.Paginated{Total: total}
+	if total == 0 {
 		var exists bool
 		exists, err = c.Exists(ctx, parts)
 		if err != nil {
@@ -58,6 +61,11 @@ func (c *sortedSetCache[T]) Paginate(ctx context.Context, parts cache.KeyParts, 
 			err = cache.ErrNoCache
 			return
 		}
+		return
+	}
+	values, err := c.cli.ZRangeByScore(ctx, key, &rds.ZRangeBy{Count: int64(paginate.PageSize), Offset: paginate.Offset()})
+	if err != nil {
+		return
 	}
 	ret = make([]*T, len(values))
 	for i, v := range values {

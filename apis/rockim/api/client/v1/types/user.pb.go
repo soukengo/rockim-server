@@ -123,7 +123,7 @@ func (x *User) GetStatus() enums.User_Status {
 	if x != nil {
 		return x.Status
 	}
-	return enums.User_INVALID
+	return enums.User_NORMAL
 }
 
 func (x *User) GetFields() map[string]string {

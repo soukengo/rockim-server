@@ -41,7 +41,7 @@ func (c *setCache[T]) AddSlice(ctx context.Context, parts cache.KeyParts, values
 	return
 }
 
-func (c *setCache[T]) Paginate(ctx context.Context, parts cache.KeyParts, cursor uint64, count int64) (ret []*T, retCursor uint64, err error) {
+func (c *setCache[T]) Scan(ctx context.Context, parts cache.KeyParts, cursor uint64, count int64) (ret []*T, retCursor uint64, err error) {
 	values, retCursor, err := c.cli.SScan(ctx, c.key(parts), cursor, "*", count)
 	if err != nil {
 		return
