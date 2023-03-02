@@ -20,19 +20,21 @@ const (
 )
 
 type OpenApiServiceGroup struct {
-	productUc *biz.ProductUseCase
-	userSrv   *service.UserService
-	authSrv   *service.AuthService
+	productUc   *biz.ProductUseCase
+	userSrv     *service.UserService
+	authSrv     *service.AuthService
+	chatRoomSrv *service.ChatRoomService
 }
 
-func NewOpenApiServiceGroup(productUc *biz.ProductUseCase, userSrv *service.UserService, authSrv *service.AuthService) *OpenApiServiceGroup {
-	return &OpenApiServiceGroup{productUc: productUc, userSrv: userSrv, authSrv: authSrv}
+func NewOpenApiServiceGroup(productUc *biz.ProductUseCase, userSrv *service.UserService, authSrv *service.AuthService, chatRoomSrv *service.ChatRoomService) *OpenApiServiceGroup {
+	return &OpenApiServiceGroup{productUc: productUc, userSrv: userSrv, authSrv: authSrv, chatRoomSrv: chatRoomSrv}
 }
 
 func (g *OpenApiServiceGroup) Register(srv *http.Server) {
 	srv.Use("/rockim.api.openapi.v1.*", g.checkSign(), g.setAPIRequest(), validate.Validator())
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	v1.RegisterUserAPIHTTPServer(srv, g.userSrv)
+	v1.RegisterChatRoomAPIHTTPServer(srv, g.chatRoomSrv)
 }
 
 type OpenAPIRequest interface {
@@ -46,7 +48,7 @@ func (g *OpenApiServiceGroup) setAPIRequest() middleware.Middleware {
 		return func(ctx context.Context, req any) (resp any, err error) {
 			tr, ok := transport.FromServerContext(ctx)
 			if !ok {
-				err = ErrSignInvalid.NewWithMessage("缺少签名参数")
+				err = biz.ErrSignInvalid.NewWithMessage("缺少签名参数")
 				return
 			}
 			r, ok := req.(OpenAPIRequest)
@@ -69,7 +71,7 @@ func (g *OpenApiServiceGroup) checkSign() middleware.Middleware {
 		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
 			tr, ok := transport.FromServerContext(ctx)
 			if !ok {
-				err = ErrSignInvalid.NewWithMessage("缺少签名参数")
+				err = biz.ErrSignInvalid.NewWithMessage("缺少签名参数")
 				return
 			}
 			productId := tr.RequestHeader().Get(openAPIHeaderProductId)
@@ -77,7 +79,7 @@ func (g *OpenApiServiceGroup) checkSign() middleware.Middleware {
 			timestamp := tr.RequestHeader().Get(openAPIHeaderTimestamp)
 			sign := tr.RequestHeader().Get(openAPIHeaderSign)
 			if len(productId) == 0 || len(nonce) == 0 || len(timestamp) == 0 || len(sign) == 0 {
-				err = ErrSignInvalid.NewWithMessage("缺少签名参数")
+				err = biz.ErrSignInvalid.NewWithMessage("缺少签名参数")
 				return
 			}
 			params := map[string]string{
@@ -90,7 +92,7 @@ func (g *OpenApiServiceGroup) checkSign() middleware.Middleware {
 				return
 			}
 			if !encrypt.CheckSign(params, p.ProductKey, sign) {
-				err = ErrSignInvalid.NewWithMessage("签名错误")
+				err = biz.ErrSignInvalid.NewWithMessage("签名错误")
 				return
 			}
 			return handler(ctx, req)

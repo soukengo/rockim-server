@@ -18,6 +18,7 @@ func GroupProto(source *entity.ImGroup) *types.Group {
 		IconUrl:       source.IconUrl,
 		Fields:        source.Fields,
 		Status:        enums.Group_Status(source.Status),
+		Owner:         source.Owner,
 	}
 }
 func GroupEntity(source *types.Group) *entity.ImGroup {
@@ -32,5 +33,6 @@ func GroupEntity(source *types.Group) *entity.ImGroup {
 		IconUrl:       source.IconUrl,
 		Fields:        source.Fields,
 		Status:        int32(source.Status),
+		Owner:         source.Owner,
 	}
 }

@@ -80,15 +80,19 @@ func (uc *UserUseCase) Register(ctx context.Context, opts *options.UserCreateOpt
 	return u, nil
 }
 
-func (uc *UserUseCase) Find(ctx context.Context, productId string, account string) (ret *types.User, err error) {
+func (uc *UserUseCase) Find(ctx context.Context, productId string, uid string) (ret *types.User, err error) {
+	return uc.repo.FindByID(ctx, productId, uid)
+}
+
+func (uc *UserUseCase) FindByAccount(ctx context.Context, productId string, account string) (ret *types.User, err error) {
 	uid, err := uc.repo.FindUidByAccount(ctx, productId, account)
 	if err != nil {
-		if errors.IsNotFound(err) {
-			err = ErrUserNotFound
-		}
 		return
 	}
 	return uc.repo.FindByID(ctx, productId, uid)
+}
+func (uc *UserUseCase) FindUid(ctx context.Context, productId string, account string) (ret string, err error) {
+	return uc.repo.FindUidByAccount(ctx, productId, account)
 }
 
 func (uc *UserUseCase) existsAccount(ctx context.Context, productId string, account string) (exists bool, err error) {

@@ -97,10 +97,10 @@ func (m *ChatRoomJoinRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetGroupId()) > 64 {
+	if utf8.RuneCountInString(m.GetGroupId()) < 1 {
 		err := ChatRoomJoinRequestValidationError{
 			field:  "GroupId",
-			reason: "value length must be at most 64 runes",
+			reason: "value length must be at least 1 runes",
 		}
 		if !all {
 			return err
@@ -363,10 +363,10 @@ func (m *ChatRoomQuitRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetGroupId()) > 64 {
+	if utf8.RuneCountInString(m.GetGroupId()) < 1 {
 		err := ChatRoomQuitRequestValidationError{
 			field:  "GroupId",
-			reason: "value length must be at most 64 runes",
+			reason: "value length must be at least 1 runes",
 		}
 		if !all {
 			return err
@@ -629,10 +629,10 @@ func (m *ChatRoomMemberCheckRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetGroupId()) > 64 {
+	if utf8.RuneCountInString(m.GetGroupId()) < 1 {
 		err := ChatRoomMemberCheckRequestValidationError{
 			field:  "GroupId",
-			reason: "value length must be at most 64 runes",
+			reason: "value length must be at least 1 runes",
 		}
 		if !all {
 			return err
@@ -898,10 +898,10 @@ func (m *ChatRoomMemberFindRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetGroupId()) > 64 {
+	if utf8.RuneCountInString(m.GetGroupId()) < 1 {
 		err := ChatRoomMemberFindRequestValidationError{
 			field:  "GroupId",
-			reason: "value length must be at most 64 runes",
+			reason: "value length must be at least 1 runes",
 		}
 		if !all {
 			return err
@@ -1193,10 +1193,10 @@ func (m *ChatRoomMemberListRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetGroupId()) > 64 {
+	if utf8.RuneCountInString(m.GetGroupId()) < 1 {
 		err := ChatRoomMemberListRequestValidationError{
 			field:  "GroupId",
-			reason: "value length must be at most 64 runes",
+			reason: "value length must be at least 1 runes",
 		}
 		if !all {
 			return err
@@ -1482,10 +1482,10 @@ func (m *ChatRoomMemberIdPaginateRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetGroupId()) > 64 {
+	if utf8.RuneCountInString(m.GetGroupId()) < 1 {
 		err := ChatRoomMemberIdPaginateRequestValidationError{
 			field:  "GroupId",
-			reason: "value length must be at most 64 runes",
+			reason: "value length must be at least 1 runes",
 		}
 		if !all {
 			return err

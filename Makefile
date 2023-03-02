@@ -13,8 +13,9 @@ protoc-admin:
 	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/admin/tenant/v1/types/*.proto
 
 protoc-client:
-	protoc ${PROTOC_VAR} --go-extend_out=plugins=setters:./apis  --go-extend_opt=paths=source_relative --go-http_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/client/v1/*.proto
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/client/v1/types/*.proto
+	protoc ${PROTOC_VAR} --go-extend_out=plugins=setters:./apis  --go-extend_opt=paths=source_relative --go-http_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis"  ../rockim-apis/rockim/api/client/v1/*.proto
+	protoc ${PROTOC_VAR} --go-extend_out=plugins=setters:./apis  --go-extend_opt=paths=source_relative --go-http_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/client/v1/**/*.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/client/v1/**/types/*.proto
 
 protoc-openapi:
 	protoc ${PROTOC_VAR} --go-extend_out=plugins=setters:./apis  --go-extend_opt=paths=source_relative --go-http_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/api/openapi/v1/*.proto
@@ -36,3 +37,5 @@ protoc-group:
 	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis  ../rockim-apis/rockim/service/group/v1/types/*.proto
 
 
+wire:
+	find app -type d -depth 2 -print | xargs -L 1 bash -c 'cd "$$0" && pwd && wire'

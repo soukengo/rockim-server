@@ -1,6 +1,7 @@
 package idgen
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -30,4 +31,13 @@ func Benchmark_xidGenerator_GenID(b *testing.B) {
 			b.Fatal(err)
 		}
 	}
+}
+
+func Test_xidGenerator_GenID(t *testing.T) {
+	var generator = NewXidGenerator()
+	id, err := generator.GenID()
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(id)
 }

@@ -6,4 +6,11 @@ import (
 )
 
 // ProviderSet is grpc providers.
-var ProviderSet = wire.NewSet(discovery.NewDiscovery, NewProductClient, NewUserClient, NewAuthClient)
+var ProviderSet = wire.NewSet(
+	discovery.NewDiscovery,
+	NewProductClient,
+	NewUserClient,
+	NewAuthClient,
+	NewChatRoomClient,
+	NewChatRoomMemberClient,
+)

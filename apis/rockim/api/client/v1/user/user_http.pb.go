@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-http v2.5.3
 // - protoc             v3.20.0
-// source: rockim/api/client/v1/user.proto
+// source: rockim/api/client/v1/user/user.proto
 
-package v1
+package user
 
 import (
 	context "context"
@@ -19,7 +19,7 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationUserAPIFind = "/rockim.api.client.v1.UserAPI/Find"
+const OperationUserAPIFind = "/rockim.api.client.v1.user.UserAPI/Find"
 
 type UserAPIHTTPServer interface {
 	// Find Find 查找用户
@@ -28,10 +28,10 @@ type UserAPIHTTPServer interface {
 
 func RegisterUserAPIHTTPServer(s *http.Server, srv UserAPIHTTPServer) {
 	r := s.Route("/")
-	r.POST("/client/v1/user/find", _UserAPI_Find0_HTTP_Handler(srv))
+	r.POST("/client/v1/user/find", _UserAPI_Find1_HTTP_Handler(srv))
 }
 
-func _UserAPI_Find0_HTTP_Handler(srv UserAPIHTTPServer) func(ctx http.Context) error {
+func _UserAPI_Find1_HTTP_Handler(srv UserAPIHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in UserFindRequest
 		if err := ctx.Bind(&in); err != nil {

@@ -8,9 +8,10 @@ import (
 )
 
 var (
-	ErrGroupNotFound       = errors.NotFound(reasons.Group_GROUP_NOT_FOUND.String(), "group not found")
-	ErrGroupDuplicated     = errors.Conflict(reasons.Group_GROUP_DUPLICATED.String(), "group already exists")
-	ErrGroupMemberNotFound = errors.Conflict(reasons.Group_GROUP_MEMBER_NOT_FOUND.String(), "group member not found")
+	ErrGroupNotFound             = errors.NotFound(reasons.Group_GROUP_NOT_FOUND.String(), "group not found")
+	ErrGroupDuplicated           = errors.Conflict(reasons.Group_GROUP_DUPLICATED.String(), "group already exists")
+	ErrGroupMemberNotFound       = errors.Conflict(reasons.Group_GROUP_MEMBER_NOT_FOUND.String(), "group member not found")
+	ErrGroupCustomGroupIdInvalid = errors.Conflict(reasons.Group_CUSTOM_GROUP_ID_INVALID.String(), "group member not found")
 )
 
 type GroupRepo interface {

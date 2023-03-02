@@ -8,11 +8,12 @@ import (
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	v1 "rockimserver/apis/rockim/api/client/v1"
-	"rockimserver/apis/rockim/shared/reasons"
+	"rockimserver/apis/rockim/api/client/v1/auth"
+	"rockimserver/apis/rockim/api/client/v1/group"
+	"rockimserver/apis/rockim/api/client/v1/user"
 	"rockimserver/app/access/gateway/module/client/biz"
 	"rockimserver/app/access/gateway/module/client/biz/options"
 	"rockimserver/app/access/gateway/module/client/service"
-	"rockimserver/pkg/errors"
 	"rockimserver/pkg/util/encrypt"
 )
 
@@ -24,26 +25,25 @@ const (
 	clientHeaderAccessToken = "RockIM-Client-AccessToken"
 )
 
-var (
-	ErrSignInvalid        = errors.BadRequest(reasons.OpenAPI_SIGN_INVALID.String(), "签名错误")
-	ErrAccessTokenInvalid = errors.BadRequest(reasons.User_ACCESS_TOKEN_INVALID.String(), "访问令牌无效或已过期")
-)
-
 type ClientServiceGroup struct {
-	productUc *biz.ProductUseCase
-	authUc    *biz.AuthUseCase
-	userSrv   *service.UserService
-	authSrv   *service.AuthService
+	productUc         *biz.ProductUseCase
+	authUc            *biz.AuthUseCase
+	userSrv           *service.UserService
+	authSrv           *service.AuthService
+	chatRoomSrv       *service.ChatRoomService
+	chatRoomMemberSrv *service.ChatRoomMemberService
 }
 
-func NewClientServiceGroup(productUc *biz.ProductUseCase, authUc *biz.AuthUseCase, userSrv *service.UserService, authSrv *service.AuthService) *ClientServiceGroup {
-	return &ClientServiceGroup{productUc: productUc, authUc: authUc, userSrv: userSrv, authSrv: authSrv}
+func NewClientServiceGroup(productUc *biz.ProductUseCase, authUc *biz.AuthUseCase, userSrv *service.UserService, authSrv *service.AuthService, chatRoomSrv *service.ChatRoomService, chatRoomMemberSrv *service.ChatRoomMemberService) *ClientServiceGroup {
+	return &ClientServiceGroup{productUc: productUc, authUc: authUc, userSrv: userSrv, authSrv: authSrv, chatRoomSrv: chatRoomSrv, chatRoomMemberSrv: chatRoomMemberSrv}
 }
 
 func (g *ClientServiceGroup) Register(srv *http.Server) {
 	srv.Use("/rockim.api.client.v1.*", g.checkSign(), g.checkAuth(), g.setAPIRequest(), validate.Validator())
-	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
-	v1.RegisterUserAPIHTTPServer(srv, g.userSrv)
+	auth.RegisterAuthAPIHTTPServer(srv, g.authSrv)
+	user.RegisterUserAPIHTTPServer(srv, g.userSrv)
+	group.RegisterChatRoomAPIHTTPServer(srv, g.chatRoomSrv)
+	group.RegisterChatRoomMemberAPIHTTPServer(srv, g.chatRoomMemberSrv)
 }
 
 type ClientAPIRequest interface {
@@ -57,7 +57,7 @@ func (g *ClientServiceGroup) setAPIRequest() middleware.Middleware {
 		return func(ctx context.Context, req any) (resp any, err error) {
 			tr, ok := transport.FromServerContext(ctx)
 			if !ok {
-				err = ErrSignInvalid.NewWithMessage("缺少签名参数")
+				err = biz.ErrSignInvalid.NewWithMessage("缺少签名参数")
 				return
 			}
 			r, ok := req.(ClientAPIRequest)
@@ -80,7 +80,7 @@ func (g *ClientServiceGroup) checkSign() middleware.Middleware {
 		return func(ctx context.Context, req any) (reply any, err error) {
 			tr, ok := transport.FromServerContext(ctx)
 			if !ok {
-				err = ErrSignInvalid.NewWithMessage("缺少签名参数")
+				err = biz.ErrSignInvalid.NewWithMessage("缺少签名参数")
 				return
 			}
 			productId := tr.RequestHeader().Get(clientHeaderProductId)
@@ -88,7 +88,7 @@ func (g *ClientServiceGroup) checkSign() middleware.Middleware {
 			timestamp := tr.RequestHeader().Get(clientHeaderTimestamp)
 			sign := tr.RequestHeader().Get(clientHeaderSign)
 			if len(productId) == 0 || len(nonce) == 0 || len(timestamp) == 0 || len(sign) == 0 {
-				err = ErrSignInvalid.NewWithMessage("缺少签名参数")
+				err = biz.ErrSignInvalid.NewWithMessage("缺少签名参数")
 				return
 			}
 			params := map[string]string{
@@ -101,7 +101,7 @@ func (g *ClientServiceGroup) checkSign() middleware.Middleware {
 				return
 			}
 			if !encrypt.CheckSign(params, p.ProductKey, sign) {
-				err = ErrSignInvalid.NewWithMessage("签名错误")
+				err = biz.ErrSignInvalid.NewWithMessage("签名错误")
 				return
 			}
 			return handler(ctx, req)
@@ -112,18 +112,18 @@ func (g *ClientServiceGroup) checkSign() middleware.Middleware {
 // checkAuth 验证访问令牌
 func (g *ClientServiceGroup) checkAuth() middleware.Middleware {
 	whiteList := make(map[string]struct{})
-	whiteList[v1.OperationAuthAPILogin] = struct{}{}
+	whiteList[auth.OperationAuthAPILogin] = struct{}{}
 	return selector.Server(func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req any) (resp any, err error) {
 			tr, ok := transport.FromServerContext(ctx)
 			if !ok {
-				err = ErrAccessTokenInvalid.NewWithMessage("缺少访问令牌参数")
+				err = biz.ErrAccessTokenInvalid.NewWithMessage("缺少访问令牌参数")
 				return
 			}
 			productId := tr.RequestHeader().Get(clientHeaderProductId)
 			token := tr.RequestHeader().Get(clientHeaderAccessToken)
 			if len(productId) == 0 || len(token) == 0 {
-				err = ErrAccessTokenInvalid.NewWithMessage("缺少访问令牌参数")
+				err = biz.ErrAccessTokenInvalid.NewWithMessage("缺少访问令牌参数")
 				return
 			}
 			uid, err := g.authUc.CheckToken(ctx, &options.TokenCheckOptions{ProductId: productId, Token: token})

@@ -26,8 +26,8 @@ type ChatRoomAPIClient interface {
 	Create(ctx context.Context, in *ChatRoomCreateRequest, opts ...grpc.CallOption) (*ChatRoomCreateResponse, error)
 	// Dismiss 解散聊天室
 	Dismiss(ctx context.Context, in *ChatRoomDismissRequest, opts ...grpc.CallOption) (*ChatRoomDismissResponse, error)
-	// Find 查找聊天室
-	Find(ctx context.Context, in *ChatRoomFindRequest, opts ...grpc.CallOption) (*ChatRoomFindResponse, error)
+	// FindGroupId 查找聊天室ID
+	FindGroupId(ctx context.Context, in *ChatRoomGroupIdFindRequest, opts ...grpc.CallOption) (*ChatRoomGroupIdFindResponse, error)
 	// FindById 根据id查找聊天室
 	FindById(ctx context.Context, in *ChatRoomFindByIdRequest, opts ...grpc.CallOption) (*ChatRoomFindByIdResponse, error)
 }
@@ -58,9 +58,9 @@ func (c *chatRoomAPIClient) Dismiss(ctx context.Context, in *ChatRoomDismissRequ
 	return out, nil
 }
 
-func (c *chatRoomAPIClient) Find(ctx context.Context, in *ChatRoomFindRequest, opts ...grpc.CallOption) (*ChatRoomFindResponse, error) {
-	out := new(ChatRoomFindResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.group.v1.ChatRoomAPI/Find", in, out, opts...)
+func (c *chatRoomAPIClient) FindGroupId(ctx context.Context, in *ChatRoomGroupIdFindRequest, opts ...grpc.CallOption) (*ChatRoomGroupIdFindResponse, error) {
+	out := new(ChatRoomGroupIdFindResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.group.v1.ChatRoomAPI/FindGroupId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,8 +84,8 @@ type ChatRoomAPIServer interface {
 	Create(context.Context, *ChatRoomCreateRequest) (*ChatRoomCreateResponse, error)
 	// Dismiss 解散聊天室
 	Dismiss(context.Context, *ChatRoomDismissRequest) (*ChatRoomDismissResponse, error)
-	// Find 查找聊天室
-	Find(context.Context, *ChatRoomFindRequest) (*ChatRoomFindResponse, error)
+	// FindGroupId 查找聊天室ID
+	FindGroupId(context.Context, *ChatRoomGroupIdFindRequest) (*ChatRoomGroupIdFindResponse, error)
 	// FindById 根据id查找聊天室
 	FindById(context.Context, *ChatRoomFindByIdRequest) (*ChatRoomFindByIdResponse, error)
 	mustEmbedUnimplementedChatRoomAPIServer()
@@ -101,8 +101,8 @@ func (UnimplementedChatRoomAPIServer) Create(context.Context, *ChatRoomCreateReq
 func (UnimplementedChatRoomAPIServer) Dismiss(context.Context, *ChatRoomDismissRequest) (*ChatRoomDismissResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Dismiss not implemented")
 }
-func (UnimplementedChatRoomAPIServer) Find(context.Context, *ChatRoomFindRequest) (*ChatRoomFindResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
+func (UnimplementedChatRoomAPIServer) FindGroupId(context.Context, *ChatRoomGroupIdFindRequest) (*ChatRoomGroupIdFindResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindGroupId not implemented")
 }
 func (UnimplementedChatRoomAPIServer) FindById(context.Context, *ChatRoomFindByIdRequest) (*ChatRoomFindByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindById not implemented")
@@ -156,20 +156,20 @@ func _ChatRoomAPI_Dismiss_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatRoomAPI_Find_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatRoomFindRequest)
+func _ChatRoomAPI_FindGroupId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChatRoomGroupIdFindRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatRoomAPIServer).Find(ctx, in)
+		return srv.(ChatRoomAPIServer).FindGroupId(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.service.group.v1.ChatRoomAPI/Find",
+		FullMethod: "/rockim.service.group.v1.ChatRoomAPI/FindGroupId",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatRoomAPIServer).Find(ctx, req.(*ChatRoomFindRequest))
+		return srv.(ChatRoomAPIServer).FindGroupId(ctx, req.(*ChatRoomGroupIdFindRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -208,8 +208,8 @@ var ChatRoomAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ChatRoomAPI_Dismiss_Handler,
 		},
 		{
-			MethodName: "Find",
-			Handler:    _ChatRoomAPI_Find_Handler,
+			MethodName: "FindGroupId",
+			Handler:    _ChatRoomAPI_FindGroupId_Handler,
 		},
 		{
 			MethodName: "FindById",

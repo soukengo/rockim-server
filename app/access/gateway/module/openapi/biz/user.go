@@ -8,6 +8,7 @@ import (
 
 type UserRepo interface {
 	Register(ctx context.Context, opts *options.UserRegisterOptions) (*types.User, error)
+	FindUid(ctx context.Context, productId string, account string) (string, error)
 }
 
 type UserUseCase struct {
@@ -20,4 +21,7 @@ func NewUserUseCase(repo UserRepo) *UserUseCase {
 
 func (uc *UserUseCase) Register(ctx context.Context, opts *options.UserRegisterOptions) (*types.User, error) {
 	return uc.repo.Register(ctx, opts)
+}
+func (uc *UserUseCase) FindUid(ctx context.Context, productId string, account string) (string, error) {
+	return uc.repo.FindUid(ctx, productId, account)
 }

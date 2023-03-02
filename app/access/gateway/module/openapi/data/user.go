@@ -31,3 +31,11 @@ func (r *userRepo) Register(ctx context.Context, opts *options.UserRegisterOptio
 	}
 	return ret.User, nil
 }
+
+func (r *userRepo) FindUid(ctx context.Context, productId string, account string) (out string, err error) {
+	ret, err := r.uac.FindUid(ctx, &v1.UserIdFindRequest{Base: service.GenServiceRequest(productId), Account: account})
+	if err != nil {
+		return
+	}
+	return ret.Uid, nil
+}

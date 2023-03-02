@@ -9,6 +9,7 @@ import (
 	"rockimserver/pkg/component/idgen"
 	"rockimserver/pkg/component/lock"
 	"rockimserver/pkg/errors"
+	"strings"
 	"time"
 )
 
@@ -17,10 +18,11 @@ type ChatRoomUseCase struct {
 	memberRepo ChatRoomMemberRepo
 	idgen      idgen.Generator
 	lockBdr    lock.Builder
+	memberMgr  *ChatRoomMemberManager
 }
 
-func NewChatRoomUseCase(repo GroupRepo, memberRepo ChatRoomMemberRepo, idgen idgen.Generator, lockBdr lock.Builder) *ChatRoomUseCase {
-	return &ChatRoomUseCase{repo: repo, memberRepo: memberRepo, idgen: idgen, lockBdr: lockBdr}
+func NewChatRoomUseCase(repo GroupRepo, memberRepo ChatRoomMemberRepo, idgen idgen.Generator, lockBdr lock.Builder, memberMgr *ChatRoomMemberManager) *ChatRoomUseCase {
+	return &ChatRoomUseCase{repo: repo, memberRepo: memberRepo, idgen: idgen, lockBdr: lockBdr, memberMgr: memberMgr}
 }
 
 func (uc *ChatRoomUseCase) FindByCustomGroupId(ctx context.Context, productId string, customGroupId string) (out string, err error) {
@@ -40,12 +42,17 @@ func (uc *ChatRoomUseCase) Create(ctx context.Context, opts *options.ChatRoomCre
 	if !locked {
 		return
 	}
-	if len(customGroupId) == 0 {
+	if len(customGroupId) > 0 {
+		if strings.HasPrefix(customGroupId, consts.CustomGroupIDPrefix) {
+			err = ErrGroupCustomGroupIdInvalid
+			return
+		}
+	} else {
 		customGroupId, err = uc.idgen.GenID()
 		if err != nil {
 			return
 		}
-		customGroupId = consts.ChatRoomIDPrefix + customGroupId
+		customGroupId = consts.CustomGroupIDPrefix + customGroupId
 	}
 	oldGroupId, err := uc.repo.FindByCustomGroupId(ctx, opts.ProductId, customGroupId)
 	// 不是资源不存在的错误
@@ -70,10 +77,18 @@ func (uc *ChatRoomUseCase) Create(ctx context.Context, opts *options.ChatRoomCre
 		Name:          opts.Name,
 		IconUrl:       opts.IconUrl,
 		Fields:        opts.Fields,
+		Owner:         opts.Owner,
 	}
 	err = uc.repo.Create(ctx, group)
 	if err != nil {
 		return
+	}
+	// 添加群主
+	if len(opts.Owner) > 0 {
+		err = uc.memberMgr.addMember(ctx, group, &options.ChatRoomMemberAddItem{Uid: opts.Owner, Role: enums.Group_OWNER})
+		if err != nil {
+			return
+		}
 	}
 	out = group
 	return

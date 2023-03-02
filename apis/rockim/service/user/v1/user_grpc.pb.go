@@ -24,8 +24,12 @@ const _ = grpc.SupportPackageIsVersion7
 type UserAPIClient interface {
 	// Register 注册用户
 	Register(ctx context.Context, in *UserRegisterRequest, opts ...grpc.CallOption) (*UserRegisterResponse, error)
-	// Find 查找用户
+	// Find 查询用户
 	Find(ctx context.Context, in *UserFindRequest, opts ...grpc.CallOption) (*UserFindResponse, error)
+	// FindByAccount 根据账号查询用户
+	FindByAccount(ctx context.Context, in *UserFindByAccountRequest, opts ...grpc.CallOption) (*UserFindByAccountResponse, error)
+	// FindUid 查询用户ID
+	FindUid(ctx context.Context, in *UserIdFindRequest, opts ...grpc.CallOption) (*UserIdFindResponse, error)
 }
 
 type userAPIClient struct {
@@ -54,14 +58,36 @@ func (c *userAPIClient) Find(ctx context.Context, in *UserFindRequest, opts ...g
 	return out, nil
 }
 
+func (c *userAPIClient) FindByAccount(ctx context.Context, in *UserFindByAccountRequest, opts ...grpc.CallOption) (*UserFindByAccountResponse, error) {
+	out := new(UserFindByAccountResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.user.v1.UserAPI/FindByAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userAPIClient) FindUid(ctx context.Context, in *UserIdFindRequest, opts ...grpc.CallOption) (*UserIdFindResponse, error) {
+	out := new(UserIdFindResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.user.v1.UserAPI/FindUid", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserAPIServer is the server API for UserAPI service.
 // All implementations must embed UnimplementedUserAPIServer
 // for forward compatibility
 type UserAPIServer interface {
 	// Register 注册用户
 	Register(context.Context, *UserRegisterRequest) (*UserRegisterResponse, error)
-	// Find 查找用户
+	// Find 查询用户
 	Find(context.Context, *UserFindRequest) (*UserFindResponse, error)
+	// FindByAccount 根据账号查询用户
+	FindByAccount(context.Context, *UserFindByAccountRequest) (*UserFindByAccountResponse, error)
+	// FindUid 查询用户ID
+	FindUid(context.Context, *UserIdFindRequest) (*UserIdFindResponse, error)
 	mustEmbedUnimplementedUserAPIServer()
 }
 
@@ -74,6 +100,12 @@ func (UnimplementedUserAPIServer) Register(context.Context, *UserRegisterRequest
 }
 func (UnimplementedUserAPIServer) Find(context.Context, *UserFindRequest) (*UserFindResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
+}
+func (UnimplementedUserAPIServer) FindByAccount(context.Context, *UserFindByAccountRequest) (*UserFindByAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindByAccount not implemented")
+}
+func (UnimplementedUserAPIServer) FindUid(context.Context, *UserIdFindRequest) (*UserIdFindResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindUid not implemented")
 }
 func (UnimplementedUserAPIServer) mustEmbedUnimplementedUserAPIServer() {}
 
@@ -124,6 +156,42 @@ func _UserAPI_Find_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserAPI_FindByAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserFindByAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAPIServer).FindByAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.user.v1.UserAPI/FindByAccount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAPIServer).FindByAccount(ctx, req.(*UserFindByAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserAPI_FindUid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserIdFindRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAPIServer).FindUid(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.user.v1.UserAPI/FindUid",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAPIServer).FindUid(ctx, req.(*UserIdFindRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserAPI_ServiceDesc is the grpc.ServiceDesc for UserAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -138,6 +206,14 @@ var UserAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Find",
 			Handler:    _UserAPI_Find_Handler,
+		},
+		{
+			MethodName: "FindByAccount",
+			Handler:    _UserAPI_FindByAccount_Handler,
+		},
+		{
+			MethodName: "FindUid",
+			Handler:    _UserAPI_FindUid_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

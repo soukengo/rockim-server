@@ -11,6 +11,7 @@ type ImGroup struct {
 	IconUrl       string            `bson:"icon_url,omitempty"`        // icon地址
 	Fields        map[string]string `bson:"fields,omitempty"`          // 自定义字段
 	Status        int32             `bson:"status,omitempty"`          // 状态
+	Owner         string            `bson:"owner,omitempty"`           // 群主
 }
 
 func (*ImGroup) TableName() string {

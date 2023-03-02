@@ -32,9 +32,25 @@ func (s *UserService) Register(ctx context.Context, in *v1.UserRegisterRequest) 
 }
 
 func (s *UserService) Find(ctx context.Context, in *v1.UserFindRequest) (out *v1.UserFindResponse, err error) {
-	user, err := s.uc.Find(ctx, in.Base.ProductId, in.Account)
+	user, err := s.uc.Find(ctx, in.Base.ProductId, in.Uid)
 	if err != nil {
 		return
 	}
 	return &v1.UserFindResponse{User: user}, nil
+}
+
+func (s *UserService) FindByAccount(ctx context.Context, in *v1.UserFindByAccountRequest) (out *v1.UserFindByAccountResponse, err error) {
+	user, err := s.uc.FindByAccount(ctx, in.Base.ProductId, in.Account)
+	if err != nil {
+		return
+	}
+	return &v1.UserFindByAccountResponse{User: user}, nil
+}
+
+func (s *UserService) FindUid(ctx context.Context, in *v1.UserIdFindRequest) (out *v1.UserIdFindResponse, err error) {
+	uid, err := s.uc.FindUid(ctx, in.Base.ProductId, in.Account)
+	if err != nil {
+		return
+	}
+	return &v1.UserIdFindResponse{Uid: uid}, nil
 }

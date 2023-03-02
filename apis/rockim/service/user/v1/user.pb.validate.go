@@ -474,9 +474,9 @@ func (m *UserFindRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetAccount()) < 1 {
+	if utf8.RuneCountInString(m.GetUid()) < 1 {
 		err := UserFindRequestValidationError{
-			field:  "Account",
+			field:  "Uid",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -691,3 +691,544 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = UserFindResponseValidationError{}
+
+// Validate checks the field values on UserFindByAccountRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *UserFindByAccountRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UserFindByAccountRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UserFindByAccountRequestMultiError, or nil if none found.
+func (m *UserFindByAccountRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UserFindByAccountRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.GetBase() == nil {
+		err := UserFindByAccountRequestValidationError{
+			field:  "Base",
+			reason: "value is required",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if all {
+		switch v := interface{}(m.GetBase()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, UserFindByAccountRequestValidationError{
+					field:  "Base",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, UserFindByAccountRequestValidationError{
+					field:  "Base",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetBase()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return UserFindByAccountRequestValidationError{
+				field:  "Base",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if utf8.RuneCountInString(m.GetAccount()) < 1 {
+		err := UserFindByAccountRequestValidationError{
+			field:  "Account",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return UserFindByAccountRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// UserFindByAccountRequestMultiError is an error wrapping multiple validation
+// errors returned by UserFindByAccountRequest.ValidateAll() if the designated
+// constraints aren't met.
+type UserFindByAccountRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UserFindByAccountRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UserFindByAccountRequestMultiError) AllErrors() []error { return m }
+
+// UserFindByAccountRequestValidationError is the validation error returned by
+// UserFindByAccountRequest.Validate if the designated constraints aren't met.
+type UserFindByAccountRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UserFindByAccountRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UserFindByAccountRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UserFindByAccountRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UserFindByAccountRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UserFindByAccountRequestValidationError) ErrorName() string {
+	return "UserFindByAccountRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UserFindByAccountRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUserFindByAccountRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UserFindByAccountRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UserFindByAccountRequestValidationError{}
+
+// Validate checks the field values on UserFindByAccountResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *UserFindByAccountResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UserFindByAccountResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UserFindByAccountResponseMultiError, or nil if none found.
+func (m *UserFindByAccountResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UserFindByAccountResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetUser()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, UserFindByAccountResponseValidationError{
+					field:  "User",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, UserFindByAccountResponseValidationError{
+					field:  "User",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetUser()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return UserFindByAccountResponseValidationError{
+				field:  "User",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return UserFindByAccountResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// UserFindByAccountResponseMultiError is an error wrapping multiple validation
+// errors returned by UserFindByAccountResponse.ValidateAll() if the
+// designated constraints aren't met.
+type UserFindByAccountResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UserFindByAccountResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UserFindByAccountResponseMultiError) AllErrors() []error { return m }
+
+// UserFindByAccountResponseValidationError is the validation error returned by
+// UserFindByAccountResponse.Validate if the designated constraints aren't met.
+type UserFindByAccountResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UserFindByAccountResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UserFindByAccountResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UserFindByAccountResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UserFindByAccountResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UserFindByAccountResponseValidationError) ErrorName() string {
+	return "UserFindByAccountResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UserFindByAccountResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUserFindByAccountResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UserFindByAccountResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UserFindByAccountResponseValidationError{}
+
+// Validate checks the field values on UserIdFindRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *UserIdFindRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UserIdFindRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UserIdFindRequestMultiError, or nil if none found.
+func (m *UserIdFindRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UserIdFindRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.GetBase() == nil {
+		err := UserIdFindRequestValidationError{
+			field:  "Base",
+			reason: "value is required",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if all {
+		switch v := interface{}(m.GetBase()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, UserIdFindRequestValidationError{
+					field:  "Base",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, UserIdFindRequestValidationError{
+					field:  "Base",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetBase()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return UserIdFindRequestValidationError{
+				field:  "Base",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if utf8.RuneCountInString(m.GetAccount()) < 1 {
+		err := UserIdFindRequestValidationError{
+			field:  "Account",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return UserIdFindRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// UserIdFindRequestMultiError is an error wrapping multiple validation errors
+// returned by UserIdFindRequest.ValidateAll() if the designated constraints
+// aren't met.
+type UserIdFindRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UserIdFindRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UserIdFindRequestMultiError) AllErrors() []error { return m }
+
+// UserIdFindRequestValidationError is the validation error returned by
+// UserIdFindRequest.Validate if the designated constraints aren't met.
+type UserIdFindRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UserIdFindRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UserIdFindRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UserIdFindRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UserIdFindRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UserIdFindRequestValidationError) ErrorName() string {
+	return "UserIdFindRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UserIdFindRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUserIdFindRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UserIdFindRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UserIdFindRequestValidationError{}
+
+// Validate checks the field values on UserIdFindResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *UserIdFindResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UserIdFindResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UserIdFindResponseMultiError, or nil if none found.
+func (m *UserIdFindResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UserIdFindResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Uid
+
+	if len(errors) > 0 {
+		return UserIdFindResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// UserIdFindResponseMultiError is an error wrapping multiple validation errors
+// returned by UserIdFindResponse.ValidateAll() if the designated constraints
+// aren't met.
+type UserIdFindResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UserIdFindResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UserIdFindResponseMultiError) AllErrors() []error { return m }
+
+// UserIdFindResponseValidationError is the validation error returned by
+// UserIdFindResponse.Validate if the designated constraints aren't met.
+type UserIdFindResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UserIdFindResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UserIdFindResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UserIdFindResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UserIdFindResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UserIdFindResponseValidationError) ErrorName() string {
+	return "UserIdFindResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UserIdFindResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUserIdFindResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UserIdFindResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UserIdFindResponseValidationError{}

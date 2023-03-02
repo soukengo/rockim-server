@@ -6,7 +6,7 @@ import (
 )
 
 type UserRepo interface {
-	Find(ctx context.Context, productId string, account string) (*types.User, error)
+	FindByAccount(ctx context.Context, productId string, account string) (*types.User, error)
 }
 
 type UserUseCase struct {
@@ -18,5 +18,5 @@ func NewUserUseCase(repo UserRepo) *UserUseCase {
 }
 
 func (uc *UserUseCase) Find(ctx context.Context, productId string, account string) (*types.User, error) {
-	return uc.repo.Find(ctx, productId, account)
+	return uc.repo.FindByAccount(ctx, productId, account)
 }

@@ -130,74 +130,9 @@ func (m *ChatRoomCreateRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if uri, err := url.Parse(m.GetIconUrl()); err != nil {
-		err = ChatRoomCreateRequestValidationError{
-			field:  "IconUrl",
-			reason: "value must be a valid URI",
-			cause:  err,
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	} else if !uri.IsAbs() {
-		err := ChatRoomCreateRequestValidationError{
-			field:  "IconUrl",
-			reason: "value must be absolute",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
+	// no validation rules for Fields
 
-	if len(m.GetFields()) > 100 {
-		err := ChatRoomCreateRequestValidationError{
-			field:  "Fields",
-			reason: "value must contain no more than 100 pair(s)",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
-	{
-		sorted_keys := make([]string, len(m.GetFields()))
-		i := 0
-		for key := range m.GetFields() {
-			sorted_keys[i] = key
-			i++
-		}
-		sort.Slice(sorted_keys, func(i, j int) bool { return sorted_keys[i] < sorted_keys[j] })
-		for _, key := range sorted_keys {
-			val := m.GetFields()[key]
-			_ = val
-
-			if utf8.RuneCountInString(key) > 64 {
-				err := ChatRoomCreateRequestValidationError{
-					field:  fmt.Sprintf("Fields[%v]", key),
-					reason: "value length must be at most 64 runes",
-				}
-				if !all {
-					return err
-				}
-				errors = append(errors, err)
-			}
-
-			if utf8.RuneCountInString(val) > 512 {
-				err := ChatRoomCreateRequestValidationError{
-					field:  fmt.Sprintf("Fields[%v]", key),
-					reason: "value length must be at most 512 runes",
-				}
-				if !all {
-					return err
-				}
-				errors = append(errors, err)
-			}
-
-		}
-	}
+	// no validation rules for Owner
 
 	if len(errors) > 0 {
 		return ChatRoomCreateRequestMultiError(errors)
@@ -303,7 +238,34 @@ func (m *ChatRoomCreateResponse) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for GroupId
+	if all {
+		switch v := interface{}(m.GetGroup()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ChatRoomCreateResponseValidationError{
+					field:  "Group",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ChatRoomCreateResponseValidationError{
+					field:  "Group",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetGroup()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ChatRoomCreateResponseValidationError{
+				field:  "Group",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if len(errors) > 0 {
 		return ChatRoomCreateResponseMultiError(errors)
@@ -640,22 +602,22 @@ var _ interface {
 	ErrorName() string
 } = ChatRoomDismissResponseValidationError{}
 
-// Validate checks the field values on ChatRoomFindRequest with the rules
-// defined in the proto definition for this message. If any rules are
+// Validate checks the field values on ChatRoomGroupIdFindRequest with the
+// rules defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *ChatRoomFindRequest) Validate() error {
+func (m *ChatRoomGroupIdFindRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on ChatRoomFindRequest with the rules
-// defined in the proto definition for this message. If any rules are
+// ValidateAll checks the field values on ChatRoomGroupIdFindRequest with the
+// rules defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// ChatRoomFindRequestMultiError, or nil if none found.
-func (m *ChatRoomFindRequest) ValidateAll() error {
+// ChatRoomGroupIdFindRequestMultiError, or nil if none found.
+func (m *ChatRoomGroupIdFindRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *ChatRoomFindRequest) validate(all bool) error {
+func (m *ChatRoomGroupIdFindRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -663,7 +625,7 @@ func (m *ChatRoomFindRequest) validate(all bool) error {
 	var errors []error
 
 	if m.GetBase() == nil {
-		err := ChatRoomFindRequestValidationError{
+		err := ChatRoomGroupIdFindRequestValidationError{
 			field:  "Base",
 			reason: "value is required",
 		}
@@ -677,7 +639,7 @@ func (m *ChatRoomFindRequest) validate(all bool) error {
 		switch v := interface{}(m.GetBase()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, ChatRoomFindRequestValidationError{
+				errors = append(errors, ChatRoomGroupIdFindRequestValidationError{
 					field:  "Base",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -685,7 +647,7 @@ func (m *ChatRoomFindRequest) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, ChatRoomFindRequestValidationError{
+				errors = append(errors, ChatRoomGroupIdFindRequestValidationError{
 					field:  "Base",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -694,7 +656,7 @@ func (m *ChatRoomFindRequest) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetBase()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return ChatRoomFindRequestValidationError{
+			return ChatRoomGroupIdFindRequestValidationError{
 				field:  "Base",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -703,7 +665,7 @@ func (m *ChatRoomFindRequest) validate(all bool) error {
 	}
 
 	if utf8.RuneCountInString(m.GetCustomGroupId()) > 64 {
-		err := ChatRoomFindRequestValidationError{
+		err := ChatRoomGroupIdFindRequestValidationError{
 			field:  "CustomGroupId",
 			reason: "value length must be at most 64 runes",
 		}
@@ -714,19 +676,19 @@ func (m *ChatRoomFindRequest) validate(all bool) error {
 	}
 
 	if len(errors) > 0 {
-		return ChatRoomFindRequestMultiError(errors)
+		return ChatRoomGroupIdFindRequestMultiError(errors)
 	}
 
 	return nil
 }
 
-// ChatRoomFindRequestMultiError is an error wrapping multiple validation
-// errors returned by ChatRoomFindRequest.ValidateAll() if the designated
-// constraints aren't met.
-type ChatRoomFindRequestMultiError []error
+// ChatRoomGroupIdFindRequestMultiError is an error wrapping multiple
+// validation errors returned by ChatRoomGroupIdFindRequest.ValidateAll() if
+// the designated constraints aren't met.
+type ChatRoomGroupIdFindRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m ChatRoomFindRequestMultiError) Error() string {
+func (m ChatRoomGroupIdFindRequestMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -735,11 +697,11 @@ func (m ChatRoomFindRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m ChatRoomFindRequestMultiError) AllErrors() []error { return m }
+func (m ChatRoomGroupIdFindRequestMultiError) AllErrors() []error { return m }
 
-// ChatRoomFindRequestValidationError is the validation error returned by
-// ChatRoomFindRequest.Validate if the designated constraints aren't met.
-type ChatRoomFindRequestValidationError struct {
+// ChatRoomGroupIdFindRequestValidationError is the validation error returned
+// by ChatRoomGroupIdFindRequest.Validate if the designated constraints aren't met.
+type ChatRoomGroupIdFindRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -747,24 +709,24 @@ type ChatRoomFindRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e ChatRoomFindRequestValidationError) Field() string { return e.field }
+func (e ChatRoomGroupIdFindRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e ChatRoomFindRequestValidationError) Reason() string { return e.reason }
+func (e ChatRoomGroupIdFindRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e ChatRoomFindRequestValidationError) Cause() error { return e.cause }
+func (e ChatRoomGroupIdFindRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e ChatRoomFindRequestValidationError) Key() bool { return e.key }
+func (e ChatRoomGroupIdFindRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e ChatRoomFindRequestValidationError) ErrorName() string {
-	return "ChatRoomFindRequestValidationError"
+func (e ChatRoomGroupIdFindRequestValidationError) ErrorName() string {
+	return "ChatRoomGroupIdFindRequestValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e ChatRoomFindRequestValidationError) Error() string {
+func (e ChatRoomGroupIdFindRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -776,14 +738,14 @@ func (e ChatRoomFindRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sChatRoomFindRequest.%s: %s%s",
+		"invalid %sChatRoomGroupIdFindRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = ChatRoomFindRequestValidationError{}
+var _ error = ChatRoomGroupIdFindRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -791,73 +753,46 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = ChatRoomFindRequestValidationError{}
+} = ChatRoomGroupIdFindRequestValidationError{}
 
-// Validate checks the field values on ChatRoomFindResponse with the rules
-// defined in the proto definition for this message. If any rules are
+// Validate checks the field values on ChatRoomGroupIdFindResponse with the
+// rules defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *ChatRoomFindResponse) Validate() error {
+func (m *ChatRoomGroupIdFindResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on ChatRoomFindResponse with the rules
-// defined in the proto definition for this message. If any rules are
+// ValidateAll checks the field values on ChatRoomGroupIdFindResponse with the
+// rules defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// ChatRoomFindResponseMultiError, or nil if none found.
-func (m *ChatRoomFindResponse) ValidateAll() error {
+// ChatRoomGroupIdFindResponseMultiError, or nil if none found.
+func (m *ChatRoomGroupIdFindResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *ChatRoomFindResponse) validate(all bool) error {
+func (m *ChatRoomGroupIdFindResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
-	if all {
-		switch v := interface{}(m.GetGroup()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, ChatRoomFindResponseValidationError{
-					field:  "Group",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, ChatRoomFindResponseValidationError{
-					field:  "Group",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetGroup()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return ChatRoomFindResponseValidationError{
-				field:  "Group",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
+	// no validation rules for GroupId
 
 	if len(errors) > 0 {
-		return ChatRoomFindResponseMultiError(errors)
+		return ChatRoomGroupIdFindResponseMultiError(errors)
 	}
 
 	return nil
 }
 
-// ChatRoomFindResponseMultiError is an error wrapping multiple validation
-// errors returned by ChatRoomFindResponse.ValidateAll() if the designated
-// constraints aren't met.
-type ChatRoomFindResponseMultiError []error
+// ChatRoomGroupIdFindResponseMultiError is an error wrapping multiple
+// validation errors returned by ChatRoomGroupIdFindResponse.ValidateAll() if
+// the designated constraints aren't met.
+type ChatRoomGroupIdFindResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m ChatRoomFindResponseMultiError) Error() string {
+func (m ChatRoomGroupIdFindResponseMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -866,11 +801,12 @@ func (m ChatRoomFindResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m ChatRoomFindResponseMultiError) AllErrors() []error { return m }
+func (m ChatRoomGroupIdFindResponseMultiError) AllErrors() []error { return m }
 
-// ChatRoomFindResponseValidationError is the validation error returned by
-// ChatRoomFindResponse.Validate if the designated constraints aren't met.
-type ChatRoomFindResponseValidationError struct {
+// ChatRoomGroupIdFindResponseValidationError is the validation error returned
+// by ChatRoomGroupIdFindResponse.Validate if the designated constraints
+// aren't met.
+type ChatRoomGroupIdFindResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -878,24 +814,24 @@ type ChatRoomFindResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e ChatRoomFindResponseValidationError) Field() string { return e.field }
+func (e ChatRoomGroupIdFindResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e ChatRoomFindResponseValidationError) Reason() string { return e.reason }
+func (e ChatRoomGroupIdFindResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e ChatRoomFindResponseValidationError) Cause() error { return e.cause }
+func (e ChatRoomGroupIdFindResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e ChatRoomFindResponseValidationError) Key() bool { return e.key }
+func (e ChatRoomGroupIdFindResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e ChatRoomFindResponseValidationError) ErrorName() string {
-	return "ChatRoomFindResponseValidationError"
+func (e ChatRoomGroupIdFindResponseValidationError) ErrorName() string {
+	return "ChatRoomGroupIdFindResponseValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e ChatRoomFindResponseValidationError) Error() string {
+func (e ChatRoomGroupIdFindResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -907,14 +843,14 @@ func (e ChatRoomFindResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sChatRoomFindResponse.%s: %s%s",
+		"invalid %sChatRoomGroupIdFindResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = ChatRoomFindResponseValidationError{}
+var _ error = ChatRoomGroupIdFindResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -922,7 +858,7 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = ChatRoomFindResponseValidationError{}
+} = ChatRoomGroupIdFindResponseValidationError{}
 
 // Validate checks the field values on ChatRoomFindByIdRequest with the rules
 // defined in the proto definition for this message. If any rules are

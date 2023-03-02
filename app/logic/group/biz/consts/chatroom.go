@@ -1,5 +1,5 @@
 package consts
 
 const (
-	ChatRoomIDPrefix = "IMG#"
+	CustomGroupIDPrefix = "IMG#"
 )

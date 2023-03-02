@@ -49,7 +49,21 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	userUseCase := biz.NewUserUseCase(userRepo)
 	userService := service.NewUserService(userUseCase)
 	authService := service.NewAuthService(authUseCase)
-	clientServiceGroup := server2.NewClientServiceGroup(productUseCase, authUseCase, userService, authService)
+	chatRoomAPIClient, err := grpc.NewChatRoomClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	chatRoomRepo := data.NewChatRoomRepo(chatRoomAPIClient)
+	chatRoomUseCase := biz.NewChatRoomUseCase(chatRoomRepo)
+	chatRoomService := service.NewChatRoomService(chatRoomUseCase)
+	chatRoomMemberAPIClient, err := grpc.NewChatRoomMemberClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	chatRoomMemberRepo := data.NewChatRoomMemberRepo(chatRoomMemberAPIClient)
+	chatRoomMemberUseCase := biz.NewChatRoomMemberUseCase(chatRoomMemberRepo)
+	chatRoomMemberService := service.NewChatRoomMemberService(chatRoomMemberUseCase, chatRoomUseCase)
+	clientServiceGroup := server2.NewClientServiceGroup(productUseCase, authUseCase, userService, authService, chatRoomService, chatRoomMemberService)
 	bizProductRepo := data2.NewProductRepo(productAPIClient)
 	bizProductUseCase := biz2.NewProductUseCase(bizProductRepo)
 	bizUserRepo := data2.NewUserRepo(userAPIClient, authAPIClient)
@@ -58,7 +72,10 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	bizAuthRepo := data2.NewAuthRepo(authAPIClient)
 	bizAuthUseCase := biz2.NewAuthUseCase(bizAuthRepo)
 	serviceAuthService := service2.NewAuthService(bizAuthUseCase)
-	openApiServiceGroup := server2.NewOpenApiServiceGroup(bizProductUseCase, serviceUserService, serviceAuthService)
+	bizChatRoomRepo := data2.NewChatRoomRepo(chatRoomAPIClient)
+	bizChatRoomUseCase := biz2.NewChatRoomUseCase(bizChatRoomRepo)
+	serviceChatRoomService := service2.NewChatRoomService(bizChatRoomUseCase, bizUserUseCase)
+	openApiServiceGroup := server2.NewOpenApiServiceGroup(bizProductUseCase, serviceUserService, serviceAuthService, serviceChatRoomService)
 	httpServer := server2.NewHTTPServer(serverConfig, clientServiceGroup, openApiServiceGroup)
 	app := newApp(config, httpServer)
 	return app, nil

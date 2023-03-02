@@ -23,11 +23,12 @@ func (s *ChatRoomService) Create(ctx context.Context, in *v1.ChatRoomCreateReque
 		Name:          in.Name,
 		IconUrl:       in.IconUrl,
 		Fields:        in.Fields,
+		Owner:         in.Owner,
 	})
 	if err != nil {
 		return
 	}
-	out = &v1.ChatRoomCreateResponse{GroupId: group.Id}
+	out = &v1.ChatRoomCreateResponse{Group: group}
 	return
 }
 
@@ -44,16 +45,12 @@ func (s *ChatRoomService) Dismiss(ctx context.Context, in *v1.ChatRoomDismissReq
 
 }
 
-func (s *ChatRoomService) Find(ctx context.Context, in *v1.ChatRoomFindRequest) (out *v1.ChatRoomFindResponse, err error) {
+func (s *ChatRoomService) FindGroupId(ctx context.Context, in *v1.ChatRoomGroupIdFindRequest) (out *v1.ChatRoomGroupIdFindResponse, err error) {
 	groupId, err := s.uc.FindByCustomGroupId(ctx, in.Base.ProductId, in.CustomGroupId)
 	if err != nil {
 		return
 	}
-	group, err := s.uc.FindById(ctx, in.Base.ProductId, groupId)
-	if err != nil {
-		return
-	}
-	out = &v1.ChatRoomFindResponse{Group: group}
+	out = &v1.ChatRoomGroupIdFindResponse{GroupId: groupId}
 	return
 }
 

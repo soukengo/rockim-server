@@ -130,27 +130,6 @@ func (m *ChatRoomCreateRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if uri, err := url.Parse(m.GetIconUrl()); err != nil {
-		err = ChatRoomCreateRequestValidationError{
-			field:  "IconUrl",
-			reason: "value must be a valid URI",
-			cause:  err,
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	} else if !uri.IsAbs() {
-		err := ChatRoomCreateRequestValidationError{
-			field:  "IconUrl",
-			reason: "value must be absolute",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
 	if len(m.GetFields()) > 100 {
 		err := ChatRoomCreateRequestValidationError{
 			field:  "Fields",
@@ -198,6 +177,8 @@ func (m *ChatRoomCreateRequest) validate(all bool) error {
 
 		}
 	}
+
+	// no validation rules for OwnerAccount
 
 	if len(errors) > 0 {
 		return ChatRoomCreateRequestMultiError(errors)
@@ -303,7 +284,7 @@ func (m *ChatRoomCreateResponse) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Uid
+	// no validation rules for CustomGroupId
 
 	if len(errors) > 0 {
 		return ChatRoomCreateResponseMultiError(errors)

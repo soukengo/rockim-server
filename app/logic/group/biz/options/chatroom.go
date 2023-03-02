@@ -1,6 +1,9 @@
 package options
 
-import "rockimserver/apis/rockim/shared"
+import (
+	"rockimserver/apis/rockim/shared"
+	"rockimserver/apis/rockim/shared/enums"
+)
 
 type ChatRoomCreateOptions struct {
 	ProductId     string
@@ -8,6 +11,7 @@ type ChatRoomCreateOptions struct {
 	Name          string
 	IconUrl       string
 	Fields        map[string]string
+	Owner         string
 }
 
 type ChatRoomDismissOptions struct {
@@ -55,4 +59,9 @@ type ChatRoomMemberIdPaginateOptions struct {
 	ProductId string
 	GroupId   string
 	Paginate  *shared.Paginating
+}
+type ChatRoomMemberAddItem struct {
+	Uid    string
+	Role   enums.Group_MemberRole
+	Fields map[string]string
 }

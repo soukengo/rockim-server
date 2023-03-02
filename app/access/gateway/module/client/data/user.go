@@ -17,8 +17,8 @@ func NewUserRepo(uac v1.UserAPIClient, aac v1.AuthAPIClient) biz.UserRepo {
 	return &userRepo{uac: uac, aac: aac}
 }
 
-func (r *userRepo) Find(ctx context.Context, productId string, account string) (ret *types.User, err error) {
-	sret, err := r.uac.Find(ctx, &v1.UserFindRequest{Base: service.GenServiceRequest(productId), Account: account})
+func (r *userRepo) FindByAccount(ctx context.Context, productId string, account string) (ret *types.User, err error) {
+	sret, err := r.uac.FindByAccount(ctx, &v1.UserFindByAccountRequest{Base: service.GenServiceRequest(productId), Account: account})
 	if err != nil {
 		return
 	}

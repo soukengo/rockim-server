@@ -2,8 +2,14 @@ package biz
 
 import (
 	"context"
+	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/access/gateway/module/openapi/biz/options"
 	"rockimserver/app/access/gateway/module/openapi/biz/types"
+	"rockimserver/pkg/errors"
+)
+
+var (
+	ErrSignInvalid = errors.BadRequest(reasons.OpenAPI_SIGN_INVALID.String(), "签名错误")
 )
 
 type AuthRepo interface {

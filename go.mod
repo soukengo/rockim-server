@@ -24,6 +24,7 @@ require (
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/nacos-group/nacos-sdk-go v1.1.4
 	github.com/rs/xid v1.4.0
+	github.com/samber/lo v1.37.0
 	github.com/sony/sonyflake v1.1.0
 	github.com/speps/go-hashids/v2 v2.0.1
 	github.com/spf13/viper v1.13.0
