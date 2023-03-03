@@ -1,10 +1,15 @@
 package server
 
-import "time"
+import (
+	"rockimserver/pkg/component/server/socket/network/tcp"
+	"rockimserver/pkg/component/server/socket/network/ws"
+	"time"
+)
 
 type Config struct {
-	Http *Http
-	Grpc *Grpc
+	Http   *Http
+	Grpc   *Grpc
+	Socket *Socket
 }
 
 type Http struct {
@@ -17,4 +22,9 @@ type Grpc struct {
 	Network string
 	Addr    string
 	Timeout time.Duration
+}
+
+type Socket struct {
+	TCP *tcp.Config
+	WS  *ws.Config
 }

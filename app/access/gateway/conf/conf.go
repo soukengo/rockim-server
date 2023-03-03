@@ -13,7 +13,7 @@ const (
 )
 
 func Load() (cfg *Config, err error) {
-	global, err := conf.Load(service.AppPlatform)
+	global, err := conf.Load(service.AppGateway)
 	if err != nil {
 		return
 	}

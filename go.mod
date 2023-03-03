@@ -3,6 +3,7 @@ module rockimserver
 go 1.19
 
 require (
+	github.com/antlabs/timer v0.0.10
 	github.com/emirpasic/gods v1.18.1
 	github.com/envoyproxy/protoc-gen-validate v0.1.0
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20221009085009-468630cc4bf6
@@ -15,25 +16,30 @@ require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-zookeeper/zk v1.0.3
 	github.com/golang-jwt/jwt/v4 v4.4.1
+	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.3.0
 	github.com/google/wire v0.5.0
 	github.com/gorilla/handlers v1.5.1
+	github.com/gorilla/websocket v1.5.0
 	github.com/jinzhu/copier v0.3.5
 	github.com/json-iterator/go v1.1.12
+	github.com/lesismal/nbio v1.3.10
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/nacos-group/nacos-sdk-go v1.1.4
+	github.com/panjf2000/gnet/v2 v2.2.5
 	github.com/rs/xid v1.4.0
-	github.com/samber/lo v1.37.0
 	github.com/sony/sonyflake v1.1.0
 	github.com/speps/go-hashids/v2 v2.0.1
 	github.com/spf13/viper v1.13.0
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
+	github.com/zhenjl/cityhash v0.0.0-20131128155616-cdd6a94144ab
 	go.etcd.io/etcd/client/v3 v3.5.4
 	go.mongodb.org/mongo-driver v1.11.1
 	go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo v0.36.4
 	go.opentelemetry.io/otel v1.11.1
 	go.opentelemetry.io/otel/trace v1.11.1
+	go.uber.org/atomic v1.10.0
 	go.uber.org/zap v1.23.0
 	golang.org/x/exp v0.0.0-20221227203929-1b447090c38c
 	golang.org/x/net v0.0.0-20220520000938-2e3eb7b945c2
@@ -44,6 +50,7 @@ require (
 
 require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.18 // indirect
+	github.com/antlabs/stl v0.0.1 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
@@ -85,11 +92,10 @@ require (
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	go.etcd.io/etcd/api/v3 v3.5.4 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.4 // indirect
-	go.uber.org/atomic v1.7.0 // indirect
-	go.uber.org/multierr v1.6.0 // indirect
+	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
 	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29 // indirect
-	golang.org/x/sys v0.1.0 // indirect
+	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
