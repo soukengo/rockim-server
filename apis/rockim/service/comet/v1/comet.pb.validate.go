@@ -17,6 +17,8 @@ import (
 	"unicode/utf8"
 
 	"google.golang.org/protobuf/types/known/anypb"
+
+	enums "rockimserver/apis/rockim/shared/enums"
 )
 
 // ensure the imports are used
@@ -33,6 +35,8 @@ var (
 	_ = (*mail.Address)(nil)
 	_ = anypb.Any{}
 	_ = sort.Sort
+
+	_ = enums.Network_PushOperation(0)
 )
 
 // Validate checks the field values on PushRequest with the rules defined in
@@ -97,6 +101,17 @@ func (m *PushRequest) validate(all bool) error {
 		}
 	}
 
+	if _, ok := enums.Network_PushOperation_name[int32(m.GetOperation())]; !ok {
+		err := PushRequestValidationError{
+			field:  "Operation",
+			reason: "value must be one of the defined enum values",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if utf8.RuneCountInString(m.GetChannelId()) < 1 {
 		err := PushRequestValidationError{
 			field:  "ChannelId",
@@ -107,6 +122,8 @@ func (m *PushRequest) validate(all bool) error {
 		}
 		errors = append(errors, err)
 	}
+
+	// no validation rules for Body
 
 	if len(errors) > 0 {
 		return PushRequestMultiError(errors)
@@ -283,3 +300,269 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = PushResponseValidationError{}
+
+// Validate checks the field values on PushGroupRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *PushGroupRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on PushGroupRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// PushGroupRequestMultiError, or nil if none found.
+func (m *PushGroupRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *PushGroupRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.GetBase() == nil {
+		err := PushGroupRequestValidationError{
+			field:  "Base",
+			reason: "value is required",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if all {
+		switch v := interface{}(m.GetBase()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, PushGroupRequestValidationError{
+					field:  "Base",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, PushGroupRequestValidationError{
+					field:  "Base",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetBase()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return PushGroupRequestValidationError{
+				field:  "Base",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if _, ok := enums.Network_PushOperation_name[int32(m.GetOperation())]; !ok {
+		err := PushGroupRequestValidationError{
+			field:  "Operation",
+			reason: "value must be one of the defined enum values",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if utf8.RuneCountInString(m.GetGroupId()) < 1 {
+		err := PushGroupRequestValidationError{
+			field:  "GroupId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	// no validation rules for Body
+
+	if len(errors) > 0 {
+		return PushGroupRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// PushGroupRequestMultiError is an error wrapping multiple validation errors
+// returned by PushGroupRequest.ValidateAll() if the designated constraints
+// aren't met.
+type PushGroupRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m PushGroupRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m PushGroupRequestMultiError) AllErrors() []error { return m }
+
+// PushGroupRequestValidationError is the validation error returned by
+// PushGroupRequest.Validate if the designated constraints aren't met.
+type PushGroupRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e PushGroupRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e PushGroupRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e PushGroupRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e PushGroupRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e PushGroupRequestValidationError) ErrorName() string { return "PushGroupRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e PushGroupRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sPushGroupRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = PushGroupRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = PushGroupRequestValidationError{}
+
+// Validate checks the field values on PushGroupResponse with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *PushGroupResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on PushGroupResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// PushGroupResponseMultiError, or nil if none found.
+func (m *PushGroupResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *PushGroupResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if len(errors) > 0 {
+		return PushGroupResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// PushGroupResponseMultiError is an error wrapping multiple validation errors
+// returned by PushGroupResponse.ValidateAll() if the designated constraints
+// aren't met.
+type PushGroupResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m PushGroupResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m PushGroupResponseMultiError) AllErrors() []error { return m }
+
+// PushGroupResponseValidationError is the validation error returned by
+// PushGroupResponse.Validate if the designated constraints aren't met.
+type PushGroupResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e PushGroupResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e PushGroupResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e PushGroupResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e PushGroupResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e PushGroupResponseValidationError) ErrorName() string {
+	return "PushGroupResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e PushGroupResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sPushGroupResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = PushGroupResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = PushGroupResponseValidationError{}

@@ -24,8 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type CometAPIClient interface {
 	// Push 推送数据
 	Push(ctx context.Context, in *PushRequest, opts ...grpc.CallOption) (*PushResponse, error)
-	// 获取授权码（服务端调用）
-	PushGroup(ctx context.Context, in *PushRequest, opts ...grpc.CallOption) (*PushResponse, error)
+	// PushGroup 推送数据到一个组
+	PushGroup(ctx context.Context, in *PushGroupRequest, opts ...grpc.CallOption) (*PushGroupResponse, error)
 }
 
 type cometAPIClient struct {
@@ -45,8 +45,8 @@ func (c *cometAPIClient) Push(ctx context.Context, in *PushRequest, opts ...grpc
 	return out, nil
 }
 
-func (c *cometAPIClient) PushGroup(ctx context.Context, in *PushRequest, opts ...grpc.CallOption) (*PushResponse, error) {
-	out := new(PushResponse)
+func (c *cometAPIClient) PushGroup(ctx context.Context, in *PushGroupRequest, opts ...grpc.CallOption) (*PushGroupResponse, error) {
+	out := new(PushGroupResponse)
 	err := c.cc.Invoke(ctx, "/rockim.service.comet.v1.CometAPI/PushGroup", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -60,8 +60,8 @@ func (c *cometAPIClient) PushGroup(ctx context.Context, in *PushRequest, opts ..
 type CometAPIServer interface {
 	// Push 推送数据
 	Push(context.Context, *PushRequest) (*PushResponse, error)
-	// 获取授权码（服务端调用）
-	PushGroup(context.Context, *PushRequest) (*PushResponse, error)
+	// PushGroup 推送数据到一个组
+	PushGroup(context.Context, *PushGroupRequest) (*PushGroupResponse, error)
 	mustEmbedUnimplementedCometAPIServer()
 }
 
@@ -72,7 +72,7 @@ type UnimplementedCometAPIServer struct {
 func (UnimplementedCometAPIServer) Push(context.Context, *PushRequest) (*PushResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Push not implemented")
 }
-func (UnimplementedCometAPIServer) PushGroup(context.Context, *PushRequest) (*PushResponse, error) {
+func (UnimplementedCometAPIServer) PushGroup(context.Context, *PushGroupRequest) (*PushGroupResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PushGroup not implemented")
 }
 func (UnimplementedCometAPIServer) mustEmbedUnimplementedCometAPIServer() {}
@@ -107,7 +107,7 @@ func _CometAPI_Push_Handler(srv interface{}, ctx context.Context, dec func(inter
 }
 
 func _CometAPI_PushGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PushRequest)
+	in := new(PushGroupRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -119,7 +119,7 @@ func _CometAPI_PushGroup_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/rockim.service.comet.v1.CometAPI/PushGroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CometAPIServer).PushGroup(ctx, req.(*PushRequest))
+		return srv.(CometAPIServer).PushGroup(ctx, req.(*PushGroupRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
