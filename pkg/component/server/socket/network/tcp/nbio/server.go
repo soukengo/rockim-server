@@ -24,13 +24,13 @@ type nbioServer struct {
 func NewServer(cfg *tcp.Config, parser *packet.Parser) network.Server {
 	g := nbio.NewEngine(nbio.Config{
 		Network:            "tcp",
-		Addrs:              []string{cfg.Address},
-		ReadBufferSize:     cfg.ReadBuf,
-		MaxWriteBufferSize: cfg.SendBuf,
+		Addrs:              []string{cfg.Addr},
+		ReadBufferSize:     cfg.ReadBufSize,
+		MaxWriteBufferSize: cfg.WriteBufSize,
 	})
 	s := &nbioServer{
 		id:        uuid.New().String(),
-		endpoint:  &url.URL{Scheme: "tcp", Path: cfg.Address},
+		endpoint:  &url.URL{Scheme: "tcp", Path: cfg.Addr},
 		parser:    parser,
 		handler:   network.DefaultHandler,
 		cfg:       cfg,

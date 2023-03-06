@@ -11,7 +11,7 @@ type Server interface {
 	Start(context.Context) error
 	Stop(context.Context) error
 	Manager
-	Register
+	Registry
 }
 
 type Manager interface {
@@ -21,15 +21,15 @@ type Manager interface {
 	QuitGroup(groupId string, channel Channel) error
 }
 
-type Register interface {
-	CreateTCPServer(cfg *tcp.Config)
-	CreateWSServer(cfg *ws.Config)
+type Registry interface {
+	RegisterTCPServer(cfg *tcp.Config)
+	RegisterWSServer(cfg *ws.Config)
 }
 
 type Handler interface {
-	OnCreated(Channel)
-	OnClosed(Channel)
-	OnReceived(Channel, packet.IPacket)
+	OnCreated(*Context)
+	OnClosed(*Context)
+	OnReceived(*Context, packet.IPacket)
 }
 
 type Channel interface {
@@ -40,11 +40,9 @@ type Channel interface {
 	AddGroup(groupId string)
 	DelGroup(groupId string)
 	Groups() []string
-
 	MarkAuthenticated()
 	Authenticated() bool
-	Attrs() map[string]any
-	SetAttr(key string, value any)
+	Attributes
 }
 
 type Group interface {
@@ -55,6 +53,13 @@ type Group interface {
 	Close()
 }
 
-type receiver interface {
-	Receive(p packet.IPacket)
+type Attributes interface {
+	// SetAttr sets attributes
+	SetAttr(key string, value any)
+	// Attr get a attribute
+	Attr(key string) (value any, ok bool)
+	// StringAttr get a string attribute
+	StringAttr(key string) (value string)
+	// Int64Attr get an int64 attribute
+	Int64Attr(key string) (value int64)
 }

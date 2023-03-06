@@ -1,0 +1,4 @@
+server:
+  grpc:
+    addr: :6105
+    timeout: "10s"

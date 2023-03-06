@@ -6,6 +6,7 @@ import (
 	"rockimserver/pkg/component/config"
 	"rockimserver/pkg/component/server"
 	"rockimserver/pkg/log"
+	"time"
 )
 
 const (
@@ -13,18 +14,15 @@ const (
 )
 
 func Load() (cfg *Config, err error) {
-	global, err := conf.Load(service.AppPlatform)
+	global, err := conf.Load(service.AppComet)
 	if err != nil {
 		return
 	}
 	cfg = &Config{
-		Log: &log.Config{
-			LoggerConfig: log.LoggerConfig{
-				Level: "info",
-			},
-			Loggers: []log.LoggerConfig{
-				{Name: "mongo", Level: "info"},
-			},
+		Log: log.Default,
+		Protocol: &Protocol{
+			HandshakeTimeout:  time.Second * 10,
+			HeartbeatInterval: time.Minute * 3,
 		},
 	}
 	source := config.NewEnvSource(global.Config, configName)
@@ -39,7 +37,13 @@ func Load() (cfg *Config, err error) {
 }
 
 type Config struct {
-	Global *conf.Global
-	Server *server.Config
-	Log    *log.Config
+	Global   *conf.Global
+	Server   *server.Config
+	Log      *log.Config
+	Protocol *Protocol
+}
+
+type Protocol struct {
+	HandshakeTimeout  time.Duration
+	HeartbeatInterval time.Duration
 }

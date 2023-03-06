@@ -6,6 +6,7 @@ import (
 	"net"
 	"rockimserver/pkg/component/server/socket/network"
 	"rockimserver/pkg/component/server/socket/packet"
+	"rockimserver/pkg/util/runtimes"
 	"sync"
 	"sync/atomic"
 )
@@ -18,29 +19,28 @@ type channel struct {
 	sendQueue     chan packet.IPacket
 	ctx           context.Context
 	cancel        context.CancelFunc
-	received      func(p packet.IPacket)
 	groups        map[string]struct{}
 	glock         sync.RWMutex
-	attrs         map[string]any
-	attrsLock     sync.RWMutex
 	authenticated int32
+	Attributes
 }
 
-func newChannel(conn network.Connection, recvQueueSize uint32, sendQueueSize uint32, received func(p packet.IPacket)) Channel {
+func newChannel(conn network.Connection, recvQueueSize uint32, sendQueueSize uint32) Channel {
 	ctx, cancel := context.WithCancel(context.Background())
 	ins := &channel{
-		ctx:       ctx,
-		cancel:    cancel,
-		done:      new(sync.Once),
-		recvQueue: make(chan packet.IPacket, recvQueueSize),
-		sendQueue: make(chan packet.IPacket, sendQueueSize),
-		conn:      conn,
-		received:  received,
-		groups:    map[string]struct{}{},
+		ctx:        ctx,
+		cancel:     cancel,
+		done:       new(sync.Once),
+		recvQueue:  make(chan packet.IPacket, recvQueueSize),
+		sendQueue:  make(chan packet.IPacket, sendQueueSize),
+		conn:       conn,
+		groups:     map[string]struct{}{},
+		Attributes: newAttributes(),
 	}
 	ins.clientIP, _, _ = net.SplitHostPort(conn.RemoteAddr().String())
-	go ins.recvLoop()
-	go ins.dispatch()
+	go runtimes.TryCatch(func() {
+		ins.dispatch()
+	})
 	return ins
 }
 
@@ -104,34 +104,6 @@ func (c *channel) MarkAuthenticated() {
 
 func (c *channel) Authenticated() bool {
 	return atomic.LoadInt32(&c.authenticated) > 0
-}
-
-func (c *channel) Attrs() map[string]any {
-	return c.attrs
-}
-
-func (c *channel) SetAttr(key string, value any) {
-	c.attrsLock.Lock()
-	c.attrs[key] = value
-	c.attrsLock.Unlock()
-}
-
-// recvLoop read packet from connection
-func (c *channel) recvLoop() {
-	defer func() {
-		_ = c.Close()
-	}()
-	for {
-		select {
-		case <-c.ctx.Done():
-			return
-		case p, ok := <-c.recvQueue:
-			if !ok {
-				return
-			}
-			c.received(p)
-		}
-	}
 }
 
 // dispatch send packet to connection

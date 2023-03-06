@@ -42,10 +42,6 @@ func Errorf(format string, a ...interface{}) {
 	global.root.Errorf(format, a...)
 }
 
-func Default() Helper {
-	return global.root
-}
-
 func IsEnabled(name string) bool {
 	return global.has(name)
 }

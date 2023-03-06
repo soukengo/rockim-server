@@ -1,5 +1,13 @@
 package log
 
+var (
+	Default = &Config{
+		LoggerConfig: LoggerConfig{
+			Level: "info",
+		},
+	}
+)
+
 type Config struct {
 	AppId        string
 	AppVersion   string

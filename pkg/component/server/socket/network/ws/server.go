@@ -26,7 +26,7 @@ func NewServer(cfg *Config, parser *packet.Parser) network.Server {
 	return &wsServer{
 		id:       uuid.New().String(),
 		cfg:      cfg,
-		endpoint: host.EndPointWithPath(host.SchemeWS, cfg.Address, cfg.Path),
+		endpoint: host.EndPointWithPath(host.SchemeWS, cfg.Addr, cfg.Path),
 		parser:   parser,
 		upgrader: &websocket.Upgrader{
 			ReadBufferSize:  cfg.ReadBufSize,
@@ -45,7 +45,7 @@ func (s *wsServer) Start() (err error) {
 		mux := http.NewServeMux()
 		mux.HandleFunc(s.cfg.Path, s.handleRequest)
 		go func() {
-			if err = http.ListenAndServe(s.cfg.Address, mux); err != nil {
+			if err = http.ListenAndServe(s.cfg.Addr, mux); err != nil {
 				panic(err)
 			}
 		}()

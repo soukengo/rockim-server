@@ -2,8 +2,9 @@ package service
 
 const (
 	ProjectName     = "rockim"
-	AppGateway      = "rockim.gateway"
 	AppAdmin        = "rockim.admin"
+	AppGateway      = "rockim.gateway"
+	AppComet        = "rockim.comet"
 	AppPlatform     = "rockim.platform"
 	AppUser         = "rockim.user"
 	AppGroup        = "rockim.group"

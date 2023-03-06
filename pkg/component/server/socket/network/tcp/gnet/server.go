@@ -20,7 +20,7 @@ type gnetServer struct {
 	startOnce *sync.Once
 }
 
-func NewServer(cfg *tcp.Config, parser *packet.Parser) *gnetServer {
+func NewServer(cfg *tcp.Config, parser *packet.Parser) network.Server {
 	return &gnetServer{
 		id:        uuid.New().String(),
 		parser:    parser,
@@ -36,17 +36,17 @@ func (s *gnetServer) Id() string {
 func (s *gnetServer) Start() (err error) {
 	s.startOnce.Do(func() {
 		go func() {
-			err = gnet.Run(s, s.cfg.Address,
-				gnet.WithMulticore(s.cfg.Multicore),
+			err = gnet.Run(s, s.cfg.Addr,
+				gnet.WithMulticore(true),
 				gnet.WithReuseAddr(true),
-				gnet.WithSocketSendBuffer(s.cfg.SendBuf),
-				gnet.WithSocketRecvBuffer(s.cfg.ReadBuf),
+				gnet.WithSocketSendBuffer(s.cfg.WriteBufSize),
+				gnet.WithSocketRecvBuffer(s.cfg.ReadBufSize),
 			)
 			if err != nil {
 				panic(err)
 			}
 		}()
-		log.Infof("started tcp server with addr %s", s.cfg.Address)
+		log.Infof("started tcp server with addr %s", s.cfg.Addr)
 	})
 	return
 }

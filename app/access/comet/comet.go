@@ -37,10 +37,11 @@ func configure(cfg *conf.Config) (err error) {
 	}
 	return
 }
-func newApp(env *conf.Config, hs socket.Server) *kratos.App {
+func newApp(cfg *conf.Config, hs socket.Server) *kratos.App {
 	return kratos.New(
-		kratos.Name(env.Global.AppId),
-		kratos.Version(env.Global.Version),
+		kratos.ID(cfg.Global.ID),
+		kratos.Name(cfg.Global.AppId),
+		kratos.Version(cfg.Global.Version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(
 			hs,

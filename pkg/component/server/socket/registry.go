@@ -3,17 +3,17 @@ package socket
 import (
 	"rockimserver/pkg/component/server/socket/network"
 	"rockimserver/pkg/component/server/socket/network/tcp"
-	"rockimserver/pkg/component/server/socket/network/tcp/gnet"
+	"rockimserver/pkg/component/server/socket/network/tcp/nbio"
 	"rockimserver/pkg/component/server/socket/network/ws"
 )
 
-func (m *server) CreateTCPServer(cfg *tcp.Config) {
-	//s := nbio.NewServer(cfg, m.opt.Parser)
-	s := gnet.NewServer(cfg, m.opt.Parser)
+func (m *server) RegisterTCPServer(cfg *tcp.Config) {
+	s := nbio.NewServer(cfg, m.opt.Parser)
+	//s := gnet.NewServer(cfg, m.opt.Parser)
 	m.register(s)
 	return
 }
-func (m *server) CreateWSServer(cfg *ws.Config) {
+func (m *server) RegisterWSServer(cfg *ws.Config) {
 	s := ws.NewServer(cfg, m.opt.Parser)
 	m.register(s)
 	return

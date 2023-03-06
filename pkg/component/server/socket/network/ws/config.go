@@ -1,7 +1,7 @@
 package ws
 
 type Config struct {
-	Address      string
+	Addr         string
 	Path         string
 	MsgType      int
 	ReadBufSize  int

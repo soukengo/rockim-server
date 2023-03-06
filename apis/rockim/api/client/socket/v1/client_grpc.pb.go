@@ -18,126 +18,126 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// SocketAPIClient is the client API for SocketAPI service.
+// ClientAPIClient is the client API for ClientAPI service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type SocketAPIClient interface {
+type ClientAPIClient interface {
 	// Auth 长连接认证
 	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	// HeartBeat 长连接心跳
 	HeartBeat(ctx context.Context, in *HeartBeatRequest, opts ...grpc.CallOption) (*HeartBeatResponse, error)
 }
 
-type socketAPIClient struct {
+type clientAPIClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewSocketAPIClient(cc grpc.ClientConnInterface) SocketAPIClient {
-	return &socketAPIClient{cc}
+func NewClientAPIClient(cc grpc.ClientConnInterface) ClientAPIClient {
+	return &clientAPIClient{cc}
 }
 
-func (c *socketAPIClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
+func (c *clientAPIClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
 	out := new(AuthResponse)
-	err := c.cc.Invoke(ctx, "/rockim.api.client.socket.v1.SocketAPI/Auth", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rockim.api.client.socket.v1.ClientAPI/Auth", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *socketAPIClient) HeartBeat(ctx context.Context, in *HeartBeatRequest, opts ...grpc.CallOption) (*HeartBeatResponse, error) {
+func (c *clientAPIClient) HeartBeat(ctx context.Context, in *HeartBeatRequest, opts ...grpc.CallOption) (*HeartBeatResponse, error) {
 	out := new(HeartBeatResponse)
-	err := c.cc.Invoke(ctx, "/rockim.api.client.socket.v1.SocketAPI/HeartBeat", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rockim.api.client.socket.v1.ClientAPI/HeartBeat", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// SocketAPIServer is the server API for SocketAPI service.
-// All implementations must embed UnimplementedSocketAPIServer
+// ClientAPIServer is the server API for ClientAPI service.
+// All implementations must embed UnimplementedClientAPIServer
 // for forward compatibility
-type SocketAPIServer interface {
+type ClientAPIServer interface {
 	// Auth 长连接认证
 	Auth(context.Context, *AuthRequest) (*AuthResponse, error)
 	// HeartBeat 长连接心跳
 	HeartBeat(context.Context, *HeartBeatRequest) (*HeartBeatResponse, error)
-	mustEmbedUnimplementedSocketAPIServer()
+	mustEmbedUnimplementedClientAPIServer()
 }
 
-// UnimplementedSocketAPIServer must be embedded to have forward compatible implementations.
-type UnimplementedSocketAPIServer struct {
+// UnimplementedClientAPIServer must be embedded to have forward compatible implementations.
+type UnimplementedClientAPIServer struct {
 }
 
-func (UnimplementedSocketAPIServer) Auth(context.Context, *AuthRequest) (*AuthResponse, error) {
+func (UnimplementedClientAPIServer) Auth(context.Context, *AuthRequest) (*AuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
 }
-func (UnimplementedSocketAPIServer) HeartBeat(context.Context, *HeartBeatRequest) (*HeartBeatResponse, error) {
+func (UnimplementedClientAPIServer) HeartBeat(context.Context, *HeartBeatRequest) (*HeartBeatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HeartBeat not implemented")
 }
-func (UnimplementedSocketAPIServer) mustEmbedUnimplementedSocketAPIServer() {}
+func (UnimplementedClientAPIServer) mustEmbedUnimplementedClientAPIServer() {}
 
-// UnsafeSocketAPIServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to SocketAPIServer will
+// UnsafeClientAPIServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ClientAPIServer will
 // result in compilation errors.
-type UnsafeSocketAPIServer interface {
-	mustEmbedUnimplementedSocketAPIServer()
+type UnsafeClientAPIServer interface {
+	mustEmbedUnimplementedClientAPIServer()
 }
 
-func RegisterSocketAPIServer(s grpc.ServiceRegistrar, srv SocketAPIServer) {
-	s.RegisterService(&SocketAPI_ServiceDesc, srv)
+func RegisterClientAPIServer(s grpc.ServiceRegistrar, srv ClientAPIServer) {
+	s.RegisterService(&ClientAPI_ServiceDesc, srv)
 }
 
-func _SocketAPI_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ClientAPI_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AuthRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SocketAPIServer).Auth(ctx, in)
+		return srv.(ClientAPIServer).Auth(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.api.client.socket.v1.SocketAPI/Auth",
+		FullMethod: "/rockim.api.client.socket.v1.ClientAPI/Auth",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SocketAPIServer).Auth(ctx, req.(*AuthRequest))
+		return srv.(ClientAPIServer).Auth(ctx, req.(*AuthRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SocketAPI_HeartBeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ClientAPI_HeartBeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(HeartBeatRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SocketAPIServer).HeartBeat(ctx, in)
+		return srv.(ClientAPIServer).HeartBeat(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.api.client.socket.v1.SocketAPI/HeartBeat",
+		FullMethod: "/rockim.api.client.socket.v1.ClientAPI/HeartBeat",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SocketAPIServer).HeartBeat(ctx, req.(*HeartBeatRequest))
+		return srv.(ClientAPIServer).HeartBeat(ctx, req.(*HeartBeatRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// SocketAPI_ServiceDesc is the grpc.ServiceDesc for SocketAPI service.
+// ClientAPI_ServiceDesc is the grpc.ServiceDesc for ClientAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var SocketAPI_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "rockim.api.client.socket.v1.SocketAPI",
-	HandlerType: (*SocketAPIServer)(nil),
+var ClientAPI_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "rockim.api.client.socket.v1.ClientAPI",
+	HandlerType: (*ClientAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Auth",
-			Handler:    _SocketAPI_Auth_Handler,
+			Handler:    _ClientAPI_Auth_Handler,
 		},
 		{
 			MethodName: "HeartBeat",
-			Handler:    _SocketAPI_HeartBeat_Handler,
+			Handler:    _ClientAPI_HeartBeat_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

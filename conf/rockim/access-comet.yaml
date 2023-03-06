@@ -1,0 +1,14 @@
+server:
+  grpc:
+    addr: :6106
+    timeout: "10s"
+  socket:
+    tcp:
+      addr: :6003
+      multicore: true
+    ws:
+      addr: :6004
+
+protocol:
+  handshakeTimeout: 10s
+  heartbeatInterval: 3m

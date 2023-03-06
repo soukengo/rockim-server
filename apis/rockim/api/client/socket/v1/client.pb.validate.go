@@ -57,6 +57,28 @@ func (m *AuthRequest) validate(all bool) error {
 
 	var errors []error
 
+	if utf8.RuneCountInString(m.GetProductId()) < 1 {
+		err := AuthRequestValidationError{
+			field:  "ProductId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if utf8.RuneCountInString(m.GetToken()) < 1 {
+		err := AuthRequestValidationError{
+			field:  "Token",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if len(errors) > 0 {
 		return AuthRequestMultiError(errors)
 	}

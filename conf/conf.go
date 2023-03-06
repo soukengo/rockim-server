@@ -2,9 +2,12 @@ package conf
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"rockimserver/pkg/component/config"
 	"rockimserver/pkg/component/discovery"
+	"rockimserver/pkg/util/ip"
+	"time"
 )
 
 var (
@@ -18,6 +21,7 @@ func init() {
 }
 
 type Global struct {
+	ID        string
 	AppId     string
 	Version   string
 	Env       string
@@ -34,6 +38,7 @@ func Load(appId string) (cfg *Global, err error) {
 	if err != nil {
 		return
 	}
+	cfg.ID = fmt.Sprintf("%s:%d", ip.InternalIP(), time.Now().UnixMilli())
 	// 从环境变量里读取，覆盖配置文件的参数
 	var env = os.Getenv(envKey)
 	if len(env) > 0 {

@@ -18,14 +18,7 @@ func Load() (cfg *Config, err error) {
 		return
 	}
 	cfg = &Config{
-		Log: &log.Config{
-			LoggerConfig: log.LoggerConfig{
-				Level: "info",
-			},
-			Loggers: []log.LoggerConfig{
-				{Name: "mongo", Level: "info"},
-			},
-		},
+		Log: log.Default,
 	}
 	source := config.NewEnvSource(global.Config, configName)
 	defer source.Close()

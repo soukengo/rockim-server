@@ -10,8 +10,8 @@ import (
 func NewSocketServer(c *server.Config) socket.Server {
 	handler := NewClientHandler()
 	srv := socket.NewServer(handler, options.WithPacketFactory(v1.NewPacketFactory()))
-	srv.CreateTCPServer(c.Socket.TCP)
-	srv.CreateWSServer(c.Socket.WS)
-	handler.srv = srv
+	srv.RegisterTCPServer(c.Socket.TCP)
+	srv.RegisterWSServer(c.Socket.WS)
+	handler.server = srv
 	return srv
 }

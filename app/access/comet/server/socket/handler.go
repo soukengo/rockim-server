@@ -2,7 +2,6 @@ package socket
 
 import (
 	"context"
-	"github.com/antlabs/timer"
 	"github.com/golang/protobuf/proto"
 	v1 "rockimserver/apis/rockim/api/client/socket/v1"
 	"rockimserver/apis/rockim/shared/enums"
@@ -12,11 +11,6 @@ import (
 	"rockimserver/pkg/component/trace"
 	"rockimserver/pkg/errors"
 	"rockimserver/pkg/log"
-	"time"
-)
-
-const (
-	handshakeTimeout = time.Second * 10
 )
 
 var (
@@ -27,47 +21,35 @@ var (
 type HandleFunc func(context.Context, socket.Channel, []byte) (any, error)
 
 type ClientHandler struct {
-	srv       socket.Server
-	timer     timer.Timer
+	server    socket.Server
 	actions   map[v1.Operation]HandleFunc
-	socketSrv *service.SocketService
+	clientSrv *service.ClientService
 }
 
 func NewClientHandler() *ClientHandler {
-	t := timer.NewTimer()
-	t.Run()
-	ins := &ClientHandler{timer: t}
+	ins := &ClientHandler{}
 	ins.register()
 	return ins
 }
 
 func (h *ClientHandler) register() {
-	h.actions[v1.Operation_AUTH] = wrapAction[v1.AuthRequest, v1.AuthResponse](h.socketSrv.Auth)
-	h.actions[v1.Operation_HEARTBEAT] = wrapAction[v1.HeartBeatRequest, v1.HeartBeatResponse](h.socketSrv.HeartBeat)
+	h.actions[v1.Operation_AUTH] = wrapAction[v1.AuthRequest, v1.AuthResponse](h.clientSrv.Auth)
+	h.actions[v1.Operation_HEARTBEAT] = wrapAction[v1.HeartBeatRequest, v1.HeartBeatResponse](h.clientSrv.HeartBeat)
 }
 
-func (h *ClientHandler) OnCreated(channel socket.Channel) {
-	channelId := channel.Id()
-	log.Debugf("channel created: %v", channelId)
-	h.timer.AfterFunc(handshakeTimeout, func() {
-		ch, ok := h.srv.Channel(channelId)
-		if !ok {
-			return
-		}
-		if !ch.Authenticated() {
-			log.Warnf("channel handshake timed out: %v", channelId)
-			_ = ch.Close()
-		}
-	})
+func (h *ClientHandler) OnCreated(ctx *socket.Context) {
+	ch := ctx.Channel()
+	channelId := ch.Id()
+	log.WithContext(ctx).Debugf("channel created: %v", channelId)
+	_ = h.clientSrv.Connect(ctx)
 }
 
-func (h *ClientHandler) OnClosed(channel socket.Channel) {
-	ctx := context.Background()
-	h.socketSrv.DisConnect(ctx, channel.Id())
+func (h *ClientHandler) OnClosed(ctx *socket.Context) {
+	_ = h.clientSrv.DisConnect(ctx)
 }
 
-func (h *ClientHandler) OnReceived(channel socket.Channel, p packet.IPacket) {
-	ctx := context.Background()
+func (h *ClientHandler) OnReceived(ctx *socket.Context, p packet.IPacket) {
+	ch := ctx.Channel()
 	pkt, ok := p.(*v1.Packet)
 	if !ok {
 		log.Errorf("OnReceived packet not invalid: %v", p)
@@ -90,7 +72,7 @@ func (h *ClientHandler) OnReceived(channel socket.Channel, p packet.IPacket) {
 		log.Errorf("OnReceived packet body not invalid: %v", p)
 		return
 	}
-	h.handle(ctx, channel, header, body)
+	h.handle(ctx, ch, header, body)
 }
 
 func (h *ClientHandler) handle(ctx context.Context, channel socket.Channel, header *v1.RequestPacketHeader, body *v1.RequestPacketBody) {
