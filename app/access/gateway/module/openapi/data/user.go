@@ -20,7 +20,7 @@ func NewUserRepo(uac v1.UserAPIClient, aac v1.AuthAPIClient) biz.UserRepo {
 
 func (r *userRepo) Register(ctx context.Context, opts *options.UserRegisterOptions) (*types.User, error) {
 	ret, err := r.uac.Register(ctx, &v1.UserRegisterRequest{
-		Base:      service.GenServiceRequest(opts.ProductId),
+		Base:      service.GenRequest(opts.ProductId),
 		Account:   opts.Account,
 		Name:      opts.Name,
 		AvatarUrl: opts.AvatarUrl,
@@ -33,7 +33,7 @@ func (r *userRepo) Register(ctx context.Context, opts *options.UserRegisterOptio
 }
 
 func (r *userRepo) FindUid(ctx context.Context, productId string, account string) (out string, err error) {
-	ret, err := r.uac.FindUid(ctx, &v1.UserIdFindRequest{Base: service.GenServiceRequest(productId), Account: account})
+	ret, err := r.uac.FindUid(ctx, &v1.UserIdFindRequest{Base: service.GenRequest(productId), Account: account})
 	if err != nil {
 		return
 	}

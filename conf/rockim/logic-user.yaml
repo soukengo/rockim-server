@@ -20,3 +20,5 @@ cache:
   categories:
     - key: "auth.code"
       expire: "10m"
+    - key: "online"
+      expire: "10m"

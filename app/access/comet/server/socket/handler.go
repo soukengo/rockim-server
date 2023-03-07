@@ -5,6 +5,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	v1 "rockimserver/apis/rockim/api/client/socket/v1"
 	"rockimserver/apis/rockim/shared/enums"
+	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/access/comet/module/client/service"
 	"rockimserver/pkg/component/server/socket"
 	"rockimserver/pkg/component/server/socket/packet"
@@ -14,8 +15,8 @@ import (
 )
 
 var (
-	ErrApiNotFound    = errors.NotFound("", "")
-	ErrInvalidRequest = errors.BadRequest("", "")
+	ErrOperationNotSupported = errors.BadRequest(reasons.Socket_OPERATION_NOT_SUPPORTED.String(), "不支持的操作类型")
+	ErrPacketInvalid         = errors.NotFound(reasons.Socket_PACKET_INVALID.String(), "无效的数据包")
 )
 
 type HandleFunc func(context.Context, socket.Channel, []byte) (any, error)
@@ -23,7 +24,7 @@ type HandleFunc func(context.Context, socket.Channel, []byte) (any, error)
 type ClientHandler struct {
 	server    socket.Server
 	actions   map[v1.Operation]HandleFunc
-	clientSrv *service.ClientService
+	clientSrv *service.ChannelService
 }
 
 func NewClientHandler() *ClientHandler {
@@ -88,7 +89,7 @@ func (h *ClientHandler) handle(ctx context.Context, channel socket.Channel, head
 		Success:   true,
 	}
 	if !ok {
-		err = ErrApiNotFound
+		err = ErrOperationNotSupported
 		h.render(ctx, channel, respHeader, data, err)
 		return
 	}
@@ -116,12 +117,23 @@ func (h *ClientHandler) render(ctx context.Context, ch socket.Channel, header *v
 	}
 }
 
+type validator interface {
+	Validate() error
+}
+
 func wrapAction[Request any, Response any](fn func(context.Context, *Request) (*Response, error)) HandleFunc {
 	return func(ctx context.Context, channel socket.Channel, in []byte) (out any, err error) {
 		var req = new(Request)
 		err = decode(in, req)
 		if err != nil {
 			return
+		}
+		// validate
+		var r any = req
+		if v, ok := r.(validator); ok {
+			if err = v.Validate(); err != nil {
+				return nil, errors.BadRequest("VALIDATOR", err.Error())
+			}
 		}
 		return fn(ctx, req)
 	}
@@ -130,7 +142,7 @@ func wrapAction[Request any, Response any](fn func(context.Context, *Request) (*
 func decode(data []byte, v any) error {
 	in, ok := v.(proto.Message)
 	if !ok {
-		return ErrInvalidRequest
+		return ErrPacketInvalid
 	}
 	return proto.Unmarshal(data, in)
 }
@@ -138,7 +150,7 @@ func decode(data []byte, v any) error {
 func encode(v any) ([]byte, error) {
 	in, ok := v.(proto.Message)
 	if !ok {
-		return nil, ErrInvalidRequest
+		return nil, ErrPacketInvalid
 	}
 	return proto.Marshal(in)
 }

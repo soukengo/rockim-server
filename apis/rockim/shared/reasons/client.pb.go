@@ -68,6 +68,54 @@ func (Client_ErrorReason) EnumDescriptor() ([]byte, []int) {
 	return file_rockim_shared_reasons_client_proto_rawDescGZIP(), []int{0, 0}
 }
 
+type Socket_ErrorReason int32
+
+const (
+	// 不支持的操作类型
+	Socket_OPERATION_NOT_SUPPORTED Socket_ErrorReason = 0
+	// 数据包无效
+	Socket_PACKET_INVALID Socket_ErrorReason = 1
+)
+
+// Enum value maps for Socket_ErrorReason.
+var (
+	Socket_ErrorReason_name = map[int32]string{
+		0: "OPERATION_NOT_SUPPORTED",
+		1: "PACKET_INVALID",
+	}
+	Socket_ErrorReason_value = map[string]int32{
+		"OPERATION_NOT_SUPPORTED": 0,
+		"PACKET_INVALID":          1,
+	}
+)
+
+func (x Socket_ErrorReason) Enum() *Socket_ErrorReason {
+	p := new(Socket_ErrorReason)
+	*p = x
+	return p
+}
+
+func (x Socket_ErrorReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Socket_ErrorReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_rockim_shared_reasons_client_proto_enumTypes[1].Descriptor()
+}
+
+func (Socket_ErrorReason) Type() protoreflect.EnumType {
+	return &file_rockim_shared_reasons_client_proto_enumTypes[1]
+}
+
+func (x Socket_ErrorReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Socket_ErrorReason.Descriptor instead.
+func (Socket_ErrorReason) EnumDescriptor() ([]byte, []int) {
+	return file_rockim_shared_reasons_client_proto_rawDescGZIP(), []int{1, 0}
+}
+
 type Client struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -106,6 +154,44 @@ func (*Client) Descriptor() ([]byte, []int) {
 	return file_rockim_shared_reasons_client_proto_rawDescGZIP(), []int{0}
 }
 
+type Socket struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *Socket) Reset() {
+	*x = Socket{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_rockim_shared_reasons_client_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Socket) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Socket) ProtoMessage() {}
+
+func (x *Socket) ProtoReflect() protoreflect.Message {
+	mi := &file_rockim_shared_reasons_client_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Socket.ProtoReflect.Descriptor instead.
+func (*Socket) Descriptor() ([]byte, []int) {
+	return file_rockim_shared_reasons_client_proto_rawDescGZIP(), []int{1}
+}
+
 var File_rockim_shared_reasons_client_proto protoreflect.FileDescriptor
 
 var file_rockim_shared_reasons_client_proto_rawDesc = []byte{
@@ -116,12 +202,17 @@ var file_rockim_shared_reasons_client_proto_rawDesc = []byte{
 	0x6c, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x32, 0x0a, 0x0b, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x52, 0x65,
 	0x61, 0x73, 0x6f, 0x6e, 0x12, 0x11, 0x0a, 0x0d, 0x41, 0x50, 0x49, 0x5f, 0x4e, 0x4f, 0x54, 0x5f,
 	0x46, 0x4f, 0x55, 0x4e, 0x44, 0x10, 0x00, 0x12, 0x10, 0x0a, 0x0c, 0x53, 0x49, 0x47, 0x4e, 0x5f,
-	0x49, 0x4e, 0x56, 0x41, 0x4c, 0x49, 0x44, 0x10, 0x01, 0x42, 0x45, 0x0a, 0x18, 0x63, 0x6e, 0x2e,
-	0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2e, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64, 0x2e, 0x72, 0x65,
-	0x61, 0x73, 0x6f, 0x6e, 0x73, 0x50, 0x01, 0x5a, 0x27, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x73,
-	0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x73, 0x2f, 0x72, 0x6f, 0x63, 0x6b, 0x69,
-	0x6d, 0x2f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64, 0x2f, 0x72, 0x65, 0x61, 0x73, 0x6f, 0x6e, 0x73,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x49, 0x4e, 0x56, 0x41, 0x4c, 0x49, 0x44, 0x10, 0x01, 0x22, 0x48, 0x0a, 0x06, 0x53, 0x6f, 0x63,
+	0x6b, 0x65, 0x74, 0x22, 0x3e, 0x0a, 0x0b, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x52, 0x65, 0x61, 0x73,
+	0x6f, 0x6e, 0x12, 0x1b, 0x0a, 0x17, 0x4f, 0x50, 0x45, 0x52, 0x41, 0x54, 0x49, 0x4f, 0x4e, 0x5f,
+	0x4e, 0x4f, 0x54, 0x5f, 0x53, 0x55, 0x50, 0x50, 0x4f, 0x52, 0x54, 0x45, 0x44, 0x10, 0x00, 0x12,
+	0x12, 0x0a, 0x0e, 0x50, 0x41, 0x43, 0x4b, 0x45, 0x54, 0x5f, 0x49, 0x4e, 0x56, 0x41, 0x4c, 0x49,
+	0x44, 0x10, 0x01, 0x42, 0x45, 0x0a, 0x18, 0x63, 0x6e, 0x2e, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d,
+	0x2e, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64, 0x2e, 0x72, 0x65, 0x61, 0x73, 0x6f, 0x6e, 0x73, 0x50,
+	0x01, 0x5a, 0x27, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f,
+	0x61, 0x70, 0x69, 0x73, 0x2f, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2f, 0x73, 0x68, 0x61, 0x72,
+	0x65, 0x64, 0x2f, 0x72, 0x65, 0x61, 0x73, 0x6f, 0x6e, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -136,11 +227,13 @@ func file_rockim_shared_reasons_client_proto_rawDescGZIP() []byte {
 	return file_rockim_shared_reasons_client_proto_rawDescData
 }
 
-var file_rockim_shared_reasons_client_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_rockim_shared_reasons_client_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_rockim_shared_reasons_client_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_rockim_shared_reasons_client_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_rockim_shared_reasons_client_proto_goTypes = []interface{}{
 	(Client_ErrorReason)(0), // 0: rockim.shared.reasons.Client.ErrorReason
-	(*Client)(nil),          // 1: rockim.shared.reasons.Client
+	(Socket_ErrorReason)(0), // 1: rockim.shared.reasons.Socket.ErrorReason
+	(*Client)(nil),          // 2: rockim.shared.reasons.Client
+	(*Socket)(nil),          // 3: rockim.shared.reasons.Socket
 }
 var file_rockim_shared_reasons_client_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -168,14 +261,26 @@ func file_rockim_shared_reasons_client_proto_init() {
 				return nil
 			}
 		}
+		file_rockim_shared_reasons_client_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Socket); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_rockim_shared_reasons_client_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   1,
+			NumEnums:      2,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -18,7 +18,7 @@ func NewChatRoomRepo(ac v1.ChatRoomAPIClient) biz.ChatRoomRepo {
 
 func (r *chatRoomRepo) Find(ctx context.Context, productId string, groupId string) (out *types.Group, err error) {
 	ret, err := r.ac.FindById(ctx, &v1.ChatRoomFindByIdRequest{
-		Base:    service.GenServiceRequest(productId),
+		Base:    service.GenRequest(productId),
 		GroupId: groupId,
 	})
 	if err != nil {
@@ -29,7 +29,7 @@ func (r *chatRoomRepo) Find(ctx context.Context, productId string, groupId strin
 
 func (r *chatRoomRepo) FindGroupId(ctx context.Context, productId string, customGroupId string) (out string, err error) {
 	ret, err := r.ac.FindGroupId(ctx, &v1.ChatRoomGroupIdFindRequest{
-		Base:          service.GenServiceRequest(productId),
+		Base:          service.GenRequest(productId),
 		CustomGroupId: customGroupId,
 	})
 	if err != nil {

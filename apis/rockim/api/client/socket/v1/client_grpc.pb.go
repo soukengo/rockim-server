@@ -18,126 +18,126 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ClientAPIClient is the client API for ClientAPI service.
+// ChannelAPIClient is the client API for ChannelAPI service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ClientAPIClient interface {
+type ChannelAPIClient interface {
 	// Auth 长连接认证
 	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	// HeartBeat 长连接心跳
 	HeartBeat(ctx context.Context, in *HeartBeatRequest, opts ...grpc.CallOption) (*HeartBeatResponse, error)
 }
 
-type clientAPIClient struct {
+type channelAPIClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewClientAPIClient(cc grpc.ClientConnInterface) ClientAPIClient {
-	return &clientAPIClient{cc}
+func NewChannelAPIClient(cc grpc.ClientConnInterface) ChannelAPIClient {
+	return &channelAPIClient{cc}
 }
 
-func (c *clientAPIClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
+func (c *channelAPIClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
 	out := new(AuthResponse)
-	err := c.cc.Invoke(ctx, "/rockim.api.client.socket.v1.ClientAPI/Auth", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rockim.api.client.socket.v1.ChannelAPI/Auth", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *clientAPIClient) HeartBeat(ctx context.Context, in *HeartBeatRequest, opts ...grpc.CallOption) (*HeartBeatResponse, error) {
+func (c *channelAPIClient) HeartBeat(ctx context.Context, in *HeartBeatRequest, opts ...grpc.CallOption) (*HeartBeatResponse, error) {
 	out := new(HeartBeatResponse)
-	err := c.cc.Invoke(ctx, "/rockim.api.client.socket.v1.ClientAPI/HeartBeat", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rockim.api.client.socket.v1.ChannelAPI/HeartBeat", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ClientAPIServer is the server API for ClientAPI service.
-// All implementations must embed UnimplementedClientAPIServer
+// ChannelAPIServer is the server API for ChannelAPI service.
+// All implementations must embed UnimplementedChannelAPIServer
 // for forward compatibility
-type ClientAPIServer interface {
+type ChannelAPIServer interface {
 	// Auth 长连接认证
 	Auth(context.Context, *AuthRequest) (*AuthResponse, error)
 	// HeartBeat 长连接心跳
 	HeartBeat(context.Context, *HeartBeatRequest) (*HeartBeatResponse, error)
-	mustEmbedUnimplementedClientAPIServer()
+	mustEmbedUnimplementedChannelAPIServer()
 }
 
-// UnimplementedClientAPIServer must be embedded to have forward compatible implementations.
-type UnimplementedClientAPIServer struct {
+// UnimplementedChannelAPIServer must be embedded to have forward compatible implementations.
+type UnimplementedChannelAPIServer struct {
 }
 
-func (UnimplementedClientAPIServer) Auth(context.Context, *AuthRequest) (*AuthResponse, error) {
+func (UnimplementedChannelAPIServer) Auth(context.Context, *AuthRequest) (*AuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
 }
-func (UnimplementedClientAPIServer) HeartBeat(context.Context, *HeartBeatRequest) (*HeartBeatResponse, error) {
+func (UnimplementedChannelAPIServer) HeartBeat(context.Context, *HeartBeatRequest) (*HeartBeatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HeartBeat not implemented")
 }
-func (UnimplementedClientAPIServer) mustEmbedUnimplementedClientAPIServer() {}
+func (UnimplementedChannelAPIServer) mustEmbedUnimplementedChannelAPIServer() {}
 
-// UnsafeClientAPIServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ClientAPIServer will
+// UnsafeChannelAPIServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ChannelAPIServer will
 // result in compilation errors.
-type UnsafeClientAPIServer interface {
-	mustEmbedUnimplementedClientAPIServer()
+type UnsafeChannelAPIServer interface {
+	mustEmbedUnimplementedChannelAPIServer()
 }
 
-func RegisterClientAPIServer(s grpc.ServiceRegistrar, srv ClientAPIServer) {
-	s.RegisterService(&ClientAPI_ServiceDesc, srv)
+func RegisterChannelAPIServer(s grpc.ServiceRegistrar, srv ChannelAPIServer) {
+	s.RegisterService(&ChannelAPI_ServiceDesc, srv)
 }
 
-func _ClientAPI_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChannelAPI_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AuthRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ClientAPIServer).Auth(ctx, in)
+		return srv.(ChannelAPIServer).Auth(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.api.client.socket.v1.ClientAPI/Auth",
+		FullMethod: "/rockim.api.client.socket.v1.ChannelAPI/Auth",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientAPIServer).Auth(ctx, req.(*AuthRequest))
+		return srv.(ChannelAPIServer).Auth(ctx, req.(*AuthRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ClientAPI_HeartBeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChannelAPI_HeartBeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(HeartBeatRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ClientAPIServer).HeartBeat(ctx, in)
+		return srv.(ChannelAPIServer).HeartBeat(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.api.client.socket.v1.ClientAPI/HeartBeat",
+		FullMethod: "/rockim.api.client.socket.v1.ChannelAPI/HeartBeat",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientAPIServer).HeartBeat(ctx, req.(*HeartBeatRequest))
+		return srv.(ChannelAPIServer).HeartBeat(ctx, req.(*HeartBeatRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ClientAPI_ServiceDesc is the grpc.ServiceDesc for ClientAPI service.
+// ChannelAPI_ServiceDesc is the grpc.ServiceDesc for ChannelAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ClientAPI_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "rockim.api.client.socket.v1.ClientAPI",
-	HandlerType: (*ClientAPIServer)(nil),
+var ChannelAPI_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "rockim.api.client.socket.v1.ChannelAPI",
+	HandlerType: (*ChannelAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Auth",
-			Handler:    _ClientAPI_Auth_Handler,
+			Handler:    _ChannelAPI_Auth_Handler,
 		},
 		{
 			MethodName: "HeartBeat",
-			Handler:    _ClientAPI_HeartBeat_Handler,
+			Handler:    _ChannelAPI_HeartBeat_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

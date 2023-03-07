@@ -18,126 +18,126 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// CometAPIClient is the client API for CometAPI service.
+// ChannelAPIClient is the client API for ChannelAPI service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type CometAPIClient interface {
+type ChannelAPIClient interface {
 	// Push 推送数据
 	Push(ctx context.Context, in *PushRequest, opts ...grpc.CallOption) (*PushResponse, error)
 	// PushGroup 推送数据到一个组
 	PushGroup(ctx context.Context, in *PushGroupRequest, opts ...grpc.CallOption) (*PushGroupResponse, error)
 }
 
-type cometAPIClient struct {
+type channelAPIClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewCometAPIClient(cc grpc.ClientConnInterface) CometAPIClient {
-	return &cometAPIClient{cc}
+func NewChannelAPIClient(cc grpc.ClientConnInterface) ChannelAPIClient {
+	return &channelAPIClient{cc}
 }
 
-func (c *cometAPIClient) Push(ctx context.Context, in *PushRequest, opts ...grpc.CallOption) (*PushResponse, error) {
+func (c *channelAPIClient) Push(ctx context.Context, in *PushRequest, opts ...grpc.CallOption) (*PushResponse, error) {
 	out := new(PushResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.comet.v1.CometAPI/Push", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rockim.service.comet.v1.ChannelAPI/Push", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *cometAPIClient) PushGroup(ctx context.Context, in *PushGroupRequest, opts ...grpc.CallOption) (*PushGroupResponse, error) {
+func (c *channelAPIClient) PushGroup(ctx context.Context, in *PushGroupRequest, opts ...grpc.CallOption) (*PushGroupResponse, error) {
 	out := new(PushGroupResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.comet.v1.CometAPI/PushGroup", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rockim.service.comet.v1.ChannelAPI/PushGroup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// CometAPIServer is the server API for CometAPI service.
-// All implementations must embed UnimplementedCometAPIServer
+// ChannelAPIServer is the server API for ChannelAPI service.
+// All implementations must embed UnimplementedChannelAPIServer
 // for forward compatibility
-type CometAPIServer interface {
+type ChannelAPIServer interface {
 	// Push 推送数据
 	Push(context.Context, *PushRequest) (*PushResponse, error)
 	// PushGroup 推送数据到一个组
 	PushGroup(context.Context, *PushGroupRequest) (*PushGroupResponse, error)
-	mustEmbedUnimplementedCometAPIServer()
+	mustEmbedUnimplementedChannelAPIServer()
 }
 
-// UnimplementedCometAPIServer must be embedded to have forward compatible implementations.
-type UnimplementedCometAPIServer struct {
+// UnimplementedChannelAPIServer must be embedded to have forward compatible implementations.
+type UnimplementedChannelAPIServer struct {
 }
 
-func (UnimplementedCometAPIServer) Push(context.Context, *PushRequest) (*PushResponse, error) {
+func (UnimplementedChannelAPIServer) Push(context.Context, *PushRequest) (*PushResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Push not implemented")
 }
-func (UnimplementedCometAPIServer) PushGroup(context.Context, *PushGroupRequest) (*PushGroupResponse, error) {
+func (UnimplementedChannelAPIServer) PushGroup(context.Context, *PushGroupRequest) (*PushGroupResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PushGroup not implemented")
 }
-func (UnimplementedCometAPIServer) mustEmbedUnimplementedCometAPIServer() {}
+func (UnimplementedChannelAPIServer) mustEmbedUnimplementedChannelAPIServer() {}
 
-// UnsafeCometAPIServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to CometAPIServer will
+// UnsafeChannelAPIServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ChannelAPIServer will
 // result in compilation errors.
-type UnsafeCometAPIServer interface {
-	mustEmbedUnimplementedCometAPIServer()
+type UnsafeChannelAPIServer interface {
+	mustEmbedUnimplementedChannelAPIServer()
 }
 
-func RegisterCometAPIServer(s grpc.ServiceRegistrar, srv CometAPIServer) {
-	s.RegisterService(&CometAPI_ServiceDesc, srv)
+func RegisterChannelAPIServer(s grpc.ServiceRegistrar, srv ChannelAPIServer) {
+	s.RegisterService(&ChannelAPI_ServiceDesc, srv)
 }
 
-func _CometAPI_Push_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChannelAPI_Push_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PushRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CometAPIServer).Push(ctx, in)
+		return srv.(ChannelAPIServer).Push(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.service.comet.v1.CometAPI/Push",
+		FullMethod: "/rockim.service.comet.v1.ChannelAPI/Push",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CometAPIServer).Push(ctx, req.(*PushRequest))
+		return srv.(ChannelAPIServer).Push(ctx, req.(*PushRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CometAPI_PushGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ChannelAPI_PushGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PushGroupRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CometAPIServer).PushGroup(ctx, in)
+		return srv.(ChannelAPIServer).PushGroup(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.service.comet.v1.CometAPI/PushGroup",
+		FullMethod: "/rockim.service.comet.v1.ChannelAPI/PushGroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CometAPIServer).PushGroup(ctx, req.(*PushGroupRequest))
+		return srv.(ChannelAPIServer).PushGroup(ctx, req.(*PushGroupRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// CometAPI_ServiceDesc is the grpc.ServiceDesc for CometAPI service.
+// ChannelAPI_ServiceDesc is the grpc.ServiceDesc for ChannelAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var CometAPI_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "rockim.service.comet.v1.CometAPI",
-	HandlerType: (*CometAPIServer)(nil),
+var ChannelAPI_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "rockim.service.comet.v1.ChannelAPI",
+	HandlerType: (*ChannelAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Push",
-			Handler:    _CometAPI_Push_Handler,
+			Handler:    _ChannelAPI_Push_Handler,
 		},
 		{
 			MethodName: "PushGroup",
-			Handler:    _CometAPI_PushGroup_Handler,
+			Handler:    _ChannelAPI_PushGroup_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

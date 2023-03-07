@@ -9,7 +9,11 @@ import (
 )
 
 // ProviderSet is biz providers.
-var ProviderSet = wire.NewSet(componentSet, NewUserUseCase, NewAuthUseCase)
+var ProviderSet = wire.NewSet(componentSet,
+	NewUserUseCase,
+	NewAuthUseCase,
+	NewOnlineUseCase,
+)
 
 // 注册组件
 var componentSet = wire.NewSet(

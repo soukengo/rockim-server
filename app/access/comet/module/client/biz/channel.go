@@ -8,38 +8,33 @@ import (
 	"rockimserver/app/access/comet/module/client/biz/consts"
 	"rockimserver/app/access/comet/module/client/biz/options"
 	"rockimserver/pkg/component/server/socket"
-	"rockimserver/pkg/errors"
 	"rockimserver/pkg/log"
 	"time"
 )
 
-var (
-	ErrRequestInvalid = errors.BadRequest(reasons.ErrorReason_UN_SPECIFIED.String(), "无效的请求")
-)
-
 type OnlineRepo interface {
-	Connect(ctx context.Context, opts *options.ClientAuthOptions) (string, error)
-	HeartBeat(ctx context.Context, opts *options.ClientHeartBeatOptions) error
-	DisConnect(ctx context.Context, opts *options.ClientDisConnectOptions) error
+	Add(ctx context.Context, opts *options.OnlineAddOptions) (string, error)
+	Refresh(ctx context.Context, opts *options.OnlineRefreshOptions) error
+	Delete(ctx context.Context, opts *options.OnlineDeleteOptions) error
 }
 
-type ClientUseCase struct {
+type ChannelUseCase struct {
 	cfg    *conf.Config
 	server socket.Server
 	repo   OnlineRepo
 	timer  timer.Timer
 }
 
-func NewClientUseCase(cfg *conf.Config, server socket.Server, repo OnlineRepo) *ClientUseCase {
+func NewChannelUseCase(cfg *conf.Config, server socket.Server, repo OnlineRepo) *ChannelUseCase {
 	tm := timer.NewTimer()
 	tm.Run()
-	return &ClientUseCase{cfg: cfg, server: server, repo: repo, timer: tm}
+	return &ChannelUseCase{cfg: cfg, server: server, repo: repo, timer: tm}
 }
 
-func (uc *ClientUseCase) Connect(ctx context.Context) (err error) {
+func (uc *ChannelUseCase) Connect(ctx context.Context) (err error) {
 	ch, ok := socket.FromContext(ctx)
 	if !ok {
-		err = ErrRequestInvalid
+		err = reasons.ErrUnSpecified
 		return
 	}
 	channelId := ch.Id()
@@ -57,30 +52,34 @@ func (uc *ClientUseCase) Connect(ctx context.Context) (err error) {
 	return
 }
 
-func (uc *ClientUseCase) DisConnect(ctx context.Context) (err error) {
+func (uc *ChannelUseCase) DisConnect(ctx context.Context) (err error) {
 	ch, ok := socket.FromContext(ctx)
 	if !ok {
-		err = ErrRequestInvalid
+		err = reasons.ErrUnSpecified
 		return
 	}
-	opts := &options.ClientDisConnectOptions{
+	opts := &options.OnlineDeleteOptions{
 		ProductId: ch.StringAttr(consts.ChannelAttrProductId),
 		Uid:       ch.StringAttr(consts.ChannelAttrUid),
 		ServerId:  uc.cfg.Global.ID,
 		ChannelId: ch.Id(),
 	}
-	return uc.repo.DisConnect(ctx, opts)
+	return uc.repo.Delete(ctx, opts)
 }
 
-func (uc *ClientUseCase) Auth(ctx context.Context, opts *options.ClientAuthOptions) (err error) {
+func (uc *ChannelUseCase) Auth(ctx context.Context, in *options.ChannelAuthOptions) (err error) {
 	ch, ok := socket.FromContext(ctx)
 	if !ok {
-		err = ErrRequestInvalid
+		err = reasons.ErrUnSpecified
 		return
 	}
-	opts.ServerId = uc.cfg.Global.ID
-	opts.ChannelId = ch.Id()
-	uid, err := uc.repo.Connect(ctx, opts)
+	opts := &options.OnlineAddOptions{
+		ProductId: in.ProductId,
+		ServerId:  uc.cfg.Global.ID,
+		ChannelId: ch.Id(),
+		Token:     in.Token,
+	}
+	uid, err := uc.repo.Add(ctx, opts)
 	if err != nil {
 		return
 	}
@@ -89,10 +88,10 @@ func (uc *ClientUseCase) Auth(ctx context.Context, opts *options.ClientAuthOptio
 	return
 }
 
-func (uc *ClientUseCase) HeartBeat(ctx context.Context) (err error) {
+func (uc *ChannelUseCase) HeartBeat(ctx context.Context) (err error) {
 	ch, ok := socket.FromContext(ctx)
 	if !ok {
-		err = ErrRequestInvalid
+		err = reasons.ErrUnSpecified
 		return
 	}
 	lastTime := ch.Int64Attr(consts.ChannelAttrLastHeartBeatTime)
@@ -102,13 +101,13 @@ func (uc *ClientUseCase) HeartBeat(ctx context.Context) (err error) {
 		log.WithContext(ctx).Debugf("Heartbeat reduce frequency,channelId: %v", ch.Id())
 		return
 	}
-	opts := &options.ClientHeartBeatOptions{
+	opts := &options.OnlineRefreshOptions{
 		ProductId: ch.StringAttr(consts.ChannelAttrProductId),
 		Uid:       ch.StringAttr(consts.ChannelAttrUid),
 		ServerId:  uc.cfg.Global.ID,
 		ChannelId: ch.Id(),
 	}
-	err = uc.repo.HeartBeat(ctx, opts)
+	err = uc.repo.Refresh(ctx, opts)
 	if err != nil {
 		return
 	}

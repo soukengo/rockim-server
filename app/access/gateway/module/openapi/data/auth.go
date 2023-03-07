@@ -18,7 +18,7 @@ func NewAuthRepo(ac v1.AuthAPIClient) biz.AuthRepo {
 }
 
 func (r *authRepo) CreateAuthCode(ctx context.Context, in *options.AuthCodeCreateOptions) (out *types.AuthCode, err error) {
-	ret, err := r.ac.CreateAuthCode(ctx, &v1.AuthCodeRequest{Base: service.GenServiceRequest(in.ProductId), Account: in.Account})
+	ret, err := r.ac.CreateAuthCode(ctx, &v1.AuthCodeRequest{Base: service.GenRequest(in.ProductId), Account: in.Account})
 	if err != nil {
 		return
 	}

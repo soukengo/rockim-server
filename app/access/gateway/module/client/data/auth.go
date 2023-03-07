@@ -18,7 +18,7 @@ func NewAuthRepo(ac v1.AuthAPIClient) biz.AuthRepo {
 }
 
 func (r *authRepo) CreateAuthCode(ctx context.Context, in *options.AuthCodeCreateOptions) (out *types.AuthCode, err error) {
-	ret, err := r.ac.CreateAuthCode(ctx, &v1.AuthCodeRequest{Base: service.GenServiceRequest(in.ProductId), Account: in.Account})
+	ret, err := r.ac.CreateAuthCode(ctx, &v1.AuthCodeRequest{Base: service.GenRequest(in.ProductId), Account: in.Account})
 	if err != nil {
 		return
 	}
@@ -26,14 +26,14 @@ func (r *authRepo) CreateAuthCode(ctx context.Context, in *options.AuthCodeCreat
 }
 
 func (r *authRepo) Login(ctx context.Context, in *options.LoginOptions) (out *types.AccessToken, err error) {
-	ret, err := r.ac.Login(ctx, &v1.LoginRequest{Base: service.GenServiceRequest(in.ProductId), AuthCode: in.AuthCode})
+	ret, err := r.ac.Login(ctx, &v1.LoginRequest{Base: service.GenRequest(in.ProductId), AuthCode: in.AuthCode})
 	if err != nil {
 		return
 	}
 	return &types.AccessToken{Token: ret.Token, ExpireTime: ret.ExpireTime}, nil
 }
 func (r *authRepo) CheckToken(ctx context.Context, in *options.TokenCheckOptions) (out string, err error) {
-	ret, err := r.ac.CheckToken(ctx, &v1.TokenCheckRequest{Base: service.GenServiceRequest(in.ProductId), Token: in.Token})
+	ret, err := r.ac.CheckToken(ctx, &v1.TokenCheckRequest{Base: service.GenRequest(in.ProductId), Token: in.Token})
 	if err != nil {
 		return
 	}

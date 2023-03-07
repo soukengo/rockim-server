@@ -18,7 +18,7 @@ func NewChatRoomMemberRepo(ac v1.ChatRoomMemberAPIClient) biz.ChatRoomMemberRepo
 
 func (r *chatRoomMemberRepo) Join(ctx context.Context, opts *options.ChatRoomJoinOptions) (err error) {
 	_, err = r.ac.Join(ctx, &v1.ChatRoomJoinRequest{
-		Base:    service.GenServiceRequest(opts.ProductId),
+		Base:    service.GenRequest(opts.ProductId),
 		GroupId: opts.GroupId,
 		Uid:     opts.Uid,
 	})
@@ -30,7 +30,7 @@ func (r *chatRoomMemberRepo) Join(ctx context.Context, opts *options.ChatRoomJoi
 
 func (r *chatRoomMemberRepo) Quit(ctx context.Context, opts *options.ChatRoomQuitOptions) (err error) {
 	_, err = r.ac.Quit(ctx, &v1.ChatRoomQuitRequest{
-		Base:    service.GenServiceRequest(opts.ProductId),
+		Base:    service.GenRequest(opts.ProductId),
 		GroupId: opts.GroupId,
 		Uid:     opts.Uid,
 	})

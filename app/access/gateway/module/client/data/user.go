@@ -18,7 +18,7 @@ func NewUserRepo(uac v1.UserAPIClient, aac v1.AuthAPIClient) biz.UserRepo {
 }
 
 func (r *userRepo) FindByAccount(ctx context.Context, productId string, account string) (ret *types.User, err error) {
-	sret, err := r.uac.FindByAccount(ctx, &v1.UserFindByAccountRequest{Base: service.GenServiceRequest(productId), Account: account})
+	sret, err := r.uac.FindByAccount(ctx, &v1.UserFindByAccountRequest{Base: service.GenRequest(productId), Account: account})
 	if err != nil {
 		return
 	}

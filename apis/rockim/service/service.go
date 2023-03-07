@@ -12,6 +12,6 @@ const (
 	AppMessage      = "rockim.message"
 )
 
-func GenServiceRequest(productId string) *ServiceRequest {
+func GenRequest(productId string) *ServiceRequest {
 	return &ServiceRequest{ProductId: productId}
 }
