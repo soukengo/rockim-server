@@ -177,6 +177,162 @@ var _ interface {
 	ErrorName() string
 } = ConfigFetchRequestValidationError{}
 
+// Validate checks the field values on Socket with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *Socket) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Socket with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in SocketMultiError, or nil if none found.
+func (m *Socket) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Socket) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetTcp()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, SocketValidationError{
+					field:  "Tcp",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, SocketValidationError{
+					field:  "Tcp",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetTcp()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return SocketValidationError{
+				field:  "Tcp",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetWs()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, SocketValidationError{
+					field:  "Ws",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, SocketValidationError{
+					field:  "Ws",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetWs()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return SocketValidationError{
+				field:  "Ws",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return SocketMultiError(errors)
+	}
+
+	return nil
+}
+
+// SocketMultiError is an error wrapping multiple validation errors returned by
+// Socket.ValidateAll() if the designated constraints aren't met.
+type SocketMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m SocketMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m SocketMultiError) AllErrors() []error { return m }
+
+// SocketValidationError is the validation error returned by Socket.Validate if
+// the designated constraints aren't met.
+type SocketValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e SocketValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e SocketValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e SocketValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e SocketValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e SocketValidationError) ErrorName() string { return "SocketValidationError" }
+
+// Error satisfies the builtin error interface
+func (e SocketValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sSocket.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = SocketValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = SocketValidationError{}
+
 // Validate checks the field values on ConfigFetchResponse with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
@@ -198,6 +354,35 @@ func (m *ConfigFetchResponse) validate(all bool) error {
 	}
 
 	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetSocket()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ConfigFetchResponseValidationError{
+					field:  "Socket",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ConfigFetchResponseValidationError{
+					field:  "Socket",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetSocket()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ConfigFetchResponseValidationError{
+				field:  "Socket",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if len(errors) > 0 {
 		return ConfigFetchResponseMultiError(errors)
@@ -278,3 +463,206 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ConfigFetchResponseValidationError{}
+
+// Validate checks the field values on Socket_TCP with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *Socket_TCP) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Socket_TCP with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in Socket_TCPMultiError, or
+// nil if none found.
+func (m *Socket_TCP) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Socket_TCP) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Address
+
+	if len(errors) > 0 {
+		return Socket_TCPMultiError(errors)
+	}
+
+	return nil
+}
+
+// Socket_TCPMultiError is an error wrapping multiple validation errors
+// returned by Socket_TCP.ValidateAll() if the designated constraints aren't met.
+type Socket_TCPMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m Socket_TCPMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m Socket_TCPMultiError) AllErrors() []error { return m }
+
+// Socket_TCPValidationError is the validation error returned by
+// Socket_TCP.Validate if the designated constraints aren't met.
+type Socket_TCPValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e Socket_TCPValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e Socket_TCPValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e Socket_TCPValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e Socket_TCPValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e Socket_TCPValidationError) ErrorName() string { return "Socket_TCPValidationError" }
+
+// Error satisfies the builtin error interface
+func (e Socket_TCPValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sSocket_TCP.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = Socket_TCPValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = Socket_TCPValidationError{}
+
+// Validate checks the field values on Socket_Websocket with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *Socket_Websocket) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Socket_Websocket with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// Socket_WebsocketMultiError, or nil if none found.
+func (m *Socket_Websocket) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Socket_Websocket) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Address
+
+	if len(errors) > 0 {
+		return Socket_WebsocketMultiError(errors)
+	}
+
+	return nil
+}
+
+// Socket_WebsocketMultiError is an error wrapping multiple validation errors
+// returned by Socket_Websocket.ValidateAll() if the designated constraints
+// aren't met.
+type Socket_WebsocketMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m Socket_WebsocketMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m Socket_WebsocketMultiError) AllErrors() []error { return m }
+
+// Socket_WebsocketValidationError is the validation error returned by
+// Socket_Websocket.Validate if the designated constraints aren't met.
+type Socket_WebsocketValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e Socket_WebsocketValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e Socket_WebsocketValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e Socket_WebsocketValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e Socket_WebsocketValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e Socket_WebsocketValidationError) ErrorName() string { return "Socket_WebsocketValidationError" }
+
+// Error satisfies the builtin error interface
+func (e Socket_WebsocketValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sSocket_Websocket.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = Socket_WebsocketValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = Socket_WebsocketValidationError{}

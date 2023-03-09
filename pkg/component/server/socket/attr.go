@@ -8,12 +8,19 @@ type attributes struct {
 }
 
 func newAttributes() *attributes {
-	return &attributes{}
+	return &attributes{
+		attrs: map[string]any{},
+	}
 }
 
 func (a *attributes) SetAttr(key string, value any) {
 	a.lock.Lock()
 	a.attrs[key] = value
+	a.lock.Unlock()
+}
+func (a *attributes) DelAttr(key string) {
+	a.lock.Lock()
+	delete(a.attrs, key)
 	a.lock.Unlock()
 }
 

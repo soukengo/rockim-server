@@ -2,51 +2,65 @@ package socket
 
 import (
 	"context"
+	"github.com/antlabs/timer"
 	"github.com/golang/protobuf/proto"
 	v1 "rockimserver/apis/rockim/api/client/socket/v1"
+	"rockimserver/apis/rockim/shared"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/apis/rockim/shared/reasons"
+	"rockimserver/app/access/comet/conf"
 	"rockimserver/app/access/comet/module/client/service"
 	"rockimserver/pkg/component/server/socket"
 	"rockimserver/pkg/component/server/socket/packet"
 	"rockimserver/pkg/component/trace"
 	"rockimserver/pkg/errors"
 	"rockimserver/pkg/log"
+	"rockimserver/pkg/util/runtimes"
 )
 
 var (
 	ErrOperationNotSupported = errors.BadRequest(reasons.Socket_OPERATION_NOT_SUPPORTED.String(), "不支持的操作类型")
-	ErrPacketInvalid         = errors.NotFound(reasons.Socket_PACKET_INVALID.String(), "无效的数据包")
+	ErrPacketInvalid         = errors.BadRequest(reasons.Socket_PACKET_INVALID.String(), "无效的数据包")
 )
 
 type HandleFunc func(context.Context, socket.Channel, []byte) (any, error)
 
 type ClientHandler struct {
-	server    socket.Server
-	actions   map[v1.Operation]HandleFunc
-	clientSrv *service.ChannelService
+	server  socket.Server
+	actions map[v1.Operation]HandleFunc
+	timer   timer.Timer
+
+	cfg        *conf.Protocol
+	channelSrv *service.ChannelService
 }
 
-func NewClientHandler() *ClientHandler {
-	ins := &ClientHandler{}
+func NewClientHandler(cfg *conf.Protocol, channelSrv *service.ChannelService) *ClientHandler {
+	tm := timer.NewTimer()
+	go tm.Run()
+	ins := &ClientHandler{
+		actions:    map[v1.Operation]HandleFunc{},
+		timer:      tm,
+		cfg:        cfg,
+		channelSrv: channelSrv,
+	}
 	ins.register()
 	return ins
 }
 
 func (h *ClientHandler) register() {
-	h.actions[v1.Operation_AUTH] = wrapAction[v1.AuthRequest, v1.AuthResponse](h.clientSrv.Auth)
-	h.actions[v1.Operation_HEARTBEAT] = wrapAction[v1.HeartBeatRequest, v1.HeartBeatResponse](h.clientSrv.HeartBeat)
+	h.actions[v1.Operation_AUTH] = wrapAction[v1.AuthRequest, v1.AuthResponse](h.channelSrv.Auth)
+	h.actions[v1.Operation_HEARTBEAT] = wrapAction[v1.HeartBeatRequest, v1.HeartBeatResponse](h.channelSrv.HeartBeat)
 }
 
 func (h *ClientHandler) OnCreated(ctx *socket.Context) {
 	ch := ctx.Channel()
 	channelId := ch.Id()
 	log.WithContext(ctx).Debugf("channel created: %v", channelId)
-	_ = h.clientSrv.Connect(ctx)
+	_ = h.channelSrv.Connect(ctx)
 }
 
 func (h *ClientHandler) OnClosed(ctx *socket.Context) {
-	_ = h.clientSrv.DisConnect(ctx)
+	_ = h.channelSrv.DisConnect(ctx)
 }
 
 func (h *ClientHandler) OnReceived(ctx *socket.Context, p packet.IPacket) {
@@ -73,7 +87,9 @@ func (h *ClientHandler) OnReceived(ctx *socket.Context, p packet.IPacket) {
 		log.Errorf("OnReceived packet body not invalid: %v", p)
 		return
 	}
-	h.handle(ctx, ch, header, body)
+	runtimes.TryCatch(func() {
+		h.handle(ctx, ch, header, body)
+	})
 }
 
 func (h *ClientHandler) handle(ctx context.Context, channel socket.Channel, header *v1.RequestPacketHeader, body *v1.RequestPacketBody) {
@@ -84,6 +100,7 @@ func (h *ClientHandler) handle(ctx context.Context, channel socket.Channel, head
 	operation := header.Operation
 	handler, ok := h.actions[operation]
 	respHeader := &v1.ResponsePacketHeader{
+		Operation: operation,
 		RequestId: header.RequestId,
 		TraceId:   trace.TraceID(ctx),
 		Success:   true,
@@ -99,14 +116,24 @@ func (h *ClientHandler) handle(ctx context.Context, channel socket.Channel, head
 
 func (h *ClientHandler) render(ctx context.Context, ch socket.Channel, header *v1.ResponsePacketHeader, data any, err error) {
 	if err != nil {
-		data = err
+		var e = errors.FromError(err)
+		data = &shared.Error{
+			Code:     e.Code(),
+			Reason:   e.Reason(),
+			Message:  e.Message(),
+			Metadata: e.Metadata(),
+		}
 		header.Success = false
 	}
 	headerBytes, err1 := encode(header)
 	if err1 != nil {
 		log.WithContext(ctx).Errorf("encode header error: %v", err1)
 	}
-	bodyBytes, err1 := encode(data)
+	dataBytes, err1 := encode(data)
+	if err1 != nil {
+		log.WithContext(ctx).Errorf("encode data error: %v", err1)
+	}
+	bodyBytes, err1 := encode(&v1.ResponsePacketBody{Body: dataBytes})
 	if err1 != nil {
 		log.WithContext(ctx).Errorf("encode body error: %v", err1)
 	}

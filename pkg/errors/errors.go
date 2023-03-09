@@ -21,7 +21,7 @@ func New(code int, reason, message string) *Error {
 }
 
 func Newf(code int, reason, format string, a ...interface{}) *Error {
-	return New(code, reason, fmt.Sprintf(format, a...))
+	return &Error{err: errors.New(code, reason, fmt.Sprintf(format, a...))}
 }
 
 func Code(err error) int {
@@ -30,6 +30,28 @@ func Code(err error) int {
 
 func Reason(err error) string {
 	return errors.Reason(err)
+}
+
+func FromError(err error) *Error {
+	if err == nil {
+		return nil
+	}
+	e := errors.FromError(err)
+	ret := &Error{err: e}
+	return ret
+}
+
+func (e *Error) Code() int32 {
+	return e.err.Code
+}
+func (e *Error) Reason() string {
+	return e.err.Reason
+}
+func (e *Error) Message() string {
+	return e.err.Message
+}
+func (e *Error) Metadata() map[string]string {
+	return e.err.Metadata
 }
 
 func (e *Error) WithStack() *Error {

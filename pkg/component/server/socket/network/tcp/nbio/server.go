@@ -4,6 +4,7 @@ import (
 	log "github.com/golang/glog"
 	"github.com/google/uuid"
 	"github.com/lesismal/nbio"
+	"github.com/lesismal/nbio/logging"
 	"net/url"
 	"rockimserver/pkg/component/server/socket/network"
 	"rockimserver/pkg/component/server/socket/network/tcp"
@@ -22,6 +23,7 @@ type nbioServer struct {
 }
 
 func NewServer(cfg *tcp.Config, parser *packet.Parser) network.Server {
+	logging.SetLogger(&logger{})
 	g := nbio.NewEngine(nbio.Config{
 		Network:            "tcp",
 		Addrs:              []string{cfg.Addr},

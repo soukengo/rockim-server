@@ -2,7 +2,6 @@ package gnet
 
 import (
 	"bufio"
-	"fmt"
 	log "github.com/golang/glog"
 	"github.com/google/uuid"
 	"github.com/panjf2000/gnet/v2"
@@ -75,7 +74,6 @@ func (g *tcpConn) Close() error {
 	if !g.closed.CAS(false, true) {
 		return nil
 	}
-	fmt.Println("close client")
 	return g.core.Close()
 }
 

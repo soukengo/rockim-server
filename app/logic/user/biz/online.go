@@ -5,6 +5,7 @@ import (
 	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/logic/user/biz/options"
 	"rockimserver/app/logic/user/biz/types"
+	"rockimserver/pkg/errors"
 	"time"
 )
 
@@ -13,6 +14,10 @@ type OnlineRepo interface {
 	Exists(ctx context.Context, ch *types.OnlineChannel) (bool, error)
 	Delete(ctx context.Context, ch *types.OnlineChannel) error
 }
+
+var (
+	ErrUnSpecified = errors.BadRequest(reasons.ErrorReason_UN_SPECIFIED.String(), "未知错误")
+)
 
 type OnlineUseCase struct {
 	repo      OnlineRepo
@@ -52,7 +57,7 @@ func (uc *OnlineUseCase) Refresh(ctx context.Context, opts *options.OnlineRefres
 		return
 	}
 	if !exists {
-		err = reasons.ErrUnSpecified.NewWithMessage("无效的请求")
+		err = ErrUnSpecified.NewWithMessage("无效的请求")
 		return
 	}
 	err = uc.repo.Add(ctx, ch)

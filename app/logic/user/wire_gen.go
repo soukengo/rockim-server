@@ -43,7 +43,12 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	accessTokenRepo := data.NewAccessTokenRepo(accessTokenData)
 	authUseCase := biz.NewAuthUseCase(authCodeRepo, accessTokenRepo, userRepo)
 	authService := service.NewAuthService(authUseCase)
-	grpcServer := server2.NewGRPCServer(serverConfig, userService, authService)
+	onlineData := cache2.NewOnlineData(redisClient, cacheConfig)
+	onlineRepo := data.NewOnlineRepo(onlineData)
+	onlineUseCase := biz.NewOnlineUseCase(onlineRepo, accessTokenRepo)
+	onlineService := service.NewOnlineService(onlineUseCase)
+	serviceGroup := server2.NewServiceGroup(userService, authService, onlineService)
+	grpcServer := server2.NewGRPCServer(serverConfig, serviceGroup)
 	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {
 		return nil, err

@@ -35,6 +35,7 @@ func (r *onlineRepo) Refresh(ctx context.Context, opts *options.OnlineRefreshOpt
 		Base:      service.GenRequest(opts.ProductId),
 		ServerId:  opts.ServerId,
 		ChannelId: opts.ChannelId,
+		Uid:       opts.Uid,
 	})
 	return
 }

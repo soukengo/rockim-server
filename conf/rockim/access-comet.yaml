@@ -11,4 +11,6 @@ server:
 
 protocol:
   handshakeTimeout: 10s
-  heartbeatInterval: 3m
+  minServerHeartbeatInterval: 2m
+  maxServerHeartbeatInterval: 4m
+  maxClientHeartbeatInterval: 3m

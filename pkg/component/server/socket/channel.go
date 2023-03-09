@@ -15,7 +15,6 @@ type channel struct {
 	clientIP      string
 	conn          network.Connection
 	done          *sync.Once
-	recvQueue     chan packet.IPacket
 	sendQueue     chan packet.IPacket
 	ctx           context.Context
 	cancel        context.CancelFunc
@@ -25,13 +24,12 @@ type channel struct {
 	Attributes
 }
 
-func newChannel(conn network.Connection, recvQueueSize uint32, sendQueueSize uint32) Channel {
+func newChannel(conn network.Connection, sendQueueSize uint32) Channel {
 	ctx, cancel := context.WithCancel(context.Background())
 	ins := &channel{
 		ctx:        ctx,
 		cancel:     cancel,
 		done:       new(sync.Once),
-		recvQueue:  make(chan packet.IPacket, recvQueueSize),
 		sendQueue:  make(chan packet.IPacket, sendQueueSize),
 		conn:       conn,
 		groups:     map[string]struct{}{},
@@ -62,14 +60,6 @@ func (c *channel) Send(data packet.IPacket) error {
 	return nil
 }
 
-func (c *channel) Receive(p packet.IPacket) {
-	select {
-	case <-c.ctx.Done():
-		return
-	default:
-		c.recvQueue <- p
-	}
-}
 func (c *channel) AddGroup(groupId string) {
 	c.glock.Lock()
 	c.groups[groupId] = struct{}{}

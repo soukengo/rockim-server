@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"math/rand"
 	"rockimserver/apis/rockim/service"
 	"rockimserver/conf"
 	"rockimserver/pkg/component/config"
@@ -21,8 +22,10 @@ func Load() (cfg *Config, err error) {
 	cfg = &Config{
 		Log: log.Default,
 		Protocol: &Protocol{
-			HandshakeTimeout:  time.Second * 10,
-			HeartbeatInterval: time.Minute * 3,
+			HandshakeTimeout:           time.Second * 10,
+			MinServerHeartbeatInterval: time.Minute * 2,
+			MaxServerHeartbeatInterval: time.Minute * 4,
+			MaxClientHeartbeatInterval: time.Minute * 2,
 		},
 	}
 	source := config.NewEnvSource(global.Config, configName)
@@ -44,6 +47,12 @@ type Config struct {
 }
 
 type Protocol struct {
-	HandshakeTimeout  time.Duration
-	HeartbeatInterval time.Duration
+	HandshakeTimeout           time.Duration // 长连接握手超时时间
+	MinServerHeartbeatInterval time.Duration // comet服务向后端服务发起心跳的最小时间间隔（心跳降频）
+	MaxServerHeartbeatInterval time.Duration // comet服务向后端服务发起心跳的最大时间间隔（心跳降频）
+	MaxClientHeartbeatInterval time.Duration // 客户端向comet服务发起心跳的最大时间间隔（超时则断开）
+}
+
+func (p *Protocol) RandomServerHeartbeatInterval() time.Duration {
+	return p.MinServerHeartbeatInterval + time.Duration(rand.Int63n(int64(p.MaxServerHeartbeatInterval)))
 }

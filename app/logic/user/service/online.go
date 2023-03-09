@@ -48,6 +48,7 @@ func (s *OnlineService) Refresh(ctx context.Context, in *v1.OnlineRefreshRequest
 		ProductId: in.Base.ProductId,
 		ServerId:  in.ServerId,
 		ChannelId: in.ChannelId,
+		Uid:       in.Uid,
 	})
 	if err != nil {
 		return

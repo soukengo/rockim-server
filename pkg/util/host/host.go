@@ -2,6 +2,7 @@ package host
 
 import (
 	"net/url"
+	"rockimserver/pkg/util/ip"
 	"strings"
 )
 
@@ -20,7 +21,8 @@ const (
 
 func FixAddr(addr string) string {
 	if strings.HasPrefix(addr, ":") {
-		addr = LocalHost + addr
+		innerIP := ip.InternalIP()
+		addr = innerIP + addr
 	}
 	return addr
 }

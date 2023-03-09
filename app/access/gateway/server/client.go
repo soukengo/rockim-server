@@ -10,6 +10,7 @@ import (
 	v1 "rockimserver/apis/rockim/api/client/http/v1"
 	"rockimserver/apis/rockim/api/client/http/v1/auth"
 	"rockimserver/apis/rockim/api/client/http/v1/group"
+	"rockimserver/apis/rockim/api/client/http/v1/product"
 	"rockimserver/apis/rockim/api/client/http/v1/user"
 	"rockimserver/app/access/gateway/module/client/biz"
 	"rockimserver/app/access/gateway/module/client/biz/options"
@@ -28,18 +29,20 @@ const (
 type ClientServiceGroup struct {
 	productUc         *biz.ProductUseCase
 	authUc            *biz.AuthUseCase
+	productSrv        *service.ProductService
 	userSrv           *service.UserService
 	authSrv           *service.AuthService
 	chatRoomSrv       *service.ChatRoomService
 	chatRoomMemberSrv *service.ChatRoomMemberService
 }
 
-func NewClientServiceGroup(productUc *biz.ProductUseCase, authUc *biz.AuthUseCase, userSrv *service.UserService, authSrv *service.AuthService, chatRoomSrv *service.ChatRoomService, chatRoomMemberSrv *service.ChatRoomMemberService) *ClientServiceGroup {
-	return &ClientServiceGroup{productUc: productUc, authUc: authUc, userSrv: userSrv, authSrv: authSrv, chatRoomSrv: chatRoomSrv, chatRoomMemberSrv: chatRoomMemberSrv}
+func NewClientServiceGroup(productUc *biz.ProductUseCase, authUc *biz.AuthUseCase, productSrv *service.ProductService, userSrv *service.UserService, authSrv *service.AuthService, chatRoomSrv *service.ChatRoomService, chatRoomMemberSrv *service.ChatRoomMemberService) *ClientServiceGroup {
+	return &ClientServiceGroup{productUc: productUc, authUc: authUc, productSrv: productSrv, userSrv: userSrv, authSrv: authSrv, chatRoomSrv: chatRoomSrv, chatRoomMemberSrv: chatRoomMemberSrv}
 }
 
 func (g *ClientServiceGroup) Register(srv *http.Server) {
-	srv.Use("/rockim.api.client.v1.*", g.checkSign(), g.checkAuth(), g.setAPIRequest(), validate.Validator())
+	srv.Use("/rockim.api.client.http.v1.*", g.checkSign(), g.checkAuth(), g.setAPIRequest(), validate.Validator())
+	product.RegisterProductAPIHTTPServer(srv, g.productSrv)
 	auth.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	user.RegisterUserAPIHTTPServer(srv, g.userSrv)
 	group.RegisterChatRoomAPIHTTPServer(srv, g.chatRoomSrv)
@@ -112,6 +115,7 @@ func (g *ClientServiceGroup) checkSign() middleware.Middleware {
 // checkAuth 验证访问令牌
 func (g *ClientServiceGroup) checkAuth() middleware.Middleware {
 	whiteList := make(map[string]struct{})
+	whiteList[product.OperationProductAPIFetchConfig] = struct{}{}
 	whiteList[auth.OperationAuthAPILogin] = struct{}{}
 	return selector.Server(func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req any) (resp any, err error) {

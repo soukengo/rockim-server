@@ -41,6 +41,7 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	}
 	authRepo := data.NewAuthRepo(authAPIClient)
 	authUseCase := biz.NewAuthUseCase(authRepo)
+	productService := service.NewProductService()
 	userAPIClient, err := grpc.NewUserClient(registryDiscovery)
 	if err != nil {
 		return nil, err
@@ -63,7 +64,7 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	chatRoomMemberRepo := data.NewChatRoomMemberRepo(chatRoomMemberAPIClient)
 	chatRoomMemberUseCase := biz.NewChatRoomMemberUseCase(chatRoomMemberRepo)
 	chatRoomMemberService := service.NewChatRoomMemberService(chatRoomMemberUseCase, chatRoomUseCase)
-	clientServiceGroup := server2.NewClientServiceGroup(productUseCase, authUseCase, userService, authService, chatRoomService, chatRoomMemberService)
+	clientServiceGroup := server2.NewClientServiceGroup(productUseCase, authUseCase, productService, userService, authService, chatRoomService, chatRoomMemberService)
 	bizProductRepo := data2.NewProductRepo(productAPIClient)
 	bizProductUseCase := biz2.NewProductUseCase(bizProductRepo)
 	bizUserRepo := data2.NewUserRepo(userAPIClient, authAPIClient)

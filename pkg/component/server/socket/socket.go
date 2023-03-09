@@ -56,9 +56,11 @@ type Group interface {
 type Attributes interface {
 	// SetAttr sets attributes
 	SetAttr(key string, value any)
-	// Attr get a attribute
+	// DelAttr delete an attribute
+	DelAttr(key string)
+	// Attr get an attribute
 	Attr(key string) (value any, ok bool)
-	// StringAttr get a string attribute
+	// StringAttr get an string attribute
 	StringAttr(key string) (value string)
 	// Int64Attr get an int64 attribute
 	Int64Attr(key string) (value int64)
