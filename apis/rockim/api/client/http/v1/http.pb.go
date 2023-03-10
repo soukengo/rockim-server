@@ -149,3 +149,9 @@ func file_rockim_api_client_http_v1_http_proto_init() {
 	file_rockim_api_client_http_v1_http_proto_goTypes = nil
 	file_rockim_api_client_http_v1_http_proto_depIdxs = nil
 }
+func (x *APIRequest) SetProductId(productId string) {
+	if x == nil {
+		return
+	}
+	x.ProductId = productId
+}

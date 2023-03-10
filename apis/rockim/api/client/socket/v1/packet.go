@@ -23,44 +23,40 @@ func NewPacketFactory() packet.IFactory {
 }
 
 const (
-	firstFlag = 0x01
-	lastFlag  = 0x10
+	V1 = uint16(1)
 )
 
 type Packet struct {
-	First     uint16
+	Version   uint16
 	Typ       uint8
 	HeaderLen uint16
 	BodyLen   uint32
 	Header    []byte
 	Body      []byte
-	Last      uint16
 }
 
 func NewPacket(typ uint8, header []byte, body []byte) *Packet {
 	return &Packet{
-		First:     firstFlag,
+		Version:   V1,
 		Typ:       typ,
 		HeaderLen: uint16(len(header)),
 		Header:    header,
 		BodyLen:   uint32(len(body)),
 		Body:      body,
-		Last:      lastFlag,
 	}
 }
 
 func (p *Packet) String() string {
-	return fmt.Sprintf("First: %v,Typ: %v,Header: %v,Body: %v,Last: %v", p.First, p.Typ, string(p.Header), string(p.Body), p.Last)
+	return fmt.Sprintf("Version: %v,Typ: %v,Header: %v,Body: %v", p.Version, p.Typ, string(p.Header), string(p.Body))
 }
 
 type packetOptions struct {
-	firstSize     uint16
+	versionSize   uint16
 	typSize       uint8
 	headerLenSize uint16
 	bodyLenSize   uint32
-	lastSize      uint16
 
-	firstOffset     int
+	versionOffset   int
 	typOffset       int
 	headerLenOffset int
 	bodyLenOffset   int
@@ -75,18 +71,17 @@ var (
 
 func initOptions() *packetOptions {
 	opt := &packetOptions{
-		firstSize:     2,
+		versionSize:   2,
 		typSize:       1,
 		headerLenSize: 2,
 		bodyLenSize:   4,
-		lastSize:      uint16(2),
-		firstOffset:   0,
+		versionOffset: 0,
 	}
-	opt.typOffset = opt.firstOffset + int(opt.firstSize)
+	opt.typOffset = opt.versionOffset + int(opt.versionSize)
 	opt.headerLenOffset = opt.typOffset + int(opt.typSize)
 	opt.bodyLenOffset = opt.headerLenOffset + int(opt.headerLenSize)
 	opt.headerOffset = opt.bodyLenOffset + int(opt.bodyLenSize)
-	opt.packetHeaderSize = int(opt.firstSize) + int(opt.typSize) + int(opt.headerLenSize) + int(opt.bodyLenSize)
+	opt.packetHeaderSize = int(opt.versionSize) + int(opt.typSize) + int(opt.headerLenSize) + int(opt.bodyLenSize)
 	return opt
 }
 
@@ -98,13 +93,13 @@ func (p *Packet) UnPackFrom(r io.Reader) (err error) {
 	if len(buf) < packetLen {
 		return packet.ErrInvalidPacket
 	}
-	first := binary.BigEndian.Uint16(buf[opt.firstOffset:opt.typOffset])
+	version := binary.BigEndian.Uint16(buf[opt.versionOffset:opt.typOffset])
 	typ := buf[opt.typOffset]
 	headerLen := binary.BigEndian.Uint16(buf[opt.headerLenOffset:opt.bodyLenOffset])
 	bodyLen := binary.BigEndian.Uint32(buf[opt.bodyLenOffset:opt.headerOffset])
 	var header []byte
 	// 整体包长度
-	packetLen = packetLen + int(headerLen) + int(bodyLen) + int(opt.lastSize)
+	packetLen = packetLen + int(headerLen) + int(bodyLen)
 	// 计算offset
 	bodyOffset := opt.headerOffset + int(headerLen)
 	lastOffset := uint32(bodyOffset) + bodyLen
@@ -120,20 +115,14 @@ func (p *Packet) UnPackFrom(r io.Reader) (err error) {
 	if bodyLen > 0 {
 		body = buf[bodyOffset:lastOffset]
 	}
-	lastBuf := buf[lastOffset : lastOffset+uint32(opt.lastSize)]
-	if err != nil {
-		return
-	}
-	last := binary.BigEndian.Uint16(lastBuf)
 	// discard
 	_, _ = bio.Discard(packetLen)
-	p.First = first
+	p.Version = version
 	p.Typ = typ
 	p.HeaderLen = headerLen
 	p.BodyLen = bodyLen
 	p.Header = header
 	p.Body = body
-	p.Last = last
 	return
 }
 
@@ -141,7 +130,7 @@ func (p *Packet) PackTo(w io.Writer) (err error) {
 	opt := opts
 	bio := bufio.NewWriter(w)
 	buf := make([]byte, opt.packetHeaderSize)
-	binary.BigEndian.PutUint16(buf[opt.firstOffset:opt.typOffset], p.First)
+	binary.BigEndian.PutUint16(buf[opt.versionOffset:opt.typOffset], p.Version)
 	buf[opt.typOffset] = p.Typ
 	binary.BigEndian.PutUint16(buf[opt.headerLenOffset:opt.bodyLenOffset], p.HeaderLen)
 	binary.BigEndian.PutUint32(buf[opt.bodyLenOffset:opt.headerOffset], p.BodyLen)
@@ -160,12 +149,6 @@ func (p *Packet) PackTo(w io.Writer) (err error) {
 		if err != nil {
 			return
 		}
-	}
-	lastBuf := make([]byte, opt.lastSize)
-	binary.BigEndian.PutUint16(lastBuf, p.Last)
-	_, err = bio.Write(lastBuf)
-	if err != nil {
-		return
 	}
 	err = bio.Flush()
 	return

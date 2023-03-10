@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-http v2.5.3
 // - protoc             v3.20.0
-// source: rockim/api/client/http/v1/product/product.proto
+// source: rockim/api/client/http/v1/product.proto
 
-package product
+package v1
 
 import (
 	context "context"
@@ -19,7 +19,7 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationProductAPIFetchConfig = "/rockim.api.client.http.v1.product.ProductAPI/FetchConfig"
+const OperationProductAPIFetchConfig = "/rockim.api.client.http.v1.ProductAPI/FetchConfig"
 
 type ProductAPIHTTPServer interface {
 	// FetchConfig FetchConfig 获取全局配置

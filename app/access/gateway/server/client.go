@@ -8,10 +8,6 @@ import (
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	v1 "rockimserver/apis/rockim/api/client/http/v1"
-	"rockimserver/apis/rockim/api/client/http/v1/auth"
-	"rockimserver/apis/rockim/api/client/http/v1/group"
-	"rockimserver/apis/rockim/api/client/http/v1/product"
-	"rockimserver/apis/rockim/api/client/http/v1/user"
 	"rockimserver/app/access/gateway/module/client/biz"
 	"rockimserver/app/access/gateway/module/client/biz/options"
 	"rockimserver/app/access/gateway/module/client/service"
@@ -42,11 +38,11 @@ func NewClientServiceGroup(productUc *biz.ProductUseCase, authUc *biz.AuthUseCas
 
 func (g *ClientServiceGroup) Register(srv *http.Server) {
 	srv.Use("/rockim.api.client.http.v1.*", g.checkSign(), g.checkAuth(), g.setAPIRequest(), validate.Validator())
-	product.RegisterProductAPIHTTPServer(srv, g.productSrv)
-	auth.RegisterAuthAPIHTTPServer(srv, g.authSrv)
-	user.RegisterUserAPIHTTPServer(srv, g.userSrv)
-	group.RegisterChatRoomAPIHTTPServer(srv, g.chatRoomSrv)
-	group.RegisterChatRoomMemberAPIHTTPServer(srv, g.chatRoomMemberSrv)
+	v1.RegisterProductAPIHTTPServer(srv, g.productSrv)
+	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
+	v1.RegisterUserAPIHTTPServer(srv, g.userSrv)
+	v1.RegisterChatRoomAPIHTTPServer(srv, g.chatRoomSrv)
+	v1.RegisterChatRoomMemberAPIHTTPServer(srv, g.chatRoomMemberSrv)
 }
 
 type ClientAPIRequest interface {
@@ -115,8 +111,8 @@ func (g *ClientServiceGroup) checkSign() middleware.Middleware {
 // checkAuth 验证访问令牌
 func (g *ClientServiceGroup) checkAuth() middleware.Middleware {
 	whiteList := make(map[string]struct{})
-	whiteList[product.OperationProductAPIFetchConfig] = struct{}{}
-	whiteList[auth.OperationAuthAPILogin] = struct{}{}
+	whiteList[v1.OperationProductAPIFetchConfig] = struct{}{}
+	whiteList[v1.OperationAuthAPILogin] = struct{}{}
 	return selector.Server(func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req any) (resp any, err error) {
 			tr, ok := transport.FromServerContext(ctx)

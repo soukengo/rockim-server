@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-http v2.5.3
 // - protoc             v3.20.0
-// source: rockim/api/client/http/v1/group/chatroom.proto
+// source: rockim/api/client/http/v1/chatroom.proto
 
-package group
+package v1
 
 import (
 	context "context"
@@ -19,7 +19,7 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationChatRoomAPIFind = "/rockim.api.client.http.v1.group.ChatRoomAPI/Find"
+const OperationChatRoomAPIFind = "/rockim.api.client.http.v1.ChatRoomAPI/Find"
 
 type ChatRoomAPIHTTPServer interface {
 	// Find Find 查找用户

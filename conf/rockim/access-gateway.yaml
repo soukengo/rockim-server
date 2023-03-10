@@ -2,3 +2,9 @@ server:
   http:
     addr: :6002
     timeout: "10s"
+
+comet:
+  tcp:
+    addr: 10.10.10.233:6003
+  websocket:
+    addr: ws://10.10.10.233:6004/

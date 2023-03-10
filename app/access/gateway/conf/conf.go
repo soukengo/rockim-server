@@ -35,4 +35,18 @@ type Config struct {
 	Global *conf.Global
 	Server *server.Config
 	Log    *log.Config
+	Comet  Comet
+}
+
+type Comet struct {
+	TCP       TCP
+	WebSocket WebSocket
+}
+
+type TCP struct {
+	Addr string
+}
+
+type WebSocket struct {
+	Addr string
 }

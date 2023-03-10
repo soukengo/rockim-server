@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-http v2.5.3
 // - protoc             v3.20.0
-// source: rockim/api/client/http/v1/group/chatroom_member.proto
+// source: rockim/api/client/http/v1/chatroom_member.proto
 
-package group
+package v1
 
 import (
 	context "context"
@@ -19,8 +19,8 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationChatRoomMemberAPIJoin = "/rockim.api.client.http.v1.group.ChatRoomMemberAPI/Join"
-const OperationChatRoomMemberAPIQuit = "/rockim.api.client.http.v1.group.ChatRoomMemberAPI/Quit"
+const OperationChatRoomMemberAPIJoin = "/rockim.api.client.http.v1.ChatRoomMemberAPI/Join"
+const OperationChatRoomMemberAPIQuit = "/rockim.api.client.http.v1.ChatRoomMemberAPI/Quit"
 
 type ChatRoomMemberAPIHTTPServer interface {
 	// Join Join 加入聊天室

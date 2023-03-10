@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-http v2.5.3
 // - protoc             v3.20.0
-// source: rockim/api/client/http/v1/auth/auth.proto
+// source: rockim/api/client/http/v1/auth.proto
 
-package auth
+package v1
 
 import (
 	context "context"
@@ -19,7 +19,7 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationAuthAPILogin = "/rockim.api.client.http.v1.auth.AuthAPI/Login"
+const OperationAuthAPILogin = "/rockim.api.client.http.v1.AuthAPI/Login"
 
 type AuthAPIHTTPServer interface {
 	// Login Login 登录

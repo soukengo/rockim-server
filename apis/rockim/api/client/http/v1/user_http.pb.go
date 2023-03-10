@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-http v2.5.3
 // - protoc             v3.20.0
-// source: rockim/api/client/http/v1/user/user.proto
+// source: rockim/api/client/http/v1/user.proto
 
-package user
+package v1
 
 import (
 	context "context"
@@ -19,7 +19,7 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationUserAPIFind = "/rockim.api.client.http.v1.user.UserAPI/Find"
+const OperationUserAPIFind = "/rockim.api.client.http.v1.UserAPI/Find"
 
 type UserAPIHTTPServer interface {
 	// Find Find 查找用户
