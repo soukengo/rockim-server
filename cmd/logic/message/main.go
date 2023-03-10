@@ -1,8 +1,8 @@
-package message
+package main
 
 import (
 	"flag"
-	"rockimserver/app/logic/user"
+	"rockimserver/app/logic/message"
 )
 
 // go build -ldflags "-X main.version=x.y.z"
@@ -13,7 +13,7 @@ var (
 
 func main() {
 	flag.Parse()
-	app, err := user.New(version)
+	app, err := message.New(version)
 	if err != nil {
 		panic(err)
 	}

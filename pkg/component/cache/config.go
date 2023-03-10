@@ -11,10 +11,6 @@ type Config struct {
 	lock       sync.RWMutex
 }
 
-func NewConfig(defaultCategory Category, categories ...*Category) *Config {
-	return &Config{Default: defaultCategory, Categories: categories, cateMap: make(map[Key]*Category)}
-}
-
 func (c *Config) Parse() (err error) {
 	if c.Default.Expire == 0 {
 		c.Default.Expire = defaultExpire
