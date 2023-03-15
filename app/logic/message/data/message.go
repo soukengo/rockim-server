@@ -2,21 +2,27 @@ package data
 
 import (
 	"context"
+	"rockimserver/apis/rockim/service/message/v1/types"
 	"rockimserver/app/logic/message/biz"
-	"rockimserver/pkg/component/database/mongo"
-	"rockimserver/pkg/component/database/redis"
+	"rockimserver/app/logic/message/data/database"
 )
 
 type messageRepo struct {
-	mongoCli *mongo.Client
-	redisCli *redis.Client
+	db *database.MessageData
 }
 
-func NewMessageRepo(mongoCli *mongo.Client, redisCli *redis.Client) biz.MessageRepo {
-	return &messageRepo{mongoCli: mongoCli, redisCli: redisCli}
+func NewMessageRepo(db *database.MessageData) biz.MessageRepo {
+	return &messageRepo{db: db}
 }
 
-func (r *messageRepo) Save(ctx context.Context) error {
-	//TODO implement me
-	panic("implement me")
+func (r *messageRepo) GenSequence(ctx context.Context, productId string, conversation *types.ConversationID) (int64, error) {
+	return r.db.GenSequence(ctx, productId, conversation)
+}
+
+func (r *messageRepo) Save(ctx context.Context, message *types.IMMessage) error {
+	return r.db.Save(ctx, message)
+}
+
+func (r *messageRepo) SaveRelations(ctx context.Context, relations []*types.IMMessageRelation) error {
+	return r.db.SaveRelations(ctx, relations)
 }

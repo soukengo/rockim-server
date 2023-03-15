@@ -19,15 +19,15 @@ func NewGroupRepo(db *database.GroupData, cache *cache.GroupData) biz.GroupRepo 
 	return &groupRepo{db: db, cache: cache}
 }
 
-func (r *groupRepo) FindByCustomGroupId(ctx context.Context, productId string, customGroupId string) (groupId string, err error) {
+func (r *groupRepo) FindGroupId(ctx context.Context, productId string, customGroupId string) (groupId string, err error) {
 	// 链式调用，先查缓存，再查数据库，最后回写缓存
 	groupId, err = chain.CallWithResult[string](func() (ret string, cont bool, err error) {
-		ret, err = r.cache.FindGroupIdByCustomId(ctx, productId, customGroupId)
+		ret, err = r.cache.FindGroupId(ctx, productId, customGroupId)
 		// 正常查下到结果|没有缓存,不再查询数据库
 		cont = cache.IsErrNoCache(err)
 		return
 	}, func() (ret string, cont bool, err error) {
-		ret, err = r.db.FindGroupIdByCustomId(ctx, productId, customGroupId)
+		ret, err = r.db.FindGroupId(ctx, productId, customGroupId)
 		if err == nil || errors.IsNotFound(err) {
 			_ = r.cache.SaveCustomGroupId(ctx, productId, customGroupId, ret)
 		}

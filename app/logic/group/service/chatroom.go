@@ -44,21 +44,3 @@ func (s *ChatRoomService) Dismiss(ctx context.Context, in *v1.ChatRoomDismissReq
 	return
 
 }
-
-func (s *ChatRoomService) FindGroupId(ctx context.Context, in *v1.ChatRoomGroupIdFindRequest) (out *v1.ChatRoomGroupIdFindResponse, err error) {
-	groupId, err := s.uc.FindByCustomGroupId(ctx, in.Base.ProductId, in.CustomGroupId)
-	if err != nil {
-		return
-	}
-	out = &v1.ChatRoomGroupIdFindResponse{GroupId: groupId}
-	return
-}
-
-func (s *ChatRoomService) FindById(ctx context.Context, in *v1.ChatRoomFindByIdRequest) (out *v1.ChatRoomFindByIdResponse, err error) {
-	group, err := s.uc.FindById(ctx, in.Base.ProductId, in.GroupId)
-	if err != nil {
-		return
-	}
-	out = &v1.ChatRoomFindByIdResponse{Group: group}
-	return
-}

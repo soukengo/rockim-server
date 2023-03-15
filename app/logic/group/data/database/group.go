@@ -32,7 +32,7 @@ func (d *GroupData) FindByID(ctx context.Context, productId string, id string) (
 	return convert.GroupProto(&record), nil
 }
 
-func (d *GroupData) FindGroupIdByCustomId(ctx context.Context, productId string, customGroupId string) (groupId string, err error) {
+func (d *GroupData) FindGroupId(ctx context.Context, productId string, customGroupId string) (groupId string, err error) {
 	projection := bson.M{mongo.FieldId: 1}
 	var record entity.ImGroup
 	err = d.mgo.FindOne(ctx, entity.TableImGroup, bson.M{"product_id": productId, "custom_group_id": customGroupId}, &record, options.FindOne().SetProjection(projection))

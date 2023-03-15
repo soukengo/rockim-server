@@ -597,22 +597,22 @@ var _ interface {
 	ErrorName() string
 } = OnlineBatchCheckResponseValidationError{}
 
-// Validate checks the field values on OnlineChannelIdListRequest with the
-// rules defined in the proto definition for this message. If any rules are
+// Validate checks the field values on OnlineUserListRequest with the rules
+// defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *OnlineChannelIdListRequest) Validate() error {
+func (m *OnlineUserListRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on OnlineChannelIdListRequest with the
-// rules defined in the proto definition for this message. If any rules are
+// ValidateAll checks the field values on OnlineUserListRequest with the rules
+// defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// OnlineChannelIdListRequestMultiError, or nil if none found.
-func (m *OnlineChannelIdListRequest) ValidateAll() error {
+// OnlineUserListRequestMultiError, or nil if none found.
+func (m *OnlineUserListRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *OnlineChannelIdListRequest) validate(all bool) error {
+func (m *OnlineUserListRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -620,7 +620,7 @@ func (m *OnlineChannelIdListRequest) validate(all bool) error {
 	var errors []error
 
 	if m.GetBase() == nil {
-		err := OnlineChannelIdListRequestValidationError{
+		err := OnlineUserListRequestValidationError{
 			field:  "Base",
 			reason: "value is required",
 		}
@@ -634,7 +634,7 @@ func (m *OnlineChannelIdListRequest) validate(all bool) error {
 		switch v := interface{}(m.GetBase()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, OnlineChannelIdListRequestValidationError{
+				errors = append(errors, OnlineUserListRequestValidationError{
 					field:  "Base",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -642,7 +642,7 @@ func (m *OnlineChannelIdListRequest) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, OnlineChannelIdListRequestValidationError{
+				errors = append(errors, OnlineUserListRequestValidationError{
 					field:  "Base",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -651,7 +651,7 @@ func (m *OnlineChannelIdListRequest) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetBase()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return OnlineChannelIdListRequestValidationError{
+			return OnlineUserListRequestValidationError{
 				field:  "Base",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -660,7 +660,7 @@ func (m *OnlineChannelIdListRequest) validate(all bool) error {
 	}
 
 	if len(m.GetUids()) < 1 {
-		err := OnlineChannelIdListRequestValidationError{
+		err := OnlineUserListRequestValidationError{
 			field:  "Uids",
 			reason: "value must contain at least 1 item(s)",
 		}
@@ -674,7 +674,7 @@ func (m *OnlineChannelIdListRequest) validate(all bool) error {
 		_, _ = idx, item
 
 		if utf8.RuneCountInString(item) < 1 {
-			err := OnlineChannelIdListRequestValidationError{
+			err := OnlineUserListRequestValidationError{
 				field:  fmt.Sprintf("Uids[%v]", idx),
 				reason: "value length must be at least 1 runes",
 			}
@@ -687,19 +687,19 @@ func (m *OnlineChannelIdListRequest) validate(all bool) error {
 	}
 
 	if len(errors) > 0 {
-		return OnlineChannelIdListRequestMultiError(errors)
+		return OnlineUserListRequestMultiError(errors)
 	}
 
 	return nil
 }
 
-// OnlineChannelIdListRequestMultiError is an error wrapping multiple
-// validation errors returned by OnlineChannelIdListRequest.ValidateAll() if
-// the designated constraints aren't met.
-type OnlineChannelIdListRequestMultiError []error
+// OnlineUserListRequestMultiError is an error wrapping multiple validation
+// errors returned by OnlineUserListRequest.ValidateAll() if the designated
+// constraints aren't met.
+type OnlineUserListRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m OnlineChannelIdListRequestMultiError) Error() string {
+func (m OnlineUserListRequestMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -708,11 +708,11 @@ func (m OnlineChannelIdListRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m OnlineChannelIdListRequestMultiError) AllErrors() []error { return m }
+func (m OnlineUserListRequestMultiError) AllErrors() []error { return m }
 
-// OnlineChannelIdListRequestValidationError is the validation error returned
-// by OnlineChannelIdListRequest.Validate if the designated constraints aren't met.
-type OnlineChannelIdListRequestValidationError struct {
+// OnlineUserListRequestValidationError is the validation error returned by
+// OnlineUserListRequest.Validate if the designated constraints aren't met.
+type OnlineUserListRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -720,24 +720,24 @@ type OnlineChannelIdListRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e OnlineChannelIdListRequestValidationError) Field() string { return e.field }
+func (e OnlineUserListRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e OnlineChannelIdListRequestValidationError) Reason() string { return e.reason }
+func (e OnlineUserListRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e OnlineChannelIdListRequestValidationError) Cause() error { return e.cause }
+func (e OnlineUserListRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e OnlineChannelIdListRequestValidationError) Key() bool { return e.key }
+func (e OnlineUserListRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e OnlineChannelIdListRequestValidationError) ErrorName() string {
-	return "OnlineChannelIdListRequestValidationError"
+func (e OnlineUserListRequestValidationError) ErrorName() string {
+	return "OnlineUserListRequestValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e OnlineChannelIdListRequestValidationError) Error() string {
+func (e OnlineUserListRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -749,14 +749,14 @@ func (e OnlineChannelIdListRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sOnlineChannelIdListRequest.%s: %s%s",
+		"invalid %sOnlineUserListRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = OnlineChannelIdListRequestValidationError{}
+var _ error = OnlineUserListRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -764,90 +764,78 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = OnlineChannelIdListRequestValidationError{}
+} = OnlineUserListRequestValidationError{}
 
-// Validate checks the field values on OnlineChannelIdListResponse with the
-// rules defined in the proto definition for this message. If any rules are
+// Validate checks the field values on OnlineUserListResponse with the rules
+// defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
-func (m *OnlineChannelIdListResponse) Validate() error {
+func (m *OnlineUserListResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on OnlineChannelIdListResponse with the
-// rules defined in the proto definition for this message. If any rules are
+// ValidateAll checks the field values on OnlineUserListResponse with the rules
+// defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// OnlineChannelIdListResponseMultiError, or nil if none found.
-func (m *OnlineChannelIdListResponse) ValidateAll() error {
+// OnlineUserListResponseMultiError, or nil if none found.
+func (m *OnlineUserListResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *OnlineChannelIdListResponse) validate(all bool) error {
+func (m *OnlineUserListResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
-	{
-		sorted_keys := make([]string, len(m.GetItems()))
-		i := 0
-		for key := range m.GetItems() {
-			sorted_keys[i] = key
-			i++
-		}
-		sort.Slice(sorted_keys, func(i, j int) bool { return sorted_keys[i] < sorted_keys[j] })
-		for _, key := range sorted_keys {
-			val := m.GetItems()[key]
-			_ = val
+	for idx, item := range m.GetUsers() {
+		_, _ = idx, item
 
-			// no validation rules for Items[key]
-
-			if all {
-				switch v := interface{}(val).(type) {
-				case interface{ ValidateAll() error }:
-					if err := v.ValidateAll(); err != nil {
-						errors = append(errors, OnlineChannelIdListResponseValidationError{
-							field:  fmt.Sprintf("Items[%v]", key),
-							reason: "embedded message failed validation",
-							cause:  err,
-						})
-					}
-				case interface{ Validate() error }:
-					if err := v.Validate(); err != nil {
-						errors = append(errors, OnlineChannelIdListResponseValidationError{
-							field:  fmt.Sprintf("Items[%v]", key),
-							reason: "embedded message failed validation",
-							cause:  err,
-						})
-					}
-				}
-			} else if v, ok := interface{}(val).(interface{ Validate() error }); ok {
-				if err := v.Validate(); err != nil {
-					return OnlineChannelIdListResponseValidationError{
-						field:  fmt.Sprintf("Items[%v]", key),
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, OnlineUserListResponseValidationError{
+						field:  fmt.Sprintf("Users[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
-					}
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, OnlineUserListResponseValidationError{
+						field:  fmt.Sprintf("Users[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
 				}
 			}
-
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return OnlineUserListResponseValidationError{
+					field:  fmt.Sprintf("Users[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
 		}
+
 	}
 
 	if len(errors) > 0 {
-		return OnlineChannelIdListResponseMultiError(errors)
+		return OnlineUserListResponseMultiError(errors)
 	}
 
 	return nil
 }
 
-// OnlineChannelIdListResponseMultiError is an error wrapping multiple
-// validation errors returned by OnlineChannelIdListResponse.ValidateAll() if
-// the designated constraints aren't met.
-type OnlineChannelIdListResponseMultiError []error
+// OnlineUserListResponseMultiError is an error wrapping multiple validation
+// errors returned by OnlineUserListResponse.ValidateAll() if the designated
+// constraints aren't met.
+type OnlineUserListResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m OnlineChannelIdListResponseMultiError) Error() string {
+func (m OnlineUserListResponseMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -856,12 +844,11 @@ func (m OnlineChannelIdListResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m OnlineChannelIdListResponseMultiError) AllErrors() []error { return m }
+func (m OnlineUserListResponseMultiError) AllErrors() []error { return m }
 
-// OnlineChannelIdListResponseValidationError is the validation error returned
-// by OnlineChannelIdListResponse.Validate if the designated constraints
-// aren't met.
-type OnlineChannelIdListResponseValidationError struct {
+// OnlineUserListResponseValidationError is the validation error returned by
+// OnlineUserListResponse.Validate if the designated constraints aren't met.
+type OnlineUserListResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -869,24 +856,24 @@ type OnlineChannelIdListResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e OnlineChannelIdListResponseValidationError) Field() string { return e.field }
+func (e OnlineUserListResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e OnlineChannelIdListResponseValidationError) Reason() string { return e.reason }
+func (e OnlineUserListResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e OnlineChannelIdListResponseValidationError) Cause() error { return e.cause }
+func (e OnlineUserListResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e OnlineChannelIdListResponseValidationError) Key() bool { return e.key }
+func (e OnlineUserListResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e OnlineChannelIdListResponseValidationError) ErrorName() string {
-	return "OnlineChannelIdListResponseValidationError"
+func (e OnlineUserListResponseValidationError) ErrorName() string {
+	return "OnlineUserListResponseValidationError"
 }
 
 // Error satisfies the builtin error interface
-func (e OnlineChannelIdListResponseValidationError) Error() string {
+func (e OnlineUserListResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -898,14 +885,14 @@ func (e OnlineChannelIdListResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sOnlineChannelIdListResponse.%s: %s%s",
+		"invalid %sOnlineUserListResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = OnlineChannelIdListResponseValidationError{}
+var _ error = OnlineUserListResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -913,7 +900,7 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = OnlineChannelIdListResponseValidationError{}
+} = OnlineUserListResponseValidationError{}
 
 // Validate checks the field values on OnlineBatchCheckResponse_Item with the
 // rules defined in the proto definition for this message. If any rules are
@@ -1021,112 +1008,3 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = OnlineBatchCheckResponse_ItemValidationError{}
-
-// Validate checks the field values on OnlineChannelIdListResponse_Item with
-// the rules defined in the proto definition for this message. If any rules
-// are violated, the first error encountered is returned, or nil if there are
-// no violations.
-func (m *OnlineChannelIdListResponse_Item) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on OnlineChannelIdListResponse_Item with
-// the rules defined in the proto definition for this message. If any rules
-// are violated, the result is a list of violation errors wrapped in
-// OnlineChannelIdListResponse_ItemMultiError, or nil if none found.
-func (m *OnlineChannelIdListResponse_Item) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *OnlineChannelIdListResponse_Item) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for ServerId
-
-	// no validation rules for ChannelId
-
-	if len(errors) > 0 {
-		return OnlineChannelIdListResponse_ItemMultiError(errors)
-	}
-
-	return nil
-}
-
-// OnlineChannelIdListResponse_ItemMultiError is an error wrapping multiple
-// validation errors returned by
-// OnlineChannelIdListResponse_Item.ValidateAll() if the designated
-// constraints aren't met.
-type OnlineChannelIdListResponse_ItemMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m OnlineChannelIdListResponse_ItemMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m OnlineChannelIdListResponse_ItemMultiError) AllErrors() []error { return m }
-
-// OnlineChannelIdListResponse_ItemValidationError is the validation error
-// returned by OnlineChannelIdListResponse_Item.Validate if the designated
-// constraints aren't met.
-type OnlineChannelIdListResponse_ItemValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e OnlineChannelIdListResponse_ItemValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e OnlineChannelIdListResponse_ItemValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e OnlineChannelIdListResponse_ItemValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e OnlineChannelIdListResponse_ItemValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e OnlineChannelIdListResponse_ItemValidationError) ErrorName() string {
-	return "OnlineChannelIdListResponse_ItemValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e OnlineChannelIdListResponse_ItemValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sOnlineChannelIdListResponse_Item.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = OnlineChannelIdListResponse_ItemValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = OnlineChannelIdListResponse_ItemValidationError{}

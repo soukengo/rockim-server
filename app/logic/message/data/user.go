@@ -27,3 +27,34 @@ func (r *userRepo) FindById(ctx context.Context, productId string, uid string) (
 	out = ret.User
 	return
 }
+func (r *userRepo) FindByAccount(ctx context.Context, productId string, account string) (out *types.User, err error) {
+	ret, err := r.ac.FindByAccount(ctx, &v1.UserFindByAccountRequest{
+		Base:    service.GenRequest(productId),
+		Account: account,
+	})
+	if err != nil {
+		return
+	}
+	out = ret.User
+	return
+}
+
+type onlineRepo struct {
+	ac v1.OnlineQueryAPIClient
+}
+
+func NewOnlineRepo(ac v1.OnlineQueryAPIClient) biz.OnlineRepo {
+	return &onlineRepo{ac: ac}
+}
+
+func (r *onlineRepo) ListUser(ctx context.Context, productId string, uids []string) (out []*types.OnlineUser, err error) {
+	ret, err := r.ac.ListUser(ctx, &v1.OnlineUserListRequest{
+		Base: service.GenRequest(productId),
+		Uids: uids,
+	})
+	if err != nil {
+		return
+	}
+	out = ret.Users
+	return
+}

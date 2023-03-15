@@ -15,7 +15,7 @@ var (
 )
 
 type GroupRepo interface {
-	FindByCustomGroupId(ctx context.Context, productId string, customGroupId string) (string, error)
+	FindGroupId(ctx context.Context, productId string, customGroupId string) (string, error)
 	FindById(ctx context.Context, productId string, groupId string) (*types.Group, error)
 	Create(ctx context.Context, group *types.Group) error
 	Delete(ctx context.Context, group *types.Group) error
@@ -25,4 +25,19 @@ type GroupMemberRepo interface {
 	Add(ctx context.Context, member *types.GroupMember) error
 	Delete(ctx context.Context, productId string, groupId string, uid string) error
 	Exists(ctx context.Context, productId string, groupId string, uid string) (bool, error)
+}
+
+type GroupUseCase struct {
+	repo GroupRepo
+}
+
+func NewGroupUseCase(repo GroupRepo) *GroupUseCase {
+	return &GroupUseCase{repo: repo}
+}
+
+func (uc *GroupUseCase) FindGroupId(ctx context.Context, productId string, customGroupId string) (string, error) {
+	return uc.repo.FindGroupId(ctx, productId, customGroupId)
+}
+func (uc *GroupUseCase) FindById(ctx context.Context, productId string, groupId string) (*types.Group, error) {
+	return uc.repo.FindById(ctx, productId, groupId)
 }

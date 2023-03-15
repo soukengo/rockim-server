@@ -11,27 +11,57 @@ import (
 	"rockimserver/app/logic/message/biz"
 	"rockimserver/app/logic/message/conf"
 	"rockimserver/app/logic/message/data"
+	database2 "rockimserver/app/logic/message/data/database"
+	mq2 "rockimserver/app/logic/message/data/mq"
+	"rockimserver/app/logic/message/infra/grpc"
 	server2 "rockimserver/app/logic/message/server"
 	"rockimserver/app/logic/message/service"
 	"rockimserver/pkg/component/cache"
-	"rockimserver/pkg/component/database/mongo"
-	"rockimserver/pkg/component/database/redis"
+	"rockimserver/pkg/component/database"
 	"rockimserver/pkg/component/discovery"
 	"rockimserver/pkg/component/idgen"
 	"rockimserver/pkg/component/lock"
+	"rockimserver/pkg/component/mq"
 	"rockimserver/pkg/component/server"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
-	client := mongo.NewClient(mongoConfig)
-	redisClient := redis.NewClient(redisConfig)
-	messageRepo := data.NewMessageRepo(client, redisClient)
+func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, databaseConfig *database.Config, cacheConfig *cache.Config, mqConfig *mq.Config) (*kratos.App, error) {
+	client := database.NewMongoClient(databaseConfig)
+	messageData := database2.NewMessageSequenceData(client)
+	messageRepo := data.NewMessageRepo(messageData)
+	registryDiscovery, err := discovery.NewDiscovery(discoveryConfig)
+	if err != nil {
+		return nil, err
+	}
+	userAPIClient, err := grpc.NewUserAPIClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	userRepo := data.NewUserRepo(userAPIClient)
+	groupAPIClient, err := grpc.NewGroupAPIClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	groupRepo := data.NewGroupRepo(groupAPIClient)
+	redisClient := database.NewRedisClient(databaseConfig)
 	builder := lock.NewRedisBuilder(redisClient)
 	generator := idgen.NewMongoGenerator()
-	messageUseCase := biz.NewMessageUseCase(messageRepo, builder, generator)
+	producer, err := mq.NewKafkaProducer(mqConfig)
+	if err != nil {
+		return nil, err
+	}
+	pushMessageData := mq2.NewPushMessageData(producer)
+	pushMessageRepo := data.NewPushMessageRepo(pushMessageData)
+	onlineQueryAPIClient, err := grpc.NewOnlineQueryAPIClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	onlineRepo := data.NewOnlineRepo(onlineQueryAPIClient)
+	pushManager := biz.NewPushManager(pushMessageRepo, onlineRepo)
+	messageUseCase := biz.NewMessageUseCase(messageRepo, userRepo, groupRepo, builder, generator, pushManager)
 	messageService := service.NewMessageService(messageUseCase)
 	serviceGroup := server2.NewServiceGroup(messageService)
 	grpcServer := server2.NewGRPCServer(serverConfig, serviceGroup)

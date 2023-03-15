@@ -26,8 +26,8 @@ type OnlineQueryAPIClient interface {
 	CheckOnline(ctx context.Context, in *OnlineCheckRequest, opts ...grpc.CallOption) (*OnlineCheckResponse, error)
 	// BatchCheckOnline 批量检查在线状态
 	BatchCheckOnline(ctx context.Context, in *OnlineBatchCheckRequest, opts ...grpc.CallOption) (*OnlineBatchCheckResponse, error)
-	// ListChannelId 获取指定用户的连接ID
-	ListChannelId(ctx context.Context, in *OnlineChannelIdListRequest, opts ...grpc.CallOption) (*OnlineChannelIdListResponse, error)
+	// ListUser 获取指定用户的连接ID
+	ListUser(ctx context.Context, in *OnlineUserListRequest, opts ...grpc.CallOption) (*OnlineUserListResponse, error)
 }
 
 type onlineQueryAPIClient struct {
@@ -56,9 +56,9 @@ func (c *onlineQueryAPIClient) BatchCheckOnline(ctx context.Context, in *OnlineB
 	return out, nil
 }
 
-func (c *onlineQueryAPIClient) ListChannelId(ctx context.Context, in *OnlineChannelIdListRequest, opts ...grpc.CallOption) (*OnlineChannelIdListResponse, error) {
-	out := new(OnlineChannelIdListResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.user.v1.OnlineQueryAPI/ListChannelId", in, out, opts...)
+func (c *onlineQueryAPIClient) ListUser(ctx context.Context, in *OnlineUserListRequest, opts ...grpc.CallOption) (*OnlineUserListResponse, error) {
+	out := new(OnlineUserListResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.user.v1.OnlineQueryAPI/ListUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ type OnlineQueryAPIServer interface {
 	CheckOnline(context.Context, *OnlineCheckRequest) (*OnlineCheckResponse, error)
 	// BatchCheckOnline 批量检查在线状态
 	BatchCheckOnline(context.Context, *OnlineBatchCheckRequest) (*OnlineBatchCheckResponse, error)
-	// ListChannelId 获取指定用户的连接ID
-	ListChannelId(context.Context, *OnlineChannelIdListRequest) (*OnlineChannelIdListResponse, error)
+	// ListUser 获取指定用户的连接ID
+	ListUser(context.Context, *OnlineUserListRequest) (*OnlineUserListResponse, error)
 	mustEmbedUnimplementedOnlineQueryAPIServer()
 }
 
@@ -88,8 +88,8 @@ func (UnimplementedOnlineQueryAPIServer) CheckOnline(context.Context, *OnlineChe
 func (UnimplementedOnlineQueryAPIServer) BatchCheckOnline(context.Context, *OnlineBatchCheckRequest) (*OnlineBatchCheckResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BatchCheckOnline not implemented")
 }
-func (UnimplementedOnlineQueryAPIServer) ListChannelId(context.Context, *OnlineChannelIdListRequest) (*OnlineChannelIdListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListChannelId not implemented")
+func (UnimplementedOnlineQueryAPIServer) ListUser(context.Context, *OnlineUserListRequest) (*OnlineUserListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUser not implemented")
 }
 func (UnimplementedOnlineQueryAPIServer) mustEmbedUnimplementedOnlineQueryAPIServer() {}
 
@@ -140,20 +140,20 @@ func _OnlineQueryAPI_BatchCheckOnline_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OnlineQueryAPI_ListChannelId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OnlineChannelIdListRequest)
+func _OnlineQueryAPI_ListUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OnlineUserListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OnlineQueryAPIServer).ListChannelId(ctx, in)
+		return srv.(OnlineQueryAPIServer).ListUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.service.user.v1.OnlineQueryAPI/ListChannelId",
+		FullMethod: "/rockim.service.user.v1.OnlineQueryAPI/ListUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OnlineQueryAPIServer).ListChannelId(ctx, req.(*OnlineChannelIdListRequest))
+		return srv.(OnlineQueryAPIServer).ListUser(ctx, req.(*OnlineUserListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -174,8 +174,8 @@ var OnlineQueryAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _OnlineQueryAPI_BatchCheckOnline_Handler,
 		},
 		{
-			MethodName: "ListChannelId",
-			Handler:    _OnlineQueryAPI_ListChannelId_Handler,
+			MethodName: "ListUser",
+			Handler:    _OnlineQueryAPI_ListUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

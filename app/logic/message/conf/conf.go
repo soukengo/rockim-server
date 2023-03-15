@@ -6,6 +6,7 @@ import (
 	"rockimserver/pkg/component/cache"
 	"rockimserver/pkg/component/config"
 	"rockimserver/pkg/component/database"
+	"rockimserver/pkg/component/mq"
 	"rockimserver/pkg/component/server"
 	"rockimserver/pkg/log"
 )
@@ -39,4 +40,5 @@ type Config struct {
 	Log      *log.Config
 	Database *database.Config
 	Cache    *cache.Config
+	MQ       *mq.Config
 }

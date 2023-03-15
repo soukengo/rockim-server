@@ -26,7 +26,7 @@ func NewChatRoomUseCase(repo GroupRepo, memberRepo ChatRoomMemberRepo, idgen idg
 }
 
 func (uc *ChatRoomUseCase) FindByCustomGroupId(ctx context.Context, productId string, customGroupId string) (out string, err error) {
-	return uc.repo.FindByCustomGroupId(ctx, productId, customGroupId)
+	return uc.repo.FindGroupId(ctx, productId, customGroupId)
 }
 
 func (uc *ChatRoomUseCase) FindById(ctx context.Context, productId string, groupId string) (out *types.Group, err error) {
@@ -54,7 +54,7 @@ func (uc *ChatRoomUseCase) Create(ctx context.Context, opts *options.ChatRoomCre
 		}
 		customGroupId = consts.CustomGroupIDPrefix + customGroupId
 	}
-	oldGroupId, err := uc.repo.FindByCustomGroupId(ctx, opts.ProductId, customGroupId)
+	oldGroupId, err := uc.repo.FindGroupId(ctx, opts.ProductId, customGroupId)
 	// 不是资源不存在的错误
 	if err != nil && !errors.IsNotFound(err) {
 		return

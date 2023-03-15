@@ -7,4 +7,9 @@ import (
 
 type UserRepo interface {
 	FindById(ctx context.Context, productId string, uid string) (*types.User, error)
+	FindByAccount(ctx context.Context, productId string, account string) (*types.User, error)
+}
+
+type OnlineRepo interface {
+	ListUser(ctx context.Context, productId string, uids []string) ([]*types.OnlineUser, error)
 }

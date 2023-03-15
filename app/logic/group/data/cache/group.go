@@ -31,7 +31,7 @@ func (d *GroupData) DeleteGroup(ctx context.Context, productId string, uid strin
 	return d.cache.Delete(ctx, cache.Parts(productId, uid))
 }
 
-func (d *GroupData) FindGroupIdByCustomId(ctx context.Context, productId string, customGroupId string) (id string, err error) {
+func (d *GroupData) FindGroupId(ctx context.Context, productId string, customGroupId string) (id string, err error) {
 	val, err := d.accountCache.Get(ctx, cache.Parts(productId, customGroupId))
 	if err != nil {
 		return

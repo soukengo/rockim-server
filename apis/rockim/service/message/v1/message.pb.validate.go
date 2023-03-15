@@ -113,11 +113,11 @@ func (m *MessageSendRequest) validate(all bool) error {
 	}
 
 	if all {
-		switch v := interface{}(m.GetConversationId()).(type) {
+		switch v := interface{}(m.GetTarget()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, MessageSendRequestValidationError{
-					field:  "ConversationId",
+					field:  "Target",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -125,16 +125,16 @@ func (m *MessageSendRequest) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, MessageSendRequestValidationError{
-					field:  "ConversationId",
+					field:  "Target",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetConversationId()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetTarget()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return MessageSendRequestValidationError{
-				field:  "ConversationId",
+				field:  "Target",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}

@@ -19,3 +19,8 @@ cache:
   default:
     expire: "72h"
   categories:
+mq:
+  kafka:
+    brokers:
+      - 10.22.200.90:9092
+    topicPrefix: ""
