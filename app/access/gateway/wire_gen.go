@@ -54,7 +54,11 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	if err != nil {
 		return nil, err
 	}
-	chatRoomRepo := data.NewChatRoomRepo(chatRoomAPIClient)
+	groupAPIClient, err := grpc.NewGroupAPIClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	chatRoomRepo := data.NewChatRoomRepo(chatRoomAPIClient, groupAPIClient)
 	chatRoomUseCase := biz.NewChatRoomUseCase(chatRoomRepo)
 	chatRoomService := service.NewChatRoomService(chatRoomUseCase)
 	chatRoomMemberAPIClient, err := grpc.NewChatRoomMemberClient(registryDiscovery)

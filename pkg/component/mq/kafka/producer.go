@@ -1,7 +1,10 @@
 package kafka
 
 import (
+	"context"
 	kafka "github.com/Shopify/sarama"
+	"github.com/google/uuid"
+	"rockimserver/pkg/component/mq"
 )
 
 type Producer struct {
@@ -10,7 +13,7 @@ type Producer struct {
 	producer    kafka.SyncProducer
 }
 
-func NewProducer(c *Config) (*Producer, error) {
+func NewProducer(c *mq.Kafka) (*Producer, error) {
 	ins := &Producer{brokers: c.Brokers, topicPrefix: c.TopicPrefix}
 	kc := kafka.NewConfig()
 	kc.Producer.RequiredAcks = kafka.WaitForAll // Wait for all in-sync replicas to ack the message
@@ -28,11 +31,12 @@ func (c *Producer) Close() error {
 	return c.producer.Close()
 }
 
-func (c *Producer) SendMessage(topic string, key string, bytes []byte) (partition int32, offset int64, err error) {
+func (c *Producer) Send(ctx context.Context, topic string, bytes []byte) (err error) {
 	m := &kafka.ProducerMessage{
-		Key:   kafka.StringEncoder(key),
+		Key:   kafka.StringEncoder(uuid.New().String()),
 		Topic: c.topicPrefix + topic,
 		Value: kafka.ByteEncoder(bytes),
 	}
-	return c.producer.SendMessage(m)
+	_, _, err = c.producer.SendMessage(m)
+	return
 }

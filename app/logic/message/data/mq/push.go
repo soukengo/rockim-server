@@ -3,32 +3,32 @@ package mq
 import (
 	"context"
 	"github.com/golang/protobuf/proto"
-	"github.com/google/uuid"
-	"rockimserver/apis/rockim/service/delivery/v1/types"
+	v1 "rockimserver/apis/rockim/service/job/v1"
+	"rockimserver/apis/rockim/service/job/v1/types"
 	"rockimserver/apis/rockim/shared/enums"
-	"rockimserver/pkg/component/mq/kafka"
+	"rockimserver/pkg/component/mq"
 )
 
 type PushMessageData struct {
-	cli *kafka.Producer
+	cli mq.Producer
 }
 
-func NewPushMessageData(cli *kafka.Producer) *PushMessageData {
+func NewPushMessageData(cli mq.Producer) *PushMessageData {
 	return &PushMessageData{cli: cli}
 }
 
-func (d *PushMessageData) SavePushMessage(ctx context.Context, messages []*types.PushMessage) (err error) {
-	key := uuid.New().String()
-	for _, message := range messages {
-		var bytes []byte
-		bytes, err = proto.Marshal(message)
-		if err != nil {
-			return
-		}
-		_, _, err = d.cli.SendMessage(enums.MQ_MESSAGE_DELIVERY.String(), key, bytes)
-		if err != nil {
-			return
-		}
+func (d *PushMessageData) SavePushMessage(ctx context.Context, messages []*types.Message) (err error) {
+	var req = &v1.MessagePushRequest{
+		List: messages,
+	}
+	var bytes []byte
+	bytes, err = proto.Marshal(req)
+	if err != nil {
+		return
+	}
+	err = d.cli.Send(ctx, enums.MQ_MESSAGE_PUSH.String(), bytes)
+	if err != nil {
+		return
 	}
 	return
 }

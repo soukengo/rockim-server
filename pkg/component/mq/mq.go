@@ -1,7 +1,18 @@
 package mq
 
-import "rockimserver/pkg/component/mq/kafka"
+import (
+	"context"
+)
 
-func NewKafkaProducer(cfg *Config) (*kafka.Producer, error) {
-	return kafka.NewProducer(cfg.Kafka)
+type Producer interface {
+	Send(ctx context.Context, topic string, data []byte) error
+}
+
+type Consumer interface {
+	Start() error
+	Close() error
+}
+
+type Handler interface {
+	OnReceived(topic string, data []byte) error
 }

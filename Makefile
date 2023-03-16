@@ -45,9 +45,9 @@ protoc-message:
 	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --go-grpc_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/service/message/v1/*.proto
 	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis  ../rockim-apis/rockim/service/message/v1/types/*.proto
 
-protoc-delivery:
-	#protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --go-grpc_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/service/delivery/v1/*.proto
-	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis  ../rockim-apis/rockim/service/delivery/v1/types/*.proto
+protoc-job:
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis --go-grpc_out=paths=source_relative:./apis --validate_out="paths=source_relative,lang=go:./apis" ../rockim-apis/rockim/service/job/v1/*.proto
+	protoc ${PROTOC_VAR} --go_out=paths=source_relative:./apis  ../rockim-apis/rockim/service/job/v1/types/*.proto
 
 
 wire:

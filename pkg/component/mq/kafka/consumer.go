@@ -3,6 +3,7 @@ package kafka
 import (
 	"github.com/Shopify/sarama"
 	cluster "github.com/bsm/sarama-cluster"
+	"rockimserver/pkg/component/mq"
 	"rockimserver/pkg/log"
 	"rockimserver/pkg/util/runtimes"
 	"strings"
@@ -16,20 +17,19 @@ const (
 type Consumer struct {
 	consumer *cluster.Consumer
 	config   *ConsumerConfig
-	handler  HandlerFunc
+	handler  mq.Handler
 	queue    chan *sarama.ConsumerMessage // 数据队列
 	consumed sync.Once
 	closed   sync.Once
 	done     chan struct{}
 }
 
-type HandlerFunc func(topic string, body []byte)
-
-func NewConsumer(config *ConsumerConfig, topics []string, handler HandlerFunc) (*Consumer, error) {
+func NewConsumer(config *ConsumerConfig, handler mq.Handler) (*Consumer, error) {
 	kafkaConfig := cluster.NewConfig()
 	kafkaConfig.Consumer.Return.Errors = true
 	kafkaConfig.Group.Return.Notifications = true
-	for i := 0; i < len(topics); i++ {
+	topics := make([]string, len(config.Topics))
+	for i := 0; i < len(config.Topics); i++ {
 		topics[i] = config.Kafka.TopicPrefix + topics[i]
 	}
 	if config.Workers <= 0 {
@@ -49,8 +49,8 @@ func NewConsumer(config *ConsumerConfig, topics []string, handler HandlerFunc) (
 	return c, nil
 }
 
-// Consume 消费
-func (s *Consumer) Consume() {
+// Start 消费
+func (s *Consumer) Start() (err error) {
 	s.consumed.Do(func() {
 		go runtimes.TryCatch(func() {
 			s.receive()
@@ -59,6 +59,7 @@ func (s *Consumer) Consume() {
 			s.dispatch()
 		})
 	})
+	return
 }
 
 // dispatch 分发
@@ -71,7 +72,12 @@ func (s *Consumer) dispatch() {
 			topic := msg.Topic
 			// 移除配置的topic前缀
 			topic = strings.TrimPrefix(topic, s.config.Kafka.TopicPrefix)
-			s.handler(topic, msg.Value)
+			err := s.handler.OnReceived(topic, msg.Value)
+			if err != nil {
+				log.Errorf("handler.OnReceived error: %v", err)
+				continue
+			}
+			s.consumer.MarkOffset(msg, "")
 		}
 	}
 }
@@ -87,7 +93,6 @@ func (s *Consumer) receive() {
 		case n := <-s.consumer.Notifications():
 			log.Infof("consumer rebalanced(%v)", n)
 		case msg := <-s.consumer.Messages():
-			s.consumer.MarkOffset(msg, "")
 			s.queue <- msg
 		}
 	}

@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	configName = "logic-user.yaml"
+	configName = "user.yaml"
 )
 
 func Load() (cfg *Config, err error) {

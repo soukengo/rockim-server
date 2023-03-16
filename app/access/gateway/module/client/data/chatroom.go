@@ -9,15 +9,16 @@ import (
 )
 
 type chatRoomRepo struct {
-	ac v1.ChatRoomAPIClient
+	ac      v1.ChatRoomAPIClient
+	groupAc v1.GroupAPIClient
 }
 
-func NewChatRoomRepo(ac v1.ChatRoomAPIClient) biz.ChatRoomRepo {
-	return &chatRoomRepo{ac: ac}
+func NewChatRoomRepo(ac v1.ChatRoomAPIClient, groupAc v1.GroupAPIClient) biz.ChatRoomRepo {
+	return &chatRoomRepo{ac: ac, groupAc: groupAc}
 }
 
-func (r *chatRoomRepo) Find(ctx context.Context, productId string, groupId string) (out *types.Group, err error) {
-	ret, err := r.ac.FindById(ctx, &v1.ChatRoomFindByIdRequest{
+func (r *chatRoomRepo) FindById(ctx context.Context, productId string, groupId string) (out *types.Group, err error) {
+	ret, err := r.groupAc.FindById(ctx, &v1.GroupFindByIdRequest{
 		Base:    service.GenRequest(productId),
 		GroupId: groupId,
 	})
@@ -28,7 +29,7 @@ func (r *chatRoomRepo) Find(ctx context.Context, productId string, groupId strin
 }
 
 func (r *chatRoomRepo) FindGroupId(ctx context.Context, productId string, customGroupId string) (out string, err error) {
-	ret, err := r.ac.FindGroupId(ctx, &v1.ChatRoomGroupIdFindRequest{
+	ret, err := r.groupAc.FindGroupId(ctx, &v1.GroupIdFindRequest{
 		Base:          service.GenRequest(productId),
 		CustomGroupId: customGroupId,
 	})

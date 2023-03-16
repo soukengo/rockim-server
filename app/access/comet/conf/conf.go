@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	configName = "access-comet.yaml"
+	configName = "comet.yaml"
 )
 
 func Load() (cfg *Config, err error) {

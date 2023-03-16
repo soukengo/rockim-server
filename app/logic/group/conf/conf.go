@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	configName = "logic-group.yaml"
+	configName = "group.yaml"
 )
 
 func Load() (cfg *Config, err error) {

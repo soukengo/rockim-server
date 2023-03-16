@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	configName = "access-admin.yaml"
+	configName = "admin.yaml"
 )
 
 func Load() (cfg *Config, err error) {

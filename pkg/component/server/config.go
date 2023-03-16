@@ -1,6 +1,7 @@
 package server
 
 import (
+	"rockimserver/pkg/component/server/job"
 	"rockimserver/pkg/component/server/socket/network/tcp"
 	"rockimserver/pkg/component/server/socket/network/ws"
 	"time"
@@ -10,6 +11,7 @@ type Config struct {
 	Http   *Http
 	Grpc   *Grpc
 	Socket *Socket
+	Job    *job.Config
 }
 
 type Http struct {

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	configName = "logic-message.yaml"
+	configName = "message.yaml"
 )
 
 func Load() (cfg *Config, err error) {

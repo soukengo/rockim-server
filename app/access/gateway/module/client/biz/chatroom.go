@@ -6,7 +6,7 @@ import (
 )
 
 type ChatRoomRepo interface {
-	Find(ctx context.Context, productId string, groupId string) (*types.Group, error)
+	FindById(ctx context.Context, productId string, groupId string) (*types.Group, error)
 	FindGroupId(ctx context.Context, productId string, customGroupId string) (string, error)
 }
 
@@ -19,7 +19,7 @@ func NewChatRoomUseCase(repo ChatRoomRepo) *ChatRoomUseCase {
 }
 
 func (uc *ChatRoomUseCase) Find(ctx context.Context, productId string, groupId string) (*types.Group, error) {
-	return uc.repo.Find(ctx, productId, groupId)
+	return uc.repo.FindById(ctx, productId, groupId)
 }
 func (uc *ChatRoomUseCase) FindGroupId(ctx context.Context, productId string, customGroupId string) (string, error) {
 	return uc.repo.FindGroupId(ctx, productId, customGroupId)

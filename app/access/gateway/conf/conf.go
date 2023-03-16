@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	configName = "access-gateway.yaml"
+	configName = "gateway.yaml"
 )
 
 func Load() (cfg *Config, err error) {

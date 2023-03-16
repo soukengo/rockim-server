@@ -8,7 +8,7 @@ database:
     address: mongodb://127.0.0.1:27017
     username: rockim
     password: rockim2022
-    database: rockim_message
+    database: rockim
     authSource: admin
   redis:
     prefix: "ROCKIM:"
@@ -23,4 +23,4 @@ mq:
   kafka:
     brokers:
       - 10.22.200.90:9092
-    topicPrefix: ""
+    topicPrefix: "ROCKIM-"

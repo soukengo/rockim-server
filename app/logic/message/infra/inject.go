@@ -8,6 +8,7 @@ import (
 	"rockimserver/pkg/component/idgen"
 	"rockimserver/pkg/component/lock"
 	"rockimserver/pkg/component/mq"
+	"rockimserver/pkg/component/mq/kafka"
 )
 
 // ProviderSet is biz providers.
@@ -17,7 +18,11 @@ var ProviderSet = wire.NewSet(
 	grpc.ProviderSet,
 	database.NewMongoClient,
 	database.NewRedisClient,
-	mq.NewKafkaProducer,
+	NewKafkaProducer,
 	lock.NewRedisBuilder,
 	idgen.NewMongoGenerator,
 )
+
+func NewKafkaProducer(cfg *mq.Config) (mq.Producer, error) {
+	return kafka.NewProducer(cfg.Kafka)
+}

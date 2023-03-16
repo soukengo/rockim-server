@@ -13,6 +13,7 @@ import (
 	"rockimserver/app/logic/message/data"
 	database2 "rockimserver/app/logic/message/data/database"
 	mq2 "rockimserver/app/logic/message/data/mq"
+	"rockimserver/app/logic/message/infra"
 	"rockimserver/app/logic/message/infra/grpc"
 	server2 "rockimserver/app/logic/message/server"
 	"rockimserver/app/logic/message/service"
@@ -49,7 +50,7 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	redisClient := database.NewRedisClient(databaseConfig)
 	builder := lock.NewRedisBuilder(redisClient)
 	generator := idgen.NewMongoGenerator()
-	producer, err := mq.NewKafkaProducer(mqConfig)
+	producer, err := infra.NewKafkaProducer(mqConfig)
 	if err != nil {
 		return nil, err
 	}

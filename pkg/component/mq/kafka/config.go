@@ -1,12 +1,10 @@
 package kafka
 
-type Config struct {
-	Brokers     []string
-	TopicPrefix string
-}
+import "rockimserver/pkg/component/mq"
 
 type ConsumerConfig struct {
 	Group   string
+	Topics  []string
 	Workers int32
-	Kafka   *Config
+	Kafka   *mq.Kafka
 }

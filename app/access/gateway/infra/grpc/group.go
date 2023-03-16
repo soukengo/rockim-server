@@ -7,6 +7,13 @@ import (
 	"rockimserver/pkg/component/discovery"
 )
 
+func NewGroupAPIClient(r registry.Discovery) (v1.GroupAPIClient, error) {
+	conn, err := discovery.NewGrpcClient(service.AppGroup, r)
+	if err != nil {
+		return nil, err
+	}
+	return v1.NewGroupAPIClient(conn), nil
+}
 func NewChatRoomClient(r registry.Discovery) (v1.ChatRoomAPIClient, error) {
 	conn, err := discovery.NewGrpcClient(service.AppGroup, r)
 	if err != nil {
