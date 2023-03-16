@@ -112,10 +112,10 @@ func (m *PushRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if utf8.RuneCountInString(m.GetChannelId()) < 1 {
+	if len(m.GetChannelIds()) < 1 {
 		err := PushRequestValidationError{
-			field:  "ChannelId",
-			reason: "value length must be at least 1 runes",
+			field:  "ChannelIds",
+			reason: "value must contain at least 1 item(s)",
 		}
 		if !all {
 			return err
