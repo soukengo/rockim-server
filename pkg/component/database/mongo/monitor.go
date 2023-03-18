@@ -12,12 +12,14 @@ type Monitor interface {
 }
 
 type monitor struct {
+	opts     *options
 	monitors []Monitor
 	entry    *event.CommandMonitor
 }
 
-func newMonitor() *monitor {
+func newMonitor(opts *options) *monitor {
 	m := &monitor{
+		opts:     opts,
 		monitors: make([]Monitor, 0),
 	}
 	m.entry = &event.CommandMonitor{
@@ -37,7 +39,7 @@ func (m *monitor) WithTrace() {
 	return
 }
 func (m *monitor) WithLog() {
-	m.monitors = append(m.monitors, newLogger())
+	m.monitors = append(m.monitors, newLogger(m.opts))
 	return
 }
 

@@ -4,7 +4,8 @@ import (
 	"context"
 	"errors"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	mgoopts "go.mongodb.org/mongo-driver/mongo/options"
+	"rockimserver/pkg/log"
 	"time"
 )
 
@@ -13,22 +14,30 @@ var (
 )
 
 type Client struct {
+	opts   *options
 	config *Config
 	client *mongo.Client
 }
 
 func NewClient(conf *Config) *Client {
+	return NewClientWithOptions(conf)
+}
+func NewClientWithOptions(conf *Config, opts ...Option) *Client {
 	c := new(Client)
+	opt := &options{
+		logger: log.GetLogger(),
+	}
+	c.opts = opt.apply(opts...)
 	c.config = conf
 	ctx := context.Background()
-	clientOptions := options.Client().ApplyURI(c.config.Address)
+	clientOptions := mgoopts.Client().ApplyURI(c.config.Address)
 	if len(c.config.Username) > 0 {
-		credential := options.Credential{AuthSource: c.config.AuthSource, Username: c.config.Username, Password: c.config.Password}
+		credential := mgoopts.Credential{AuthSource: c.config.AuthSource, Username: c.config.Username, Password: c.config.Password}
 		clientOptions = clientOptions.SetAuth(credential)
 	}
 	timeout := 10 * time.Second
 	clientOptions.ConnectTimeout = &timeout
-	m := newMonitor()
+	m := newMonitor(c.opts)
 	m.WithLog()
 	m.WithTrace()
 	clientOptions.Monitor = m.Entry()
@@ -50,10 +59,10 @@ func (c *Client) Close() error {
 	return c.client.Disconnect(context.Background())
 }
 
-func (c *Client) Database(database string, opts ...*options.DatabaseOptions) *mongo.Database {
+func (c *Client) Database(database string, opts ...*mgoopts.DatabaseOptions) *mongo.Database {
 	return c.client.Database(database, opts...)
 }
-func (c *Client) Collection(name string, opts ...*options.CollectionOptions) *mongo.Collection {
+func (c *Client) Collection(name string, opts ...*mgoopts.CollectionOptions) *mongo.Collection {
 	return c.Database(c.config.Database).Collection(name, opts...)
 }
 

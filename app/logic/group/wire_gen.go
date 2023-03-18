@@ -22,15 +22,16 @@ import (
 	"rockimserver/pkg/component/idgen"
 	"rockimserver/pkg/component/lock"
 	"rockimserver/pkg/component/server"
+	"rockimserver/pkg/log"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
 	client := mongo.NewClient(mongoConfig)
 	groupData := database.NewChatRoomData(client)
-	redisClient := redis.NewClient(redisConfig)
+	redisClient := redis.NewClient(redisConfig, logger)
 	cacheGroupData := cache2.NewGroupData(redisClient, cacheConfig)
 	groupRepo := data.NewGroupRepo(groupData, cacheGroupData)
 	chatRoomMemberData := cache2.NewChatRoomMemberData(redisClient, cacheConfig)
@@ -48,6 +49,6 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	if err != nil {
 		return nil, err
 	}
-	app := newApp(config, grpcServer, registrar)
+	app := newApp(logger, config, grpcServer, registrar)
 	return app, nil
 }

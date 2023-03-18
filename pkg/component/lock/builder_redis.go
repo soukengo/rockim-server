@@ -1,6 +1,8 @@
 package lock
 
-import "rockimserver/pkg/component/database/redis"
+import (
+	"rockimserver/pkg/component/database/redis"
+)
 
 type redisBuilder struct {
 	cli *redis.Client

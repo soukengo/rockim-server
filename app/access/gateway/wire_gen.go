@@ -19,12 +19,13 @@ import (
 	server2 "rockimserver/app/access/gateway/server"
 	"rockimserver/pkg/component/discovery"
 	"rockimserver/pkg/component/server"
+	"rockimserver/pkg/log"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config) (*kratos.App, error) {
 	registryDiscovery, err := discovery.NewDiscovery(discoveryConfig)
 	if err != nil {
 		return nil, err
@@ -82,6 +83,6 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	serviceChatRoomService := service2.NewChatRoomService(bizChatRoomUseCase, bizUserUseCase)
 	openApiServiceGroup := server2.NewOpenApiServiceGroup(bizProductUseCase, serviceUserService, serviceAuthService, serviceChatRoomService)
 	httpServer := server2.NewHTTPServer(serverConfig, clientServiceGroup, openApiServiceGroup)
-	app := newApp(config, httpServer)
+	app := newApp(logger, config, httpServer)
 	return app, nil
 }

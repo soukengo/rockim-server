@@ -15,6 +15,7 @@ const (
 )
 
 type Consumer struct {
+	logger   log.Logger
 	consumer *cluster.Consumer
 	config   *ConsumerConfig
 	handler  mq.Handler
@@ -24,7 +25,7 @@ type Consumer struct {
 	done     chan struct{}
 }
 
-func NewConsumer(config *ConsumerConfig, handler mq.Handler) (*Consumer, error) {
+func NewConsumer(config *ConsumerConfig, handler mq.Handler, logger log.Logger) (*Consumer, error) {
 	kafkaConfig := cluster.NewConfig()
 	kafkaConfig.Consumer.Return.Errors = true
 	kafkaConfig.Group.Return.Notifications = true
@@ -40,6 +41,7 @@ func NewConsumer(config *ConsumerConfig, handler mq.Handler) (*Consumer, error) 
 		return nil, err
 	}
 	c := &Consumer{
+		logger:   logger,
 		config:   config,
 		consumer: consumer,
 		handler:  handler,
@@ -89,9 +91,9 @@ func (s *Consumer) receive() {
 		case <-s.done:
 			return
 		case err := <-s.consumer.Errors():
-			log.Errorf("consumer error(%v)", err)
+			s.logger.Helper().Errorf("consumer error(%v)", err)
 		case n := <-s.consumer.Notifications():
-			log.Infof("consumer rebalanced(%v)", n)
+			s.logger.Helper().Infof("consumer rebalanced(%v)", n)
 		case msg := <-s.consumer.Messages():
 			s.queue <- msg
 		}

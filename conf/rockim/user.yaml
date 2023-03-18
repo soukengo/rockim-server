@@ -22,3 +22,9 @@ cache:
       expire: "10m"
     - key: "online"
       expire: "10m"
+
+#log:
+#  level: info
+#  console: false
+#  appender:
+#    fileName: ./log/rockim/user/app.log

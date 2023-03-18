@@ -22,5 +22,5 @@ cache:
 mq:
   kafka:
     brokers:
-      - 10.22.200.90:9092
+      - 127.0.0.1:9092
     topicPrefix: "ROCKIM-"

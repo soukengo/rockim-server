@@ -16,13 +16,13 @@ type mqServer struct {
 	mutex    sync.Mutex
 }
 
-func NewMQServer(cfg *Config, mqCfg *mq.Config) (Server, error) {
+func NewMQServer(cfg *Config, mqCfg *mq.Config, logger log.Logger) (Server, error) {
 	s := &mqServer{cfg: cfg, mqCfg: mqCfg, handlers: make(map[string]Handler)}
 	consumer, err := kafka.NewConsumer(&kafka.ConsumerConfig{
 		Kafka:  mqCfg.Kafka,
 		Group:  cfg.GroupId,
 		Topics: cfg.Topics,
-	}, s)
+	}, s, logger)
 	if err != nil {
 		return nil, err
 	}

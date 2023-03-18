@@ -23,7 +23,7 @@ func newZap(level string, w io.Writer) *zap.Logger {
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
 		EncodeLevel:    zapcore.LowercaseLevelEncoder,  // 小写编码器
-		EncodeTime:     BasicDateTimeEncoder,           // ISO8601 UTC 时间格式
+		EncodeTime:     basicDateTimeEncoder,           // ISO8601 UTC 时间格式
 		EncodeDuration: zapcore.SecondsDurationEncoder, //
 		EncodeCaller:   zapcore.ShortCallerEncoder,     // 短路径编码器
 		EncodeName:     zapcore.FullNameEncoder,
@@ -40,7 +40,7 @@ func newZap(level string, w io.Writer) *zap.Logger {
 	)
 	var options []zap.Option
 	options = append(options, zap.AddCaller())
-	options = append(options, zap.AddCallerSkip(6))
+	options = append(options, zap.AddCallerSkip(5))
 	return zap.New(core, options...)
 }
 
@@ -65,11 +65,11 @@ func parseZapLevel(str string) (level zapcore.Level) {
 
 type DateTimeEncoder func(time.Time, zapcore.PrimitiveArrayEncoder)
 
-func BasicDateTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+func basicDateTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 	encodeTimeLayout(t, timeFormatFull, enc)
 }
 
-func NumberDateTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+func numberDateTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 	encodeTimeLayout(t, timeFormatNumber, enc)
 }
 
@@ -88,11 +88,11 @@ func encodeTimeLayout(t time.Time, layout string, enc zapcore.PrimitiveArrayEnco
 func (e *DateTimeEncoder) UnmarshalText(text []byte) error {
 	switch string(text) {
 	case "numberdatetime":
-		*e = NumberDateTimeEncoder
+		*e = numberDateTimeEncoder
 	case "datetime":
-		*e = BasicDateTimeEncoder
+		*e = basicDateTimeEncoder
 	default:
-		*e = BasicDateTimeEncoder
+		*e = basicDateTimeEncoder
 	}
 	return nil
 }

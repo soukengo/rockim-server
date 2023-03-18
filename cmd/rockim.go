@@ -3,14 +3,10 @@ package main
 import (
 	"flag"
 	"github.com/go-kratos/kratos/v2"
-	"rockimserver/app/access/admin"
-	"rockimserver/app/access/comet"
 	"rockimserver/app/access/gateway"
-	"rockimserver/app/logic/group"
-	"rockimserver/app/logic/message"
-	"rockimserver/app/logic/platform"
 	"rockimserver/app/logic/user"
 	"rockimserver/app/task/job"
+	"rockimserver/pkg/log"
 )
 
 // go build -ldflags "-X main.version=x.y.z"
@@ -19,17 +15,17 @@ var (
 	version string
 )
 
-type Runnable func(version string) (app *kratos.App, err error)
+type Runnable func(version string) (app *kratos.App, logger log.Logger, err error)
 
 var (
 	runnable = []Runnable{
-		admin.New,
+		//admin.New,
 		gateway.New,
-		comet.New,
-		platform.New,
+		//comet.New,
+		//platform.New,
 		user.New,
-		group.New,
-		message.New,
+		//group.New,
+		//message.New,
 		job.New,
 	}
 )
@@ -38,7 +34,7 @@ func main() {
 	flag.Parse()
 	for _, item := range runnable {
 		go func(r Runnable) {
-			app, err := r(version)
+			app, _, err := r(version)
 			if err != nil {
 				panic(err)
 			}

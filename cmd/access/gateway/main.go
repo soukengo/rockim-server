@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"rockimserver/app/access/gateway"
+	"rockimserver/pkg/log"
 )
 
 // go build -ldflags "-X main.version=x.y.z"
@@ -13,10 +14,11 @@ var (
 
 func main() {
 	flag.Parse()
-	app, err := gateway.New(version)
+	app, logger, err := gateway.New(version)
 	if err != nil {
 		panic(err)
 	}
+	log.SetLogger(logger)
 	err = app.Run()
 	if err != nil {
 		panic(err)

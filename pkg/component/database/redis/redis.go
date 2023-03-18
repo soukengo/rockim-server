@@ -17,7 +17,7 @@ type Client struct {
 
 type OnKeyChanged func(key string)
 
-func NewClient(conf *Config) *Client {
+func NewClient(conf *Config, logger log.Logger) *Client {
 	c := new(Client)
 	c.config = conf
 	c.keyChangeHandlers = make(map[string]OnKeyChanged)
@@ -34,7 +34,7 @@ func NewClient(conf *Config) *Client {
 	r.AddHook(ErrorHook{})
 	r.AddHook(TracingHook{})
 	pong, err := r.Ping(context.Background()).Result()
-	log.Infof("redis ping result val=%v err=%v", pong, err)
+	logger.Helper().Infof("redis ping result val=%v err=%v", pong, err)
 	if err != nil {
 		panic(err)
 	}

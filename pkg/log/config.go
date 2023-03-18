@@ -9,8 +9,6 @@ var (
 )
 
 type Config struct {
-	AppId        string
-	AppVersion   string
 	LoggerConfig `mapstructure:",squash"`
 	Loggers      []LoggerConfig
 }

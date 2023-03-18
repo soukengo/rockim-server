@@ -3,7 +3,7 @@ package mongo
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	mgoopts "go.mongodb.org/mongo-driver/mongo/options"
 	"rockimserver/apis/rockim/shared"
 	"rockimserver/pkg/errors"
 )
@@ -12,7 +12,7 @@ var (
 	DocumentNotFound = errors.NotFound("DATA_NOT_FOUND", "data not found")
 )
 
-func (c *Client) FindOne(ctx context.Context, collection string, filter any, dist any, opts ...*options.FindOneOptions) (err error) {
+func (c *Client) FindOne(ctx context.Context, collection string, filter any, dist any, opts ...*mgoopts.FindOneOptions) (err error) {
 	err = c.Collection(collection).FindOne(ctx, filter, opts...).Decode(dist)
 	if IsErrNoDocuments(err) {
 		err = DocumentNotFound
@@ -20,7 +20,7 @@ func (c *Client) FindOne(ctx context.Context, collection string, filter any, dis
 	return
 }
 
-func (c *Client) FindList(ctx context.Context, collection string, filter any, result any, opts ...*options.FindOptions) (err error) {
+func (c *Client) FindList(ctx context.Context, collection string, filter any, result any, opts ...*mgoopts.FindOptions) (err error) {
 	cursor, err := c.Collection(collection).Find(ctx, filter, opts...)
 	if err != nil {
 		return
@@ -29,10 +29,10 @@ func (c *Client) FindList(ctx context.Context, collection string, filter any, re
 	return cursor.All(ctx, result)
 }
 
-func (c *Client) Paginate(ctx context.Context, collection string, query interface{}, paginate *shared.Paginating, opts ...*options.FindOptions) (cursor *mongo.Cursor, p *shared.Paginated, err error) {
+func (c *Client) Paginate(ctx context.Context, collection string, query interface{}, paginate *shared.Paginating, opts ...*mgoopts.FindOptions) (cursor *mongo.Cursor, p *shared.Paginated, err error) {
 	offset := paginate.Offset()
 	limit := paginate.Limit()
-	opts = append(opts, &options.FindOptions{
+	opts = append(opts, &mgoopts.FindOptions{
 		Limit: &limit,
 		Skip:  &offset,
 	})

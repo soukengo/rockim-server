@@ -24,13 +24,14 @@ import (
 	"rockimserver/pkg/component/lock"
 	"rockimserver/pkg/component/mq"
 	"rockimserver/pkg/component/server"
+	"rockimserver/pkg/log"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, databaseConfig *database.Config, cacheConfig *cache.Config, mqConfig *mq.Config) (*kratos.App, error) {
-	client := database.NewMongoClient(databaseConfig)
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, databaseConfig *database.Config, cacheConfig *cache.Config, mqConfig *mq.Config) (*kratos.App, error) {
+	client := database.NewMongoClient(databaseConfig, logger)
 	messageData := database2.NewMessageSequenceData(client)
 	messageRepo := data.NewMessageRepo(messageData)
 	registryDiscovery, err := discovery.NewDiscovery(discoveryConfig)
@@ -47,7 +48,7 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 		return nil, err
 	}
 	groupRepo := data.NewGroupRepo(groupAPIClient)
-	redisClient := database.NewRedisClient(databaseConfig)
+	redisClient := database.NewRedisClient(databaseConfig, logger)
 	builder := lock.NewRedisBuilder(redisClient)
 	generator := idgen.NewMongoGenerator()
 	producer, err := infra.NewKafkaProducer(mqConfig)
@@ -70,6 +71,6 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	if err != nil {
 		return nil, err
 	}
-	app := newApp(config, grpcServer, registrar)
+	app := newApp(logger, config, grpcServer, registrar)
 	return app, nil
 }

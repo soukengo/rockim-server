@@ -13,9 +13,10 @@ import (
 	"rockimserver/app/access/comet/server"
 	"rockimserver/pkg/component/discovery"
 	servercomponent "rockimserver/pkg/component/server"
+	"rockimserver/pkg/log"
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Config, *discovery.Config, *servercomponent.Config, *conf.Protocol) (*kratos.App, error) {
+func wireApp(log.Logger, *conf.Config, *discovery.Config, *servercomponent.Config, *conf.Protocol) (*kratos.App, error) {
 	panic(wire.Build(server.ProviderSet, module.ProviderSet, newApp))
 }

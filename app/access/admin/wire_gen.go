@@ -24,12 +24,13 @@ import (
 	"rockimserver/pkg/component/database"
 	"rockimserver/pkg/component/discovery"
 	"rockimserver/pkg/component/server"
+	"rockimserver/pkg/log"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, authConfig *auth.Config, databaseConfig *database.Config) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, authConfig *auth.Config, databaseConfig *database.Config) (*kratos.App, error) {
 	client := database2.NewMongoClient(databaseConfig)
 	sysUserData := database3.NewSysUserData(client)
 	sysUserRepo := data.NewSysUserRepo(sysUserData)
@@ -79,6 +80,6 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	productService := service2.NewProductService(productUseCase, bizSessionUseCase)
 	tenantServiceGroup := server2.NewTenantServiceGroup(authConfig, serviceAuthService, serviceSessionService, productService)
 	httpServer := server2.NewHTTPServer(serverConfig, managerServiceGroup, tenantServiceGroup)
-	app := newApp(config, httpServer)
+	app := newApp(logger, config, httpServer)
 	return app, nil
 }

@@ -30,6 +30,7 @@ func Load() (cfg *Config, err error) {
 		return
 	}
 	cfg.Global = global
+	cfg.Log.Split = true
 	return
 }
 

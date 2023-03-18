@@ -1,12 +1,12 @@
 package gnet
 
 import (
-	log "github.com/golang/glog"
 	"github.com/google/uuid"
 	"github.com/panjf2000/gnet/v2"
 	"rockimserver/pkg/component/server/socket/network"
 	"rockimserver/pkg/component/server/socket/network/tcp"
 	"rockimserver/pkg/component/server/socket/packet"
+	"rockimserver/pkg/log"
 	"sync"
 	"time"
 )

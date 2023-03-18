@@ -20,19 +20,20 @@ import (
 	"rockimserver/pkg/component/database/redis"
 	"rockimserver/pkg/component/discovery"
 	"rockimserver/pkg/component/server"
+	"rockimserver/pkg/log"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
 	client := mongo.NewClient(mongoConfig)
 	tenantData := database.NewTenantData(client)
 	tenantRepo := data.NewTenantRepo(tenantData)
 	tenantUseCase := biz.NewTenantUseCase(tenantRepo)
 	tenantService := service.NewTenantService(tenantUseCase)
 	productData := database.NewProductData(client)
-	redisClient := redis.NewClient(redisConfig)
+	redisClient := redis.NewClient(redisConfig, logger)
 	cacheProductData := cache2.NewProductData(redisClient, cacheConfig)
 	productRepo := data.NewProductRepo(productData, cacheProductData)
 	productUseCase := biz.NewProductUseCase(productRepo)
@@ -43,6 +44,6 @@ func wireApp(config *conf.Config, discoveryConfig *discovery.Config, serverConfi
 	if err != nil {
 		return nil, err
 	}
-	app := newApp(config, grpcServer, registrar)
+	app := newApp(logger, config, grpcServer, registrar)
 	return app, nil
 }

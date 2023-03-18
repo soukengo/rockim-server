@@ -10,6 +10,7 @@ const (
 	AppGroup        = "rockim.group"
 	AppRelationship = "rockim.relationship"
 	AppMessage      = "rockim.message"
+	AppJob          = "rockim.job"
 )
 
 func GenRequest(productId string) *ServiceRequest {

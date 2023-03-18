@@ -14,13 +14,13 @@ import (
 	"rockimserver/app/logic/user/server"
 	"rockimserver/app/logic/user/service"
 	"rockimserver/pkg/component/cache"
-	"rockimserver/pkg/component/database/mongo"
-	"rockimserver/pkg/component/database/redis"
+	"rockimserver/pkg/component/database"
 	"rockimserver/pkg/component/discovery"
 	servercomponent "rockimserver/pkg/component/server"
+	"rockimserver/pkg/log"
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Config, *discovery.Config, *servercomponent.Config, *mongo.Config, *redis.Config, *cache.Config) (*kratos.App, error) {
+func wireApp(log.Logger, *conf.Config, *discovery.Config, *servercomponent.Config, *database.Config, *cache.Config) (*kratos.App, error) {
 	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
 }

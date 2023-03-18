@@ -9,22 +9,26 @@ import (
 )
 
 type AuthCodeData struct {
+	logger       *log.Helper
 	cache        cache.ValueCache[string]
 	reverseCache cache.ValueCache[string]
 }
 type AccessTokenData struct {
+	logger       *log.Helper
 	cache        cache.ValueCache[string]
 	reverseCache cache.ValueCache[string]
 }
 
-func NewAuthCodeData(redisCli *redis.Client, cfg *cache.Config) *AuthCodeData {
+func NewAuthCodeData(logger log.Logger, redisCli *redis.Client, cfg *cache.Config) *AuthCodeData {
 	return &AuthCodeData{
+		logger:       logger.Helper(),
 		cache:        newValueCache[string](redisCli, cfg.Category(keyAuthCode)),
 		reverseCache: newValueCache[string](redisCli, cfg.Category(keyAuthCodeReverse)),
 	}
 }
-func NewAccessTokenData(redisCli *redis.Client, cfg *cache.Config) *AccessTokenData {
+func NewAccessTokenData(logger log.Logger, redisCli *redis.Client, cfg *cache.Config) *AccessTokenData {
 	return &AccessTokenData{
+		logger:       logger.Helper(),
 		cache:        newValueCache[string](redisCli, cfg.Category(keyAuthToken)),
 		reverseCache: newValueCache[string](redisCli, cfg.Category(keyAuthTokenReverse)),
 	}
@@ -40,7 +44,7 @@ func (d *AuthCodeData) SaveAuthCode(ctx context.Context, productId string, uid s
 	if oldCode != nil {
 		err1 := d.reverseCache.Delete(ctx, cache.Parts(productId, *oldCode))
 		if err1 != nil {
-			log.WithContext(ctx).Errorf("d.reverseCache.Delete productId: %s, oldCode: %s, err: %v", productId, *oldCode, err1)
+			d.logger.WithContext(ctx).Errorf("d.reverseCache.Delete productId: %s, oldCode: %s, err: %v", productId, *oldCode, err1)
 		}
 	}
 	val := &code
@@ -76,7 +80,7 @@ func (d *AccessTokenData) SaveAccessToken(ctx context.Context, productId string,
 	if oldToken != nil {
 		err1 := d.reverseCache.Delete(ctx, cache.Parts(productId, *oldToken))
 		if err1 != nil {
-			log.WithContext(ctx).Errorf("d.reverseCache.Delete productId: %s, oldToken: %s, err: %v", productId, *oldToken, err1)
+			d.logger.WithContext(ctx).Errorf("d.reverseCache.Delete productId: %s, oldToken: %s, err: %v", productId, *oldToken, err1)
 		}
 	}
 	val := &token
