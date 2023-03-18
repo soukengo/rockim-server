@@ -34,7 +34,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	cacheUserData := cache2.NewUserData(redisClient, cacheConfig)
 	userRepo := data.NewUserRepo(userData, cacheUserData)
 	generator := idgen.NewMongoGenerator()
-	builder := lock.NewRedisBuilder(redisClient)
+	builder := lock.NewRedisBuilder(logger, redisClient)
 	userUseCase := biz.NewUserUseCase(userRepo, generator, builder)
 	userService := service.NewUserService(userUseCase)
 	authCodeData := cache2.NewAuthCodeData(logger, redisClient, cacheConfig)

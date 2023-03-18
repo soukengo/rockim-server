@@ -2,16 +2,18 @@ package lock
 
 import (
 	"rockimserver/pkg/component/database/redis"
+	"rockimserver/pkg/log"
 )
 
 type redisBuilder struct {
-	cli *redis.Client
+	logger log.Logger
+	cli    *redis.Client
 }
 
-func NewRedisBuilder(cli *redis.Client) Builder {
-	return &redisBuilder{cli: cli}
+func NewRedisBuilder(logger log.Logger, cli *redis.Client) Builder {
+	return &redisBuilder{cli: cli, logger: logger}
 }
 
 func (b *redisBuilder) Build(key Key, parts ...string) DistributedLock {
-	return NewRedisDistributedLock(b.cli, key.GenKey(parts...))
+	return NewRedisDistributedLock(b.logger, b.cli, key.GenKey(parts...))
 }

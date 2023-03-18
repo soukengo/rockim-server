@@ -13,19 +13,20 @@ const (
 )
 
 type redisDistributedLock struct {
+	logger  log.Logger
 	cli     *redis.Client
 	lockKey string
 	lockVal string
 }
 
-func NewRedisDistributedLock(cli *redis.Client, key string) DistributedLock {
-	return &redisDistributedLock{cli: cli, lockVal: genLockKey(key)}
+func NewRedisDistributedLock(logger log.Logger, cli *redis.Client, key string) DistributedLock {
+	return &redisDistributedLock{logger: logger, cli: cli, lockVal: genLockKey(key)}
 }
 
 func (lock *redisDistributedLock) TryLock(ctx context.Context) (locked bool) {
 	locked, err := lock.addLock(ctx, defaultExpire)
 	if err != nil {
-		log.WithContext(ctx).Errorf("addLock error(%v)", err)
+		lock.logger.Helper().WithContext(ctx).Errorf("addLock error(%v)", err)
 		return
 	}
 	return
@@ -41,7 +42,7 @@ func (lock *redisDistributedLock) LockUntil(ctx context.Context, waitSeconds int
 		var err error
 		locked, err = lock.addLock(ctx, defaultExpire)
 		if err != nil {
-			log.WithContext(ctx).Errorf("addLock error(%v)", err)
+			lock.logger.Helper().WithContext(ctx).Errorf("addLock error(%v)", err)
 			return
 		}
 		if locked {
@@ -60,7 +61,7 @@ func (lock *redisDistributedLock) UnLock() {
 	ctx := context.Background()
 	err := lock.delLock(ctx)
 	if err != nil {
-		log.Errorf("delLock lockKey: %s,  error(%v)", lock.lockKey, err)
+		lock.logger.Helper().Errorf("delLock lockKey: %s,  error(%v)", lock.lockKey, err)
 	}
 }
 

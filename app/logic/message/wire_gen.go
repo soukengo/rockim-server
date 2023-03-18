@@ -49,7 +49,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	}
 	groupRepo := data.NewGroupRepo(groupAPIClient)
 	redisClient := database.NewRedisClient(databaseConfig, logger)
-	builder := lock.NewRedisBuilder(redisClient)
+	builder := lock.NewRedisBuilder(logger, redisClient)
 	generator := idgen.NewMongoGenerator()
 	producer, err := infra.NewKafkaProducer(mqConfig)
 	if err != nil {

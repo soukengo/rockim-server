@@ -37,7 +37,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	chatRoomMemberData := cache2.NewChatRoomMemberData(redisClient, cacheConfig)
 	chatRoomMemberRepo := data.NewChatRoomMemberRepo(chatRoomMemberData)
 	generator := idgen.NewMongoGenerator()
-	builder := lock.NewRedisBuilder(redisClient)
+	builder := lock.NewRedisBuilder(logger, redisClient)
 	chatRoomMemberManager := biz.NewChatRoomMemberManager(groupRepo, chatRoomMemberRepo, generator)
 	chatRoomUseCase := biz.NewChatRoomUseCase(groupRepo, chatRoomMemberRepo, generator, builder, chatRoomMemberManager)
 	chatRoomService := service.NewChatRoomService(chatRoomUseCase)
