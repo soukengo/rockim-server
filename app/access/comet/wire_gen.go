@@ -14,6 +14,8 @@ import (
 	"rockimserver/app/access/comet/module/client/data/grpc"
 	"rockimserver/app/access/comet/module/client/service"
 	biz2 "rockimserver/app/access/comet/module/server/biz"
+	data2 "rockimserver/app/access/comet/module/server/data"
+	socket2 "rockimserver/app/access/comet/module/server/data/socket"
 	service2 "rockimserver/app/access/comet/module/server/service"
 	grpc2 "rockimserver/app/access/comet/server/grpc"
 	"rockimserver/app/access/comet/server/socket"
@@ -38,7 +40,9 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	channelUseCase := biz.NewChannelUseCase(config, onlineRepo)
 	channelService := service.NewClientService(channelUseCase)
 	socketServer := socket.NewSocketServer(serverConfig, protocol, channelService)
-	bizChannelUseCase := biz2.NewChannelUseCase()
+	channelManager := socket2.NewChannelManager(logger, socketServer)
+	channelRepo := data2.NewChannelRepo(channelManager)
+	bizChannelUseCase := biz2.NewChannelUseCase(channelRepo)
 	serviceChannelService := service2.NewChannelService(bizChannelUseCase)
 	serviceGroup := grpc2.NewServiceGroup(serviceChannelService)
 	grpcServer := grpc2.NewGRPCServer(serverConfig, serviceGroup)

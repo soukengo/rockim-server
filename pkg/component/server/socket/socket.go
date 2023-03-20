@@ -16,9 +16,9 @@ type Server interface {
 
 type Manager interface {
 	Channel(channelId string) (Channel, bool)
-	Group(groupId string) (Group, bool)
 	JoinGroup(groupId string, channel Channel) error
 	QuitGroup(groupId string, channel Channel) error
+	PushGroup(groupId string, p packet.IPacket)
 }
 
 type Registry interface {

@@ -7,34 +7,34 @@ import (
 	"rockimserver/pkg/component/server/socket/packet"
 )
 
-func (m *server) OnConnect(conn network.Connection) {
+func (s *server) OnConnect(conn network.Connection) {
 	channelId := conn.Id()
 	log.Infof("OnConnect: %v", channelId)
-	ch := newChannel(conn, m.opt.SendQueueSize)
-	m.Bucket(conn.Id()).PutChannel(ch)
+	ch := newChannel(conn, s.opt.SendQueueSize)
+	s.Bucket(conn.Id()).PutChannel(ch)
 	ctx := NewContext(context.Background(), ch)
-	m.handler.OnCreated(ctx)
+	s.handler.OnCreated(ctx)
 }
 
-func (m *server) OnDisConnect(conn network.Connection) {
+func (s *server) OnDisConnect(conn network.Connection) {
 	channelId := conn.Id()
 	log.Infof("OnDisConnect: %v", channelId)
-	ch, ok := m.Channel(conn.Id())
+	ch, ok := s.Channel(conn.Id())
 	if !ok {
 		return
 	}
-	m.Bucket(channelId).DelChannel(ch)
+	s.Bucket(channelId).DelChannel(ch)
 	ctx := NewContext(context.Background(), ch)
-	m.handler.OnClosed(ctx)
+	s.handler.OnClosed(ctx)
 }
 
-func (m *server) OnReceived(conn network.Connection, p packet.IPacket) {
+func (s *server) OnReceived(conn network.Connection, p packet.IPacket) {
 	log.Infof("OnReceived")
-	ch, ok := m.Channel(conn.Id())
+	ch, ok := s.Channel(conn.Id())
 	if !ok {
 		_ = conn.Close()
 		return
 	}
 	ctx := NewContext(context.Background(), ch)
-	m.handler.OnReceived(ctx, p)
+	s.handler.OnReceived(ctx, p)
 }

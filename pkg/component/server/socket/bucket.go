@@ -2,22 +2,37 @@ package socket
 
 import (
 	"github.com/google/uuid"
+	"rockimserver/pkg/component/server/socket/packet"
 	"sync"
+	"sync/atomic"
 )
 
 type Bucket struct {
-	channelSize uint32
-	id          string
-	chs         map[string]Channel
-	cLock       sync.RWMutex
-	gLock       sync.RWMutex
-	groups      map[string]Group
+	channelSize   uint32
+	id            string
+	chs           map[string]Channel
+	cLock         sync.RWMutex
+	gLock         sync.RWMutex
+	groups        map[string]Group
+	routines      []chan *PushGroupPacket
+	routineAmount uint64
+	routineSize   int
+
+	routinesNum uint64
 }
 
-func newBucket(channelSize uint32) *Bucket {
+func newBucket(channelSize uint32, routineAmount uint64, routineSize int) *Bucket {
 	b := &Bucket{
-		id:  uuid.New().String(),
-		chs: make(map[string]Channel, channelSize),
+		id:            uuid.New().String(),
+		chs:           make(map[string]Channel, channelSize),
+		routineAmount: routineAmount,
+		routineSize:   routineSize,
+	}
+	b.routines = make([]chan *PushGroupPacket, routineAmount)
+	for i := uint64(0); i < routineAmount; i++ {
+		c := make(chan *PushGroupPacket, routineSize)
+		b.routines[i] = c
+		go b.groupproc(c)
 	}
 	return b
 }
@@ -86,4 +101,21 @@ func (b *Bucket) QuitGroup(groupId string, ch Channel) {
 	}
 	ch.DelGroup(groupId)
 	return
+}
+
+// PushGroup broadcast a message to specified group
+func (b *Bucket) PushGroup(groupId string, p packet.IPacket) {
+	num := atomic.AddUint64(&b.routinesNum, 1) % b.routineAmount
+	b.routines[num] <- &PushGroupPacket{GroupId: groupId, Packet: p}
+}
+
+// groupproc
+func (b *Bucket) groupproc(c chan *PushGroupPacket) {
+	for {
+		arg := <-c
+		if item, ok := b.Group(arg.GroupId); ok {
+			var g = item
+			g.Push(arg.Packet)
+		}
+	}
 }

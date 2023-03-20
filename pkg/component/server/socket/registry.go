@@ -7,20 +7,20 @@ import (
 	"rockimserver/pkg/component/server/socket/network/ws"
 )
 
-func (m *server) RegisterTCPServer(cfg *tcp.Config) {
-	s := nbio.NewServer(cfg, m.opt.Parser)
-	//s := gnet.NewServer(cfg, m.opt.Parser)
-	m.register(s)
+func (s *server) RegisterTCPServer(cfg *tcp.Config) {
+	ins := nbio.NewServer(cfg, s.opt.Parser)
+	//s := gnet.NewServer(cfg, s.opt.Parser)
+	s.register(ins)
 	return
 }
-func (m *server) RegisterWSServer(cfg *ws.Config) {
-	s := ws.NewServer(cfg, m.opt.Parser)
-	m.register(s)
+func (s *server) RegisterWSServer(cfg *ws.Config) {
+	ins := ws.NewServer(cfg, s.opt.Parser)
+	s.register(ins)
 	return
 }
 
-func (m *server) register(srv network.Server) {
+func (s *server) register(srv network.Server) {
 	srvId := srv.Id()
-	m.servers[srvId] = srv
-	srv.SetHandler(m)
+	s.servers[srvId] = srv
+	srv.SetHandler(s)
 }

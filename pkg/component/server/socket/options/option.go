@@ -7,6 +7,8 @@ type Option func(o *Options)
 type Options struct {
 	BucketSize    uint32
 	ChannelSize   uint32
+	RoutineAmount uint64
+	RoutineSize   int
 	Factory       packet.IFactory
 	RecvQueueSize uint32
 	SendQueueSize uint32

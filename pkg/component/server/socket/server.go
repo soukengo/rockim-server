@@ -23,17 +23,17 @@ func NewServer(handler Handler, opts ...options.Option) Server {
 	m.opt = opt
 	m.buckets = make([]*Bucket, opt.BucketSize)
 	for i := uint32(0); i < opt.BucketSize; i++ {
-		m.buckets[i] = newBucket(opt.ChannelSize)
+		m.buckets[i] = newBucket(opt.ChannelSize, opt.RoutineAmount, opt.RoutineSize)
 	}
 	m.servers = make(map[string]network.Server)
 	return m
 }
 
-func (m *server) Start(ctx context.Context) (err error) {
-	if len(m.servers) == 0 {
+func (s *server) Start(ctx context.Context) (err error) {
+	if len(s.servers) == 0 {
 		return errors.New("running server manager without servers")
 	}
-	for _, srv := range m.servers {
+	for _, srv := range s.servers {
 		err = srv.Start()
 		if err != nil {
 			return
@@ -42,8 +42,8 @@ func (m *server) Start(ctx context.Context) (err error) {
 	return
 }
 
-func (m *server) Stop(ctx context.Context) (err error) {
-	for _, srv := range m.servers {
+func (s *server) Stop(ctx context.Context) (err error) {
+	for _, srv := range s.servers {
 		err = srv.Close()
 		if err != nil {
 			return
