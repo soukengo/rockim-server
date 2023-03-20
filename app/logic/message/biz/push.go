@@ -43,6 +43,7 @@ func (m *pushManager) PushUsers(ctx context.Context, operation enums.Network_Pus
 			return item.ChannelId
 		})
 		messages = append(messages, &types.Message{
+			ProductId: productId,
 			Target:    types.Message_CHANNEL,
 			Operation: operation,
 			ServerId:  serverId,

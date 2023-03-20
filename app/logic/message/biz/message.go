@@ -3,6 +3,7 @@ package biz
 import (
 	"context"
 	"github.com/golang/protobuf/proto"
+	clienttypes "rockimserver/apis/rockim/api/client/v1/types"
 	"rockimserver/apis/rockim/service/message/v1/types"
 	usertypes "rockimserver/apis/rockim/service/user/v1/types"
 	"rockimserver/apis/rockim/shared/enums"
@@ -109,22 +110,22 @@ func (uc *MessageUseCase) confirmMessage(ctx context.Context, meta *biztypes.Mes
 		return
 	}
 	// 异步扩散写
-	err = uc.diffusionWrite(ctx, message, meta.Receivers)
+	err = uc.diffusionWrite(ctx, meta)
 	if err != nil {
 		return
 	}
-	err = uc.dispatchMessage(ctx, message, meta.Receivers)
+	err = uc.dispatchMessage(ctx, meta, message)
 	return
 }
 
 // diffusionWrite 扩散写
-func (uc *MessageUseCase) diffusionWrite(ctx context.Context, message *types.IMMessage, receivers []string) (err error) {
-	relations := make([]*types.IMMessageRelation, len(receivers))
-	for i, receiver := range receivers {
+func (uc *MessageUseCase) diffusionWrite(ctx context.Context, meta *biztypes.MessageMeta) (err error) {
+	relations := make([]*types.IMMessageRelation, len(meta.Receivers))
+	for i, receiver := range meta.Receivers {
 		relations[i] = &types.IMMessageRelation{
-			ProductId:      message.ProductId,
-			ConversationId: message.ConversationId,
-			MsgId:          message.MsgId,
+			ProductId:      meta.ProductId,
+			ConversationId: meta.ConversationId(),
+			MsgId:          meta.MsgId,
 			Uid:            receiver,
 		}
 	}
@@ -133,17 +134,28 @@ func (uc *MessageUseCase) diffusionWrite(ctx context.Context, message *types.IMM
 }
 
 // dispatchMessage 分发消息
-func (uc *MessageUseCase) dispatchMessage(ctx context.Context, message *types.IMMessage, receivers []string) (err error) {
-	body, err := proto.Marshal(message)
+func (uc *MessageUseCase) dispatchMessage(ctx context.Context, meta *biztypes.MessageMeta, message *types.IMMessage) (err error) {
+	clientMessage := uc.toClientMessage(meta, message)
+	body, err := proto.Marshal(&clienttypes.IMMessagePacket{List: []*clienttypes.IMMessage{clientMessage}})
 	if err != nil {
 		return
 	}
 	operation := enums.Network_MESSAGES
 	switch message.ConversationId.Category {
-	case enums.Conversation_PERSON:
-		err = uc.pushMgr.PushUsers(ctx, operation, message.ProductId, receivers, body)
 	case enums.Conversation_GROUP:
-		err = uc.pushMgr.PushGroup(ctx, operation, message.ProductId, message.ConversationId.Value, body)
+		err = uc.pushMgr.PushGroup(ctx, operation, meta.ProductId, message.ConversationId.Value, body)
+	case enums.Conversation_PERSON:
+		err = uc.pushMgr.PushUsers(ctx, operation, meta.ProductId, []string{meta.RecvUser.Id}, body)
+		if err != nil {
+			return
+		}
+		// 给发送人推送消息
+		clientMessage.Target.Value = meta.Target.Value
+		body, err = proto.Marshal(&clienttypes.IMMessagePacket{List: []*clienttypes.IMMessage{clientMessage}})
+		if err != nil {
+			return
+		}
+		err = uc.pushMgr.PushUsers(ctx, operation, meta.ProductId, []string{meta.Sender.Id}, body)
 	}
 	return
 }
@@ -168,4 +180,30 @@ func (uc *MessageUseCase) completeMessageBody(ctx context.Context, opts *options
 		Payload:     opts.Payload,
 	}
 	return
+}
+
+func (uc *MessageUseCase) toClientMessage(meta *biztypes.MessageMeta, message *types.IMMessage) *clienttypes.IMMessage {
+	target := meta.ReceiverTarget()
+	return &clienttypes.IMMessage{
+		ProductId: meta.ProductId,
+		MsgId:     meta.MsgId,
+		Target:    &clienttypes.TargetID{Category: target.Category, Value: target.Value},
+		Body: &clienttypes.IMMessageBody{
+			Timestamp: message.Body.Timestamp,
+			Sender: &clienttypes.IMMessageSender{
+				Uid:       message.Body.Sender.Uid,
+				Account:   message.Body.Sender.Account,
+				Name:      message.Body.Sender.Name,
+				AvatarUrl: message.Body.Sender.AvatarUrl,
+			},
+			ClientMsgId: message.Body.ClientMsgId,
+			MessageType: message.Body.MessageType,
+			Content:     message.Body.Content,
+			Payload:     message.Body.Payload,
+			NeedReceipt: message.Body.NeedReceipt,
+		},
+		Sequence: message.Sequence,
+		Status:   message.Status,
+		Version:  message.Version,
+	}
 }

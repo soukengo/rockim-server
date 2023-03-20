@@ -50,6 +50,14 @@ func (m *MessageMeta) ConversationId() *types.ConversationID {
 	}
 }
 
+func (m *MessageMeta) ReceiverTarget() *types.TargetID {
+	target := &types.TargetID{Category: m.Target.Category, Value: m.Target.Value}
+	if m.Target.Category == enums.Conversation_PERSON {
+		target.Value = m.Sender.Account
+	}
+	return target
+}
+
 // EncodeConversationID encodes the conversation id
 // dist: productId:category:value
 func EncodeConversationID(productId string, id *types.ConversationID) (dist string) {

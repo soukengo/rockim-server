@@ -9,9 +9,9 @@ package comet
 import (
 	"github.com/go-kratos/kratos/v2"
 	"rockimserver/app/access/comet/conf"
+	"rockimserver/app/access/comet/infra/grpc"
 	"rockimserver/app/access/comet/module/client/biz"
 	"rockimserver/app/access/comet/module/client/data"
-	"rockimserver/app/access/comet/module/client/data/grpc"
 	"rockimserver/app/access/comet/module/client/service"
 	biz2 "rockimserver/app/access/comet/module/server/biz"
 	data2 "rockimserver/app/access/comet/module/server/data"
@@ -46,6 +46,10 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	serviceChannelService := service2.NewChannelService(bizChannelUseCase)
 	serviceGroup := grpc2.NewServiceGroup(serviceChannelService)
 	grpcServer := grpc2.NewGRPCServer(serverConfig, serviceGroup)
-	app := newApp(logger, config, socketServer, grpcServer)
+	registrar, err := discovery.NewRegistrar(discoveryConfig)
+	if err != nil {
+		return nil, err
+	}
+	app := newApp(logger, config, socketServer, grpcServer, registrar)
 	return app, nil
 }

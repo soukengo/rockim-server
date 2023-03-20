@@ -26,5 +26,6 @@ func (s *MessageService) Send(ctx context.Context, in *v1.MessageSendRequest) (o
 		Content:     in.Content,
 		Payload:     in.Payload,
 	})
+	out = &v1.MessageSendResponse{}
 	return
 }

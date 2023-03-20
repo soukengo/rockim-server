@@ -3,7 +3,7 @@ package socket
 import (
 	"context"
 	"github.com/golang/protobuf/proto"
-	v1 "rockimserver/apis/rockim/api/client/socket/v1"
+	v1 "rockimserver/apis/rockim/api/client/v1/socket"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/access/comet/module/server/biz/options"
 	"rockimserver/pkg/component/server/socket"
@@ -47,7 +47,7 @@ func newPushPacket(operation enums.Network_PushOperation, data []byte) packet.IP
 	}
 	headerBytes, _ := encode(header)
 	bodyBytes, _ := encode(body)
-	return v1.NewPacket(uint8(enums.Network_INVALID_PUSH), headerBytes, bodyBytes)
+	return v1.NewPacket(uint8(enums.Network_PUSH), headerBytes, bodyBytes)
 }
 
 func encode(in proto.Message) ([]byte, error) {

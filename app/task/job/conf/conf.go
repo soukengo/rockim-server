@@ -2,10 +2,12 @@ package conf
 
 import (
 	"rockimserver/apis/rockim/service"
+	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/conf"
 	"rockimserver/pkg/component/config"
 	"rockimserver/pkg/component/mq"
 	"rockimserver/pkg/component/server"
+	"rockimserver/pkg/component/server/job"
 	"rockimserver/pkg/log"
 	"time"
 )
@@ -31,6 +33,13 @@ func Load() (cfg *Config, err error) {
 		return
 	}
 	cfg.Global = global
+	//  这里写死，不使用配置文件的内容
+	cfg.Server = &server.Config{
+		Job: &job.Config{
+			GroupId: service.AppJob,
+			Topics:  []string{enums.MQ_MESSAGE_PUSH.String()},
+		},
+	}
 	return
 }
 

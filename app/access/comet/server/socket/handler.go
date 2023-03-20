@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/antlabs/timer"
 	"github.com/golang/protobuf/proto"
-	v1 "rockimserver/apis/rockim/api/client/socket/v1"
+	v1 "rockimserver/apis/rockim/api/client/v1/socket"
 	"rockimserver/apis/rockim/shared"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/apis/rockim/shared/reasons"

@@ -1,7 +1,7 @@
 package socket
 
 import (
-	v1 "rockimserver/apis/rockim/api/client/socket/v1"
+	v1 "rockimserver/apis/rockim/api/client/v1/socket"
 	"rockimserver/app/access/comet/conf"
 	"rockimserver/app/access/comet/module/client/service"
 	"rockimserver/pkg/component/server"

@@ -7,7 +7,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	v1 "rockimserver/apis/rockim/api/client/http/v1"
+	v1 "rockimserver/apis/rockim/api/client/v1/http"
 	"rockimserver/app/access/gateway/module/client/biz"
 	"rockimserver/app/access/gateway/module/client/biz/options"
 	"rockimserver/app/access/gateway/module/client/service"
@@ -38,7 +38,7 @@ func NewClientServiceGroup(productUc *biz.ProductUseCase, authUc *biz.AuthUseCas
 }
 
 func (g *ClientServiceGroup) Register(srv *http.Server) {
-	srv.Use("/rockim.api.client.http.v1.*", g.checkSign(), g.checkAuth(), g.setAPIRequest(), validate.Validator())
+	srv.Use("/rockim.api.client.v1.http.*", g.checkSign(), g.checkAuth(), g.setAPIRequest(), validate.Validator())
 	v1.RegisterProductAPIHTTPServer(srv, g.productSrv)
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	v1.RegisterUserAPIHTTPServer(srv, g.userSrv)

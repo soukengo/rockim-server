@@ -11,6 +11,7 @@ var ProviderSet = wire.NewSet(componentSet,
 	NewUserUseCase,
 	NewAuthUseCase,
 	NewOnlineUseCase,
+	NewOnlineQueryUseCase,
 )
 
 // 注册组件

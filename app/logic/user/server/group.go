@@ -7,17 +7,19 @@ import (
 )
 
 type ServiceGroup struct {
-	user   *service.UserService
-	auth   *service.AuthService
-	online *service.OnlineService
+	user        *service.UserService
+	auth        *service.AuthService
+	online      *service.OnlineService
+	onlineQuery *service.OnlineQueryService
 }
 
-func NewServiceGroup(user *service.UserService, auth *service.AuthService, online *service.OnlineService) *ServiceGroup {
-	return &ServiceGroup{user: user, auth: auth, online: online}
+func NewServiceGroup(user *service.UserService, auth *service.AuthService, online *service.OnlineService, onlineQuery *service.OnlineQueryService) *ServiceGroup {
+	return &ServiceGroup{user: user, auth: auth, online: online, onlineQuery: onlineQuery}
 }
 
 func (g *ServiceGroup) Register(srv *grpc.Server) {
 	v1.RegisterUserAPIServer(srv, g.user)
 	v1.RegisterAuthAPIServer(srv, g.auth)
 	v1.RegisterOnlineAPIServer(srv, g.online)
+	v1.RegisterOnlineQueryAPIServer(srv, g.onlineQuery)
 }

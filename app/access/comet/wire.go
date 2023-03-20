@@ -9,6 +9,7 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
 	"rockimserver/app/access/comet/conf"
+	"rockimserver/app/access/comet/infra"
 	"rockimserver/app/access/comet/module"
 	"rockimserver/app/access/comet/server"
 	"rockimserver/pkg/component/discovery"
@@ -18,5 +19,5 @@ import (
 
 // wireApp init kratos application.
 func wireApp(log.Logger, *conf.Config, *discovery.Config, *servercomponent.Config, *conf.Protocol) (*kratos.App, error) {
-	panic(wire.Build(server.ProviderSet, module.ProviderSet, newApp))
+	panic(wire.Build(server.ProviderSet, module.ProviderSet, infra.ProviderSet, newApp))
 }

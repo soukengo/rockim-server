@@ -130,27 +130,6 @@ func (m *UserRegisterRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if uri, err := url.Parse(m.GetAvatarUrl()); err != nil {
-		err = UserRegisterRequestValidationError{
-			field:  "AvatarUrl",
-			reason: "value must be a valid URI",
-			cause:  err,
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	} else if !uri.IsAbs() {
-		err := UserRegisterRequestValidationError{
-			field:  "AvatarUrl",
-			reason: "value must be absolute",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
 	if len(m.GetFields()) > 100 {
 		err := UserRegisterRequestValidationError{
 			field:  "Fields",

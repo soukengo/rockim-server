@@ -2,6 +2,7 @@ package comet
 
 import (
 	"github.com/go-kratos/kratos/v2"
+	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"rockimserver"
 	"rockimserver/app/access/comet/conf"
@@ -29,12 +30,13 @@ func New(version string) (app *kratos.App, logger log.Logger, err error) {
 	return
 }
 
-func newApp(logger log.Logger, cfg *conf.Config, ss socket.Server, gs *grpc.Server) *kratos.App {
+func newApp(logger log.Logger, cfg *conf.Config, ss socket.Server, gs *grpc.Server, registrar registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.ID(cfg.Global.ID),
 		kratos.Name(cfg.Global.AppId),
 		kratos.Version(cfg.Global.Version),
 		kratos.Metadata(map[string]string{}),
+		kratos.Registrar(registrar),
 		kratos.Server(
 			ss,
 			gs,

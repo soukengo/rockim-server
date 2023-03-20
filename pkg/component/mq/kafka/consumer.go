@@ -31,7 +31,7 @@ func NewConsumer(config *ConsumerConfig, handler mq.Handler, logger log.Logger) 
 	kafkaConfig.Group.Return.Notifications = true
 	topics := make([]string, len(config.Topics))
 	for i := 0; i < len(config.Topics); i++ {
-		topics[i] = config.Kafka.TopicPrefix + topics[i]
+		topics[i] = config.Kafka.TopicPrefix + config.Topics[i]
 	}
 	if config.Workers <= 0 {
 		config.Workers = defaultWorkers

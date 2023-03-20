@@ -20,3 +20,17 @@ type OnlineDeleteOptions struct {
 	ServerId  string
 	ChannelId string
 }
+
+type OnlineCheckOptions struct {
+	ProductId string
+	Uid       string
+}
+type OnlineBatchCheckOptions struct {
+	ProductId string
+	Uids      []string
+}
+
+type OnlineUserListOptions struct {
+	ProductId string
+	Uids      []string
+}

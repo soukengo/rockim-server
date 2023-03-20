@@ -12,10 +12,9 @@ require (
 	github.com/go-kratos/kratos/contrib/registry/etcd/v2 v2.0.0-20221026062414-3c65f16737e3
 	github.com/go-kratos/kratos/contrib/registry/nacos/v2 v2.0.0-20230129033620-b242403bc125
 	github.com/go-kratos/kratos/contrib/registry/zookeeper/v2 v2.0.0-20221026062414-3c65f16737e3
-	github.com/go-kratos/kratos/v2 v2.5.3
+	github.com/go-kratos/kratos/v2 v2.6.1
 	github.com/go-redis/redis/extra/rediscmd v0.2.0
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-zookeeper/zk v1.0.3
 	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
@@ -36,6 +35,7 @@ require (
 	github.com/speps/go-hashids/v2 v2.0.1
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.1
+	github.com/wxnacy/wgo v1.0.4
 	github.com/zhenjl/cityhash v0.0.0-20131128155616-cdd6a94144ab
 	go.etcd.io/etcd/client/v3 v3.5.4
 	go.mongodb.org/mongo-driver v1.11.1
@@ -45,7 +45,7 @@ require (
 	go.uber.org/atomic v1.10.0
 	go.uber.org/zap v1.23.0
 	golang.org/x/exp v0.0.0-20221227203929-1b447090c38c
-	golang.org/x/net v0.5.0
+	golang.org/x/net v0.7.0
 	google.golang.org/genproto v0.0.0-20220524023933-508584e28198
 	google.golang.org/grpc v1.46.2
 	google.golang.org/protobuf v1.28.0
@@ -67,6 +67,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-errors/errors v1.0.1 // indirect
+	github.com/go-kratos/aegis v0.1.4 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
@@ -106,8 +107,8 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
-	golang.org/x/text v0.6.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/jcmturner/aescts.v1 v1.0.1 // indirect
 	gopkg.in/jcmturner/dnsutils.v1 v1.0.1 // indirect

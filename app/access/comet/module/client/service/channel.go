@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"rockimserver/apis/rockim/api/client/socket/v1"
+	v1 "rockimserver/apis/rockim/api/client/v1/socket"
 	"rockimserver/app/access/comet/module/client/biz"
 	"rockimserver/app/access/comet/module/client/biz/options"
 	"rockimserver/pkg/component/server/socket"

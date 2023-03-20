@@ -1,7 +1,7 @@
 package converter
 
 import (
-	clienttypes "rockimserver/apis/rockim/api/client/http/v1/types"
+	clienttypes "rockimserver/apis/rockim/api/client/v1/types"
 	"rockimserver/apis/rockim/service/group/v1/types"
 )
 

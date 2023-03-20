@@ -14,4 +14,5 @@ var ProviderSet = wire.NewSet(
 	NewAuthCodeRepo,
 	NewAccessTokenRepo,
 	NewOnlineRepo,
+	NewOnlineQueryRepo,
 )

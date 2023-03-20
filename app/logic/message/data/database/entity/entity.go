@@ -32,7 +32,7 @@ type IMMessageBody struct {
 	// 消息类型
 	MessageType int32 `bson:"message_type"`
 	// 消息内容
-	Content string `bson:"content"`
+	Content []byte `bson:"content"`
 	// 透传数据
 	Payload map[string]string `bson:"payload"`
 	// 是否需要已读回执

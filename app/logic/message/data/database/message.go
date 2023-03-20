@@ -57,7 +57,7 @@ func (d *MessageData) Save(ctx context.Context, message *types.IMMessage) (err e
 	if err != nil {
 		return
 	}
-	_, err = d.mgo.Collection(entity.TableImMessageRelation).InsertOne(ctx, record)
+	_, err = d.mgo.Collection(entity.TableImMessage).InsertOne(ctx, record)
 	return
 }
 

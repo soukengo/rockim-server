@@ -26,7 +26,6 @@ func NewServer(cfg *Config, parser *packet.Parser) network.Server {
 	if len(cfg.Path) == 0 {
 		cfg.Path = "/"
 	}
-	websocket.DefaultDialer.Dial("", nil)
 	return &wsServer{
 		id:       uuid.New().String(),
 		cfg:      cfg,

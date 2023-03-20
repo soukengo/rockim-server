@@ -26,7 +26,6 @@ func New(version string) (app *kratos.App, logger log.Logger, err error) {
 	}
 	app, err = wireApp(logger, cfg, cfg.Global.Discovery, cfg.Server, cfg.MQ)
 	if err != nil {
-		//err = errors.New(errors.UnknownCode, "", "wireApp error")
 		return
 	}
 	return
