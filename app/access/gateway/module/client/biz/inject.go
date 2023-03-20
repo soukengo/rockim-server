@@ -9,4 +9,5 @@ var ProviderSet = wire.NewSet(
 	NewAuthUseCase,
 	NewChatRoomUseCase,
 	NewChatRoomMemberUseCase,
+	NewMessageUseCase,
 )

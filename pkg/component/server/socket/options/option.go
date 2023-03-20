@@ -31,6 +31,10 @@ func WithSendQueueSize(sendQueueSize uint32) func(*Options) {
 func Default() *Options {
 	opt := new(Options)
 	opt.BucketSize = 32
+	opt.ChannelSize = 1024
+	opt.RoutineAmount = 32
+	opt.RoutineSize = 1024
+
 	opt.Factory = packet.DefaultPacketFactory()
 	opt.RecvQueueSize = 10
 	opt.SendQueueSize = 10

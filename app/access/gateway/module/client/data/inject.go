@@ -11,4 +11,5 @@ var ProviderSet = wire.NewSet(
 	NewAuthRepo,
 	NewChatRoomRepo,
 	NewChatRoomMemberRepo,
+	NewMessageRepo,
 )

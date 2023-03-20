@@ -30,10 +30,11 @@ type ClientServiceGroup struct {
 	authSrv           *service.AuthService
 	chatRoomSrv       *service.ChatRoomService
 	chatRoomMemberSrv *service.ChatRoomMemberService
+	messageSrv        *service.MessageService
 }
 
-func NewClientServiceGroup(productUc *biz.ProductUseCase, authUc *biz.AuthUseCase, productSrv *service.ProductService, userSrv *service.UserService, authSrv *service.AuthService, chatRoomSrv *service.ChatRoomService, chatRoomMemberSrv *service.ChatRoomMemberService) *ClientServiceGroup {
-	return &ClientServiceGroup{productUc: productUc, authUc: authUc, productSrv: productSrv, userSrv: userSrv, authSrv: authSrv, chatRoomSrv: chatRoomSrv, chatRoomMemberSrv: chatRoomMemberSrv}
+func NewClientServiceGroup(productUc *biz.ProductUseCase, authUc *biz.AuthUseCase, productSrv *service.ProductService, userSrv *service.UserService, authSrv *service.AuthService, chatRoomSrv *service.ChatRoomService, chatRoomMemberSrv *service.ChatRoomMemberService, messageSrv *service.MessageService) *ClientServiceGroup {
+	return &ClientServiceGroup{productUc: productUc, authUc: authUc, productSrv: productSrv, userSrv: userSrv, authSrv: authSrv, chatRoomSrv: chatRoomSrv, chatRoomMemberSrv: chatRoomMemberSrv, messageSrv: messageSrv}
 }
 
 func (g *ClientServiceGroup) Register(srv *http.Server) {
@@ -43,6 +44,7 @@ func (g *ClientServiceGroup) Register(srv *http.Server) {
 	v1.RegisterUserAPIHTTPServer(srv, g.userSrv)
 	v1.RegisterChatRoomAPIHTTPServer(srv, g.chatRoomSrv)
 	v1.RegisterChatRoomMemberAPIHTTPServer(srv, g.chatRoomMemberSrv)
+	v1.RegisterMessageAPIHTTPServer(srv, g.messageSrv)
 }
 
 type ClientAPIRequest interface {
