@@ -1,5 +1,0 @@
-package mq
-
-const (
-// topicPush
-)

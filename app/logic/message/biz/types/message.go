@@ -50,7 +50,7 @@ func (m *MessageMeta) ConversationId() *types.ConversationID {
 	}
 }
 
-func (m *MessageMeta) ReceiverTarget() *types.TargetID {
+func (m *MessageMeta) FromTarget() *types.TargetID {
 	target := &types.TargetID{Category: m.Target.Category, Value: m.Target.Value}
 	if m.Target.Category == enums.Conversation_PERSON {
 		target.Value = m.Sender.Account
@@ -82,4 +82,22 @@ func DecodeConversationID(source string) (productId string, id *types.Conversati
 	}
 	id = &types.ConversationID{Category: enums.Conversation_Category(categoryNum), Value: value}
 	return
+}
+
+func PersonUids(id *types.ConversationID) (uids []string, valid bool) {
+	uids = strings.Split(id.Value, conversationIdValueSeparator)
+	valid = len(uids) == 2
+	return
+}
+
+// IMMessageLetter 消息信件（同步消息）
+type IMMessageLetter struct {
+	// 会话ID
+	ConversationId *types.ConversationID
+	// 消息ID
+	MsgId string
+	// 用户ID
+	Uid string
+	// 时间戳
+	Timestamp int64
 }

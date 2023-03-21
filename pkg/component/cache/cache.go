@@ -14,6 +14,7 @@ type ValueCache[T any] interface {
 	Cache[T]
 	Get(ctx context.Context, parts KeyParts) (*T, error)
 	Set(ctx context.Context, parts KeyParts, value *T) error
+	List(ctx context.Context, parts KeyParts, ids []string) ([]*T, error)
 }
 
 type HashCache[T any] interface {
@@ -42,9 +43,19 @@ type SortedSetCache[T any] interface {
 	Add(ctx context.Context, parts KeyParts, member *SortedMember[T]) error
 	AddSlice(ctx context.Context, parts KeyParts, values []*SortedMember[T]) error
 	Paginate(ctx context.Context, parts KeyParts, paginate *shared.Paginating) ([]*T, *shared.Paginated, error)
+	// Tail 按分数排序 查看最后的数据
+	Tail(ctx context.Context, parts KeyParts, size int64) ([]*T, error)
 	DeleteMember(ctx context.Context, parts KeyParts, value *T) error
 	ExistsMember(ctx context.Context, parts KeyParts, value *T) (bool, error)
 	Count(ctx context.Context, parts KeyParts) (int64, error)
+	// Clear 清除数据
+	// reverse: false -> 删除分数低的
+	// reverse: false -> 删除分数高的
+	Clear(ctx context.Context, parts KeyParts, keep uint64, reverse bool) error
+	// ClearByScore 按照分数删除
+	// reverse: false -> 删除分数低的
+	// reverse: false -> 删除分数高的
+	ClearByScore(ctx context.Context, parts KeyParts, score int64, reverse bool) error
 }
 
 type SortedMember[T any] struct {

@@ -24,3 +24,5 @@ mq:
     brokers:
       - 127.0.0.1:9092
     topicPrefix: "ROCKIM-"
+queue:
+  workers: 10

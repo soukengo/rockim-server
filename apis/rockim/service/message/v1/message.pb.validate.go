@@ -112,6 +112,17 @@ func (m *MessageSendRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
+	if m.GetTarget() == nil {
+		err := MessageSendRequestValidationError{
+			field:  "Target",
+			reason: "value is required",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if all {
 		switch v := interface{}(m.GetTarget()).(type) {
 		case interface{ ValidateAll() error }:
@@ -141,9 +152,27 @@ func (m *MessageSendRequest) validate(all bool) error {
 		}
 	}
 
-	// no validation rules for ClientMsgId
+	if utf8.RuneCountInString(m.GetClientMsgId()) < 1 {
+		err := MessageSendRequestValidationError{
+			field:  "ClientMsgId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
-	// no validation rules for MessageType
+	if _, ok := enums.Message_MessageType_name[int32(m.GetMessageType())]; !ok {
+		err := MessageSendRequestValidationError{
+			field:  "MessageType",
+			reason: "value must be one of the defined enum values",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	// no validation rules for Content
 

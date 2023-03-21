@@ -16,6 +16,10 @@ type KeyParts struct {
 	parts []string
 }
 
+func (k KeyParts) Parts() []string {
+	return k.parts
+}
+
 func Parts(parts ...string) KeyParts {
 	return KeyParts{parts: parts}
 }

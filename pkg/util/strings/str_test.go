@@ -8,3 +8,7 @@ import (
 func TestRandStr(t *testing.T) {
 	fmt.Println(RandStr(32))
 }
+
+func TestName(t *testing.T) {
+	fmt.Println()
+}

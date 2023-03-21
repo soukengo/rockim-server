@@ -32,6 +32,5 @@ func Call(chains ...HandleFunc) error {
 			return err
 		}
 	}
-
 	return nil
 }

@@ -4,14 +4,12 @@ import (
 	"context"
 	"github.com/go-redis/redis/v8"
 	"rockimserver/pkg/log"
-	"sync"
 	"time"
 )
 
 type Client struct {
 	config            *Config
 	redis             redis.UniversalClient
-	once              sync.Once
 	keyChangeHandlers map[string]OnKeyChanged
 }
 
@@ -277,6 +275,9 @@ func (c *Client) ZRangeByScoreWithScores(ctx context.Context, key string, opt *r
 func (c *Client) ZRangeWithScores(ctx context.Context, key string, start, stop int64) ([]redis.Z, error) {
 	return c.redis.ZRangeWithScores(ctx, c.genKey(key), start, stop).Result()
 }
+func (c *Client) ZRevRangeByScore(ctx context.Context, key string, opt *redis.ZRangeBy) ([]string, error) {
+	return c.redis.ZRevRangeByScore(ctx, c.genKey(key), opt).Result()
+}
 
 func (c *Client) ZRem(ctx context.Context, key string, members ...any) (int64, error) {
 	return c.redis.ZRem(ctx, c.genKey(key), members...).Result()
@@ -284,6 +285,9 @@ func (c *Client) ZRem(ctx context.Context, key string, members ...any) (int64, e
 
 func (c *Client) ZRemRangeByScore(ctx context.Context, key string, min, max string) (int64, error) {
 	return c.redis.ZRemRangeByScore(ctx, c.genKey(key), min, max).Result()
+}
+func (c *Client) ZRemRangeByRank(ctx context.Context, key string, start, stop int64) (int64, error) {
+	return c.redis.ZRemRangeByRank(ctx, c.genKey(key), start, stop).Result()
 }
 func (c *Client) ZCard(ctx context.Context, key string) (int64, error) {
 	return c.redis.ZCard(ctx, c.genKey(key)).Result()

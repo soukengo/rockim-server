@@ -14,6 +14,7 @@ import (
 	"rockimserver/app/logic/message/infra"
 	"rockimserver/app/logic/message/server"
 	"rockimserver/app/logic/message/service"
+	"rockimserver/app/logic/message/task"
 	"rockimserver/pkg/component/cache"
 	"rockimserver/pkg/component/database"
 	"rockimserver/pkg/component/discovery"
@@ -24,5 +25,5 @@ import (
 
 // wireApp init kratos application.
 func wireApp(log.Logger, *conf.Config, *discovery.Config, *servercomponent.Config, *database.Config, *cache.Config, *mq.Config) (*kratos.App, error) {
-	panic(wire.Build(server.ProviderSet, infra.ProviderSet, biz.ProviderSet, service.ProviderSet, data.ProviderSet, newApp))
+	panic(wire.Build(server.ProviderSet, infra.ProviderSet, service.ProviderSet, task.ProviderSet, biz.ProviderSet, data.ProviderSet, newApp))
 }

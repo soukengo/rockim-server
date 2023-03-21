@@ -7,6 +7,7 @@ import (
 	"rockimserver/pkg/component/cache"
 	"rockimserver/pkg/component/database/redis"
 	"rockimserver/pkg/errors"
+	"strconv"
 )
 
 type sortedSetCache[T any] struct {
@@ -79,6 +80,24 @@ func (c *sortedSetCache[T]) Paginate(ctx context.Context, parts cache.KeyParts, 
 	return
 }
 
+func (c *sortedSetCache[T]) Tail(ctx context.Context, parts cache.KeyParts, size int64) (ret []*T, err error) {
+	key := c.key(parts)
+	values, err := c.cli.ZRangeByScore(ctx, key, &rds.ZRangeBy{Count: size, Offset: 0})
+	if err != nil {
+		return
+	}
+	ret = make([]*T, len(values))
+	for i, v := range values {
+		var item *T
+		item, err = c.decodeStr(v)
+		if err != nil {
+			return
+		}
+		ret[i] = item
+	}
+	return
+}
+
 func (c *sortedSetCache[T]) DeleteMember(ctx context.Context, parts cache.KeyParts, v *T) (err error) {
 	data, err := c.encode(v)
 	if err != nil {
@@ -127,5 +146,33 @@ func (c *sortedSetCache[T]) Count(ctx context.Context, parts cache.KeyParts) (co
 			return
 		}
 	}
+	return
+}
+
+func (c *sortedSetCache[T]) Clear(ctx context.Context, parts cache.KeyParts, keep uint64, reverse bool) (err error) {
+	// 默认从最小开始删
+	start := int64(0)
+	stop := int64(-keep) + 1
+	// 删除最大的
+	if reverse {
+		start = int64(keep)
+		stop = -1
+	}
+	if keep == 0 {
+		start = 0
+		stop = -1
+	}
+	_, err = c.cli.ZRemRangeByRank(ctx, c.key(parts), start, stop)
+	return
+}
+func (c *sortedSetCache[T]) ClearByScore(ctx context.Context, parts cache.KeyParts, score int64, reverse bool) (err error) {
+	scoreStr := strconv.Itoa(int(score))
+	min := redis.Min
+	max := scoreStr
+	if reverse {
+		min = scoreStr
+		max = redis.Max
+	}
+	_, err = c.cli.ZRemRangeByScore(ctx, c.key(parts), min, max)
 	return
 }

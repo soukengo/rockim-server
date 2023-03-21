@@ -6,6 +6,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"rockimserver"
 	"rockimserver/app/logic/message/conf"
+	"rockimserver/pkg/component/server/job"
 	"rockimserver/pkg/log"
 )
 
@@ -43,7 +44,7 @@ func configure(cfg *conf.Config) (err error) {
 	}
 	return
 }
-func newApp(logger log.Logger, cfg *conf.Config, gs *grpc.Server, registrar registry.Registrar) *kratos.App {
+func newApp(logger log.Logger, cfg *conf.Config, gs *grpc.Server, js job.Server, registrar registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.Name(cfg.Global.AppId),
 		kratos.Version(cfg.Global.Version),
@@ -51,6 +52,7 @@ func newApp(logger log.Logger, cfg *conf.Config, gs *grpc.Server, registrar regi
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(
 			gs,
+			js,
 		),
 	)
 }

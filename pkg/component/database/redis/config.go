@@ -4,6 +4,11 @@ import (
 	"time"
 )
 
+const (
+	Max = "+inf"
+	Min = "-inf"
+)
+
 type Config struct {
 	Addr         []string
 	Password     string

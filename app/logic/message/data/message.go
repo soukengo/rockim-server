@@ -4,15 +4,18 @@ import (
 	"context"
 	"rockimserver/apis/rockim/service/message/v1/types"
 	"rockimserver/app/logic/message/biz"
+	"rockimserver/app/logic/message/data/cache"
 	"rockimserver/app/logic/message/data/database"
+	"rockimserver/pkg/util/chain"
 )
 
 type messageRepo struct {
-	db *database.MessageData
+	cache *cache.MessageData
+	db    *database.MessageData
 }
 
-func NewMessageRepo(db *database.MessageData) biz.MessageRepo {
-	return &messageRepo{db: db}
+func NewMessageRepo(cache *cache.MessageData, db *database.MessageData) biz.MessageRepo {
+	return &messageRepo{cache: cache, db: db}
 }
 
 func (r *messageRepo) GenSequence(ctx context.Context, productId string, conversation *types.ConversationID) (int64, error) {
@@ -20,9 +23,13 @@ func (r *messageRepo) GenSequence(ctx context.Context, productId string, convers
 }
 
 func (r *messageRepo) Save(ctx context.Context, message *types.IMMessage) error {
-	return r.db.Save(ctx, message)
+	return chain.Call(func() (err error) {
+		return r.db.Save(ctx, message)
+	}, func() (err error) {
+		return r.cache.Save(ctx, message)
+	})
 }
 
-func (r *messageRepo) SaveRelations(ctx context.Context, relations []*types.IMMessageRelation) error {
-	return r.db.SaveRelations(ctx, relations)
+func (r *messageRepo) SaveRelations(ctx context.Context, productId string, relations []*types.IMMessageRelation) error {
+	return r.db.SaveRelations(ctx, productId, relations)
 }

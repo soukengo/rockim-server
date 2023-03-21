@@ -61,7 +61,7 @@ func (d *MessageData) Save(ctx context.Context, message *types.IMMessage) (err e
 	return
 }
 
-func (d *MessageData) SaveRelations(ctx context.Context, relations []*types.IMMessageRelation) (err error) {
+func (d *MessageData) SaveRelations(ctx context.Context, productId string, relations []*types.IMMessageRelation) (err error) {
 	var records = make([]any, len(relations))
 	for i, relation := range relations {
 		records[i] = convert.MessageRelationEntity(relation)

@@ -21,7 +21,8 @@ func Load() (cfg *Config, err error) {
 		return
 	}
 	cfg = &Config{
-		Log: log.Default,
+		Log:   log.Default,
+		Queue: &Queue{Workers: 10},
 	}
 	source := config.NewEnvSource(global.Config, configName)
 	defer source.Close()
@@ -41,4 +42,9 @@ type Config struct {
 	Database *database.Config
 	Cache    *cache.Config
 	MQ       *mq.Config
+	Queue    *Queue
+}
+
+type Queue struct {
+	Workers int
 }

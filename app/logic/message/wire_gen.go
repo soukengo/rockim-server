@@ -11,17 +11,18 @@ import (
 	"rockimserver/app/logic/message/biz"
 	"rockimserver/app/logic/message/conf"
 	"rockimserver/app/logic/message/data"
+	cache2 "rockimserver/app/logic/message/data/cache"
 	database2 "rockimserver/app/logic/message/data/database"
 	mq2 "rockimserver/app/logic/message/data/mq"
 	"rockimserver/app/logic/message/infra"
 	"rockimserver/app/logic/message/infra/grpc"
 	server2 "rockimserver/app/logic/message/server"
 	"rockimserver/app/logic/message/service"
+	"rockimserver/app/logic/message/task"
 	"rockimserver/pkg/component/cache"
 	"rockimserver/pkg/component/database"
 	"rockimserver/pkg/component/discovery"
 	"rockimserver/pkg/component/idgen"
-	"rockimserver/pkg/component/lock"
 	"rockimserver/pkg/component/mq"
 	"rockimserver/pkg/component/server"
 	"rockimserver/pkg/log"
@@ -31,9 +32,15 @@ import (
 
 // wireApp init kratos application.
 func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, databaseConfig *database.Config, cacheConfig *cache.Config, mqConfig *mq.Config) (*kratos.App, error) {
-	client := database.NewMongoClient(databaseConfig, logger)
-	messageData := database2.NewMessageSequenceData(client)
-	messageRepo := data.NewMessageRepo(messageData)
+	client := database.NewRedisClient(databaseConfig, logger)
+	messageData := cache2.NewMessageData(client, cacheConfig)
+	mongoClient := database.NewMongoClient(databaseConfig, logger)
+	databaseMessageData := database2.NewMessageSequenceData(mongoClient)
+	messageRepo := data.NewMessageRepo(messageData, databaseMessageData)
+	messageDeliveryData := cache2.NewMessageDeliveryData(client, cacheConfig)
+	messageDeliveryRepo := data.NewMessageDeliveryRepo(messageDeliveryData)
+	messageBoxData := cache2.NewMessageBoxData(client, cacheConfig)
+	messageBoxRepo := data.NewMessageBoxRepo(messageBoxData)
 	registryDiscovery, err := discovery.NewDiscovery(discoveryConfig)
 	if err != nil {
 		return nil, err
@@ -48,9 +55,13 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 		return nil, err
 	}
 	groupRepo := data.NewGroupRepo(groupAPIClient)
-	redisClient := database.NewRedisClient(databaseConfig, logger)
-	builder := lock.NewRedisBuilder(logger, redisClient)
 	generator := idgen.NewMongoGenerator()
+	delayed := infra.NewRedisDelayQueue(client)
+	messageUseCase := biz.NewMessageUseCase(messageRepo, messageDeliveryRepo, messageBoxRepo, userRepo, groupRepo, generator, delayed)
+	messageService := service.NewMessageService(messageUseCase)
+	serviceGroup := server2.NewServiceGroup(messageService)
+	grpcServer := server2.NewGRPCServer(serverConfig, serviceGroup)
+	messageQueryRepo := data.NewMessageQueryRepo(messageData)
 	producer, err := infra.NewKafkaProducer(mqConfig)
 	if err != nil {
 		return nil, err
@@ -63,14 +74,14 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	}
 	onlineRepo := data.NewOnlineRepo(onlineQueryAPIClient)
 	pushManager := biz.NewPushManager(pushMessageRepo, onlineRepo)
-	messageUseCase := biz.NewMessageUseCase(messageRepo, userRepo, groupRepo, builder, generator, pushManager)
-	messageService := service.NewMessageService(messageUseCase)
-	serviceGroup := server2.NewServiceGroup(messageService)
-	grpcServer := server2.NewGRPCServer(serverConfig, serviceGroup)
+	messageDeliveryUseCase := biz.NewMessageDeliveryUseCase(messageDeliveryRepo, messageQueryRepo, pushManager)
+	messageTask := task.NewMessageTask(messageDeliveryUseCase)
+	taskGroup := server2.NewTaskGroup(messageTask)
+	jobServer := server2.NewJobServer(delayed, taskGroup)
 	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {
 		return nil, err
 	}
-	app := newApp(logger, config, grpcServer, registrar)
+	app := newApp(logger, config, grpcServer, jobServer, registrar)
 	return app, nil
 }

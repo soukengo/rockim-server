@@ -187,11 +187,11 @@ func (m *IMMessage) validate(all bool) error {
 	// no validation rules for MsgId
 
 	if all {
-		switch v := interface{}(m.GetTarget()).(type) {
+		switch v := interface{}(m.GetFrom()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, IMMessageValidationError{
-					field:  "Target",
+					field:  "From",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -199,16 +199,45 @@ func (m *IMMessage) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, IMMessageValidationError{
-					field:  "Target",
+					field:  "From",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetTarget()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetFrom()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return IMMessageValidationError{
-				field:  "Target",
+				field:  "From",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetTo()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, IMMessageValidationError{
+					field:  "To",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, IMMessageValidationError{
+					field:  "To",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetTo()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return IMMessageValidationError{
+				field:  "To",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
