@@ -174,7 +174,16 @@ func (m *MessageSendRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	// no validation rules for Content
+	if len(m.GetContent()) < 1 {
+		err := MessageSendRequestValidationError{
+			field:  "Content",
+			reason: "value length must be at least 1 bytes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	// no validation rules for Payload
 

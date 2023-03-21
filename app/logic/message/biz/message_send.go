@@ -145,6 +145,10 @@ func (uc *MessageUseCase) diffusionWrite(ctx context.Context, meta *biztypes.Mes
 	return
 }
 
+const (
+	groupMessageDelay = time.Millisecond * 100
+)
+
 // dispatchMessage 分发消息
 func (uc *MessageUseCase) dispatchMessage(ctx context.Context, meta *biztypes.MessageMeta, message *types.IMMessage) (err error) {
 	delivery := biztypes.NewIMMessageDelivery(message.ConversationId, message.MsgId, meta.FromTarget(), meta.Target)
@@ -153,6 +157,10 @@ func (uc *MessageUseCase) dispatchMessage(ctx context.Context, meta *biztypes.Me
 		return
 	}
 	conversationId := biztypes.EncodeConversationID(message.ProductId, message.ConversationId)
+	// 群消息延时投递
+	if message.ConversationId.Category == enums.Conversation_GROUP {
+		return uc.delayed.SubmitDelay(consts.QueueTopicMessageDelivery, conversationId, groupMessageDelay.Milliseconds(), false)
+	}
 	err = uc.delayed.Submit(consts.QueueTopicMessageDelivery, conversationId)
 	return
 }
