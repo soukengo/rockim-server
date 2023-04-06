@@ -2,11 +2,11 @@ package data
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/errors"
 	"rockimserver/apis/rockim/service/message/v1/types"
 	"rockimserver/app/logic/message/biz"
 	biztypes "rockimserver/app/logic/message/biz/types"
 	"rockimserver/app/logic/message/data/cache"
-	"rockimserver/pkg/errors"
 )
 
 type messageDeliveryRepo struct {

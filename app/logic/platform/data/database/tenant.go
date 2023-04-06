@@ -2,6 +2,8 @@ package database
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/paginate"
 	"go.mongodb.org/mongo-driver/bson"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	mgoopts "go.mongodb.org/mongo-driver/mongo/options"
@@ -10,7 +12,6 @@ import (
 	"rockimserver/app/logic/platform/biz/options"
 	"rockimserver/app/logic/platform/data/database/convert"
 	"rockimserver/app/logic/platform/data/database/entity"
-	"rockimserver/pkg/component/database/mongo"
 	"strconv"
 )
 
@@ -88,7 +89,7 @@ func (d *TenantData) Delete(ctx context.Context, id string) (err error) {
 
 func (d *TenantData) Paging(ctx context.Context, opts *options.TenantPagingOptions) (ret []*types.Tenant, paginated *shared.Paginated, err error) {
 	query := bson.M{}
-	cursor, p, err := d.mgo.Paginate(ctx, entity.TableTenant, query, opts.Paginate)
+	cursor, p, err := d.mgo.Paginate(ctx, entity.TableTenant, query, &paginate.Paginating{PageSize: opts.Paginate.PageSize, PageNo: opts.Paginate.PageNo})
 	if err != nil {
 		return
 	}
@@ -101,5 +102,5 @@ func (d *TenantData) Paging(ctx context.Context, opts *options.TenantPagingOptio
 	for i, record := range records {
 		list[i] = convert.TenantProto(record)
 	}
-	return list, p, nil
+	return list, &shared.Paginated{Total: p.Total}, nil
 }

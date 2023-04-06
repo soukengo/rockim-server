@@ -2,10 +2,10 @@ package biz
 
 import (
 	"github.com/google/wire"
-	"rockimserver/pkg/component/database/mongo"
-	"rockimserver/pkg/component/database/redis"
-	"rockimserver/pkg/component/idgen"
-	"rockimserver/pkg/component/lock"
+	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/database/redis"
+	"github.com/soukengo/gopkg/component/idgen"
+	"github.com/soukengo/gopkg/component/lock"
 )
 
 // ProviderSet is biz providers.

@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/util/copier"
 	v1 "rockimserver/apis/rockim/service/platform/v1"
 	"rockimserver/app/logic/platform/biz"
 	"rockimserver/app/logic/platform/biz/options"
-	"rockimserver/pkg/util/copier"
 )
 
 type TenantService struct {

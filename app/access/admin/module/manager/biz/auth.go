@@ -3,8 +3,8 @@ package biz
 import (
 	"context"
 	"github.com/golang-jwt/jwt/v4"
-	"rockimserver/pkg/component/auth"
-	"rockimserver/pkg/util/encrypt"
+	"github.com/soukengo/gopkg/component/auth"
+	"github.com/soukengo/gopkg/util/encrypt"
 	"time"
 )
 

@@ -3,8 +3,8 @@ package server
 import (
 	"context"
 	"github.com/golang/protobuf/proto"
-	"rockimserver/pkg/component/server/job"
-	"rockimserver/pkg/errors"
+	"github.com/soukengo/gopkg/component/server/job"
+	"github.com/soukengo/gopkg/errors"
 )
 
 var (

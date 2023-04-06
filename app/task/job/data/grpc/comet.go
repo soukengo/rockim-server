@@ -6,10 +6,10 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/soukengo/gopkg/log"
 	ggrpc "google.golang.org/grpc"
 	"rockimserver/apis/rockim/service/comet/v1"
 	"rockimserver/app/task/job/conf"
-	"rockimserver/pkg/log"
 	"sync/atomic"
 	"time"
 )

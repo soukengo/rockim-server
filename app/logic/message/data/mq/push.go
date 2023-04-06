@@ -3,10 +3,10 @@ package mq
 import (
 	"context"
 	"github.com/golang/protobuf/proto"
+	"github.com/soukengo/gopkg/component/mq"
 	v1 "rockimserver/apis/rockim/service/job/v1"
 	"rockimserver/apis/rockim/service/job/v1/types"
 	"rockimserver/apis/rockim/shared/enums"
-	"rockimserver/pkg/component/mq"
 )
 
 type PushMessageData struct {

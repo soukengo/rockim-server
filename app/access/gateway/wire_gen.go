@@ -17,9 +17,9 @@ import (
 	data2 "rockimserver/app/access/gateway/module/openapi/data"
 	service2 "rockimserver/app/access/gateway/module/openapi/service"
 	server2 "rockimserver/app/access/gateway/server"
-	"rockimserver/pkg/component/discovery"
-	"rockimserver/pkg/component/server"
-	"rockimserver/pkg/log"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:

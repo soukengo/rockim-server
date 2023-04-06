@@ -2,11 +2,11 @@ package data
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/errors"
 	"rockimserver/apis/rockim/service/group/v1/types"
 	"rockimserver/apis/rockim/shared"
 	"rockimserver/app/logic/group/biz"
 	"rockimserver/app/logic/group/data/cache"
-	"rockimserver/pkg/errors"
 )
 
 type chatRoomMemberRepo struct {

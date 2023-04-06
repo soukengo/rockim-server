@@ -1,14 +1,14 @@
 package conf
 
 import (
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/config"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/component/mq"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service"
 	"rockimserver/conf"
-	"rockimserver/pkg/component/cache"
-	"rockimserver/pkg/component/config"
-	"rockimserver/pkg/component/database"
-	"rockimserver/pkg/component/mq"
-	"rockimserver/pkg/component/server"
-	"rockimserver/pkg/log"
 )
 
 const (

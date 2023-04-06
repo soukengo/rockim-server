@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/database/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -10,7 +11,6 @@ import (
 	biztypes "rockimserver/app/logic/message/biz/types"
 	"rockimserver/app/logic/message/data/database/convert"
 	"rockimserver/app/logic/message/data/database/entity"
-	"rockimserver/pkg/component/database/mongo"
 	"time"
 )
 

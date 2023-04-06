@@ -4,10 +4,10 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/soukengo/gopkg/component/server/job"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver"
 	"rockimserver/app/logic/message/conf"
-	"rockimserver/pkg/component/server/job"
-	"rockimserver/pkg/log"
 )
 
 // New new a new Message Application

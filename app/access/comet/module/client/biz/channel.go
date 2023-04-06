@@ -3,13 +3,13 @@ package biz
 import (
 	"context"
 	"github.com/antlabs/timer"
+	"github.com/soukengo/gopkg/component/server/socket"
+	"github.com/soukengo/gopkg/errors"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/access/comet/conf"
 	"rockimserver/app/access/comet/module/client/biz/consts"
 	"rockimserver/app/access/comet/module/client/biz/options"
-	"rockimserver/pkg/component/server/socket"
-	"rockimserver/pkg/errors"
-	"rockimserver/pkg/log"
 	"time"
 )
 

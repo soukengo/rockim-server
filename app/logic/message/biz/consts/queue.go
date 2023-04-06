@@ -1,6 +1,6 @@
 package consts
 
-import "rockimserver/pkg/component/queue"
+import "github.com/soukengo/gopkg/component/queue"
 
 var (
 	QueueTopicMessageDelivery = queue.Topic("message.delivery")

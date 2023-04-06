@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/util/copier"
 	adminV1 "rockimserver/apis/rockim/api/admin/manager/v1"
 	apiTypes "rockimserver/apis/rockim/api/admin/manager/v1/types"
 	"rockimserver/apis/rockim/service/platform/v1"
 	"rockimserver/apis/rockim/service/platform/v1/types"
 	"rockimserver/app/access/admin/module/manager/biz"
-	"rockimserver/pkg/util/copier"
 )
 
 type TenantService struct {

@@ -3,12 +3,12 @@ package socket
 import (
 	"context"
 	"github.com/golang/protobuf/proto"
+	"github.com/soukengo/gopkg/component/server/socket"
+	"github.com/soukengo/gopkg/component/server/socket/packet"
+	"github.com/soukengo/gopkg/log"
 	v1 "rockimserver/apis/rockim/api/client/v1/socket"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/access/comet/module/server/biz/options"
-	"rockimserver/pkg/component/server/socket"
-	"rockimserver/pkg/component/server/socket/packet"
-	"rockimserver/pkg/log"
 )
 
 type ChannelManager struct {

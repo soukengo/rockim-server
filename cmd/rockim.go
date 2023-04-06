@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/go-kratos/kratos/v2"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/access/admin"
 	"rockimserver/app/access/comet"
 	"rockimserver/app/access/gateway"
@@ -11,7 +12,6 @@ import (
 	"rockimserver/app/logic/platform"
 	"rockimserver/app/logic/user"
 	"rockimserver/app/task/job"
-	"rockimserver/pkg/log"
 )
 
 // go build -ldflags "-X main.version=x.y.z"

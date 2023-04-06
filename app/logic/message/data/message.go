@@ -2,11 +2,11 @@ package data
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/util/chain"
 	"rockimserver/apis/rockim/service/message/v1/types"
 	"rockimserver/app/logic/message/biz"
 	"rockimserver/app/logic/message/data/cache"
 	"rockimserver/app/logic/message/data/database"
-	"rockimserver/pkg/util/chain"
 )
 
 type messageRepo struct {

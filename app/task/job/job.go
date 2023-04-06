@@ -2,10 +2,10 @@ package job
 
 import (
 	"github.com/go-kratos/kratos/v2"
+	"github.com/soukengo/gopkg/component/server/job"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver"
 	"rockimserver/app/task/job/conf"
-	"rockimserver/pkg/component/server/job"
-	"rockimserver/pkg/log"
 )
 
 // New new a new Job Application

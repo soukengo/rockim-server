@@ -2,12 +2,12 @@ package data
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/errors"
 	"rockimserver/apis/rockim/shared"
 	"rockimserver/app/access/admin/module/manager/biz"
 	"rockimserver/app/access/admin/module/manager/biz/options"
 	"rockimserver/app/access/admin/module/manager/biz/types"
 	"rockimserver/app/access/admin/module/manager/data/database"
-	"rockimserver/pkg/errors"
 )
 
 type sysUserRepo struct {

@@ -2,9 +2,9 @@ package cache
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/database/redis"
 	"rockimserver/apis/rockim/service/user/v1/types"
-	"rockimserver/pkg/component/cache"
-	"rockimserver/pkg/component/database/redis"
 )
 
 type UserData struct {

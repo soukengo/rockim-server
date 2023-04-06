@@ -2,13 +2,13 @@ package database
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/database/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"rockimserver/apis/rockim/service/user/v1/types"
 	"rockimserver/app/logic/user/data/database/convert"
 	"rockimserver/app/logic/user/data/database/entity"
-	"rockimserver/pkg/component/database/mongo"
 )
 
 type UserData struct {

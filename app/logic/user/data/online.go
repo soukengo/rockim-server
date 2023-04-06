@@ -2,10 +2,10 @@ package data
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/errors"
 	"rockimserver/app/logic/user/biz"
 	"rockimserver/app/logic/user/biz/types"
 	"rockimserver/app/logic/user/data/cache"
-	"rockimserver/pkg/errors"
 )
 
 type onlineRepo struct {

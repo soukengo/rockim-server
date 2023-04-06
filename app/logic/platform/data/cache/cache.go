@@ -1,9 +1,9 @@
 package cache
 
 import (
-	"rockimserver/pkg/component/cache"
-	rediscache "rockimserver/pkg/component/cache/redis"
-	"rockimserver/pkg/component/database/redis"
+	"github.com/soukengo/gopkg/component/cache"
+	rediscache "github.com/soukengo/gopkg/component/cache/redis"
+	"github.com/soukengo/gopkg/component/database/redis"
 )
 
 const (

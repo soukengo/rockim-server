@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/google/wire"
-	"rockimserver/pkg/component/discovery"
+	"github.com/soukengo/gopkg/component/discovery"
 )
 
 // ProviderSet is server providers.

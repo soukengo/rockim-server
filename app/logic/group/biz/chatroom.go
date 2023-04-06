@@ -2,13 +2,13 @@ package biz
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/idgen"
+	"github.com/soukengo/gopkg/component/lock"
+	"github.com/soukengo/gopkg/errors"
 	"rockimserver/apis/rockim/service/group/v1/types"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/logic/group/biz/consts"
 	"rockimserver/app/logic/group/biz/options"
-	"rockimserver/pkg/component/idgen"
-	"rockimserver/pkg/component/lock"
-	"rockimserver/pkg/errors"
 	"strings"
 	"time"
 )

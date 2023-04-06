@@ -2,10 +2,10 @@ package cache
 
 import (
 	"context"
-	"rockimserver/pkg/component/cache"
-	"rockimserver/pkg/component/database/redis"
-	"rockimserver/pkg/errors"
-	"rockimserver/pkg/log"
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/database/redis"
+	"github.com/soukengo/gopkg/errors"
+	"github.com/soukengo/gopkg/log"
 )
 
 type AuthCodeData struct {

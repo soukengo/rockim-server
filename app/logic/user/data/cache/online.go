@@ -2,9 +2,9 @@ package cache
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/database/redis"
 	biztypes "rockimserver/app/logic/user/biz/types"
-	"rockimserver/pkg/component/cache"
-	"rockimserver/pkg/component/database/redis"
 )
 
 type OnlineData struct {

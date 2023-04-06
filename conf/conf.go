@@ -3,10 +3,10 @@ package conf
 import (
 	"flag"
 	"fmt"
+	"github.com/soukengo/gopkg/component/config"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/util/ip"
 	"os"
-	"rockimserver/pkg/component/config"
-	"rockimserver/pkg/component/discovery"
-	"rockimserver/pkg/util/ip"
 	"time"
 )
 

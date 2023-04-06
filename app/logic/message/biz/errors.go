@@ -1,8 +1,8 @@
 package biz
 
 import (
+	"github.com/soukengo/gopkg/errors"
 	"rockimserver/apis/rockim/shared/reasons"
-	"rockimserver/pkg/errors"
 )
 
 var (

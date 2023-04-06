@@ -2,10 +2,10 @@ package cache
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/database/redis"
+	"github.com/soukengo/gopkg/log"
 	biztypes "rockimserver/app/logic/message/biz/types"
-	"rockimserver/pkg/component/cache"
-	"rockimserver/pkg/component/database/redis"
-	"rockimserver/pkg/log"
 )
 
 type MessageBoxData struct {

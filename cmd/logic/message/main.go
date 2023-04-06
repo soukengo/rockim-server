@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/logic/message"
-	"rockimserver/pkg/log"
 )
 
 // go build -ldflags "-X main.version=x.y.z"

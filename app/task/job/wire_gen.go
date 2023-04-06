@@ -14,10 +14,10 @@ import (
 	"rockimserver/app/task/job/data/grpc"
 	server2 "rockimserver/app/task/job/server"
 	"rockimserver/app/task/job/task"
-	"rockimserver/pkg/component/discovery"
-	"rockimserver/pkg/component/mq"
-	"rockimserver/pkg/component/server"
-	"rockimserver/pkg/log"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/mq"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:

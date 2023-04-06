@@ -15,12 +15,12 @@ import (
 	"rockimserver/app/logic/platform/data/database"
 	server2 "rockimserver/app/logic/platform/server"
 	"rockimserver/app/logic/platform/service"
-	"rockimserver/pkg/component/cache"
-	"rockimserver/pkg/component/database/mongo"
-	"rockimserver/pkg/component/database/redis"
-	"rockimserver/pkg/component/discovery"
-	"rockimserver/pkg/component/server"
-	"rockimserver/pkg/log"
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/database/redis"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:

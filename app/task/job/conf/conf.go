@@ -1,14 +1,14 @@
 package conf
 
 import (
+	"github.com/soukengo/gopkg/component/config"
+	"github.com/soukengo/gopkg/component/mq"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/component/server/job"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/conf"
-	"rockimserver/pkg/component/config"
-	"rockimserver/pkg/component/mq"
-	"rockimserver/pkg/component/server"
-	"rockimserver/pkg/component/server/job"
-	"rockimserver/pkg/log"
 	"time"
 )
 

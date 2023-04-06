@@ -1,6 +1,6 @@
 package consts
 
-import "rockimserver/pkg/component/lock"
+import "github.com/soukengo/gopkg/component/lock"
 
 const (
 	LockKeyChatRoomCreate  lock.Key = "ChatRoom.Create"

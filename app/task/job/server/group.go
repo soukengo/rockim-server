@@ -1,10 +1,10 @@
 package server
 
 import (
+	"github.com/soukengo/gopkg/component/server/job"
 	v1 "rockimserver/apis/rockim/service/job/v1"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/task/job/task"
-	"rockimserver/pkg/component/server/job"
 )
 
 type ServiceGroup struct {

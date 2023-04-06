@@ -2,9 +2,9 @@ package data
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/errors"
 	"rockimserver/app/logic/user/biz"
 	"rockimserver/app/logic/user/data/cache"
-	"rockimserver/pkg/errors"
 )
 
 type authCodeRepo struct {

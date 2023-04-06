@@ -4,10 +4,10 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/soukengo/gopkg/component/server/socket"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver"
 	"rockimserver/app/access/comet/conf"
-	"rockimserver/pkg/component/server/socket"
-	"rockimserver/pkg/log"
 )
 
 // New new a new User Application

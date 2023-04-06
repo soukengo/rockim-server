@@ -20,11 +20,11 @@ import (
 	database4 "rockimserver/app/access/admin/module/tenant/data/database"
 	service2 "rockimserver/app/access/admin/module/tenant/service"
 	server2 "rockimserver/app/access/admin/server"
-	"rockimserver/pkg/component/auth"
-	"rockimserver/pkg/component/database"
-	"rockimserver/pkg/component/discovery"
-	"rockimserver/pkg/component/server"
-	"rockimserver/pkg/log"
+	"github.com/soukengo/gopkg/component/auth"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:

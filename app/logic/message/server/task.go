@@ -1,9 +1,9 @@
 package server
 
 import (
+	"github.com/soukengo/gopkg/component/server/job"
 	"rockimserver/app/logic/message/biz/consts"
 	"rockimserver/app/logic/message/task"
-	"rockimserver/pkg/component/server/job"
 )
 
 type TaskGroup struct {

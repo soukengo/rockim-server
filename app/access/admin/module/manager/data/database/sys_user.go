@@ -2,6 +2,8 @@ package database
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/paginate"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	mgo "go.mongodb.org/mongo-driver/mongo"
@@ -11,7 +13,6 @@ import (
 	"rockimserver/app/access/admin/module/manager/biz/types"
 	"rockimserver/app/access/admin/module/manager/data/database/convert"
 	"rockimserver/app/access/admin/module/manager/data/database/entity"
-	"rockimserver/pkg/component/database/mongo"
 	"time"
 )
 
@@ -83,13 +84,14 @@ func (d *SysUserData) Delete(ctx context.Context, id string) (err error) {
 	return
 }
 
-func (d *SysUserData) Paging(ctx context.Context, req *options.SysUserPagingOptions) (list []*types.SysUser, p *shared.Paginated, err error) {
+func (d *SysUserData) Paging(ctx context.Context, req *options.SysUserPagingOptions) (list []*types.SysUser, paginated *shared.Paginated, err error) {
 	query := bson.M{"is_admin": bson.M{"$ne": true}}
-	cursor, p, err := d.mgo.Paginate(ctx, entity.TableSysUser, query, req.Paginate)
+	cursor, p, err := d.mgo.Paginate(ctx, entity.TableSysUser, query, &paginate.Paginating{PageSize: req.Paginate.PageSize, PageNo: req.Paginate.PageNo})
 	if err != nil {
 		return
 	}
 	defer cursor.Close(ctx)
+	paginated = &shared.Paginated{Total: p.Total}
 	records, err := mongo.ScanCursor[entity.SysUser](ctx, cursor)
 	if err != nil {
 		return

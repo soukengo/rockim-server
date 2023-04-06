@@ -15,13 +15,13 @@ import (
 	database2 "rockimserver/app/logic/user/data/database"
 	server2 "rockimserver/app/logic/user/server"
 	"rockimserver/app/logic/user/service"
-	"rockimserver/pkg/component/cache"
-	"rockimserver/pkg/component/database"
-	"rockimserver/pkg/component/discovery"
-	"rockimserver/pkg/component/idgen"
-	"rockimserver/pkg/component/lock"
-	"rockimserver/pkg/component/server"
-	"rockimserver/pkg/log"
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/idgen"
+	"github.com/soukengo/gopkg/component/lock"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:

@@ -1,7 +1,7 @@
 package consts
 
 import (
-	"rockimserver/pkg/component/lock"
+	"github.com/soukengo/gopkg/component/lock"
 )
 
 const (

@@ -19,9 +19,9 @@ import (
 	service2 "rockimserver/app/access/comet/module/server/service"
 	grpc2 "rockimserver/app/access/comet/server/grpc"
 	"rockimserver/app/access/comet/server/socket"
-	"rockimserver/pkg/component/discovery"
-	"rockimserver/pkg/component/server"
-	"rockimserver/pkg/log"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:

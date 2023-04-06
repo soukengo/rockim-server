@@ -2,10 +2,10 @@ package database
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/database/mongo"
 	"github.com/stretchr/testify/suite"
 	"rockimserver/apis/rockim/shared"
 	"rockimserver/app/access/admin/module/manager/biz/options"
-	"rockimserver/pkg/component/database/mongo"
 	"testing"
 )
 

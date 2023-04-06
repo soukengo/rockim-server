@@ -2,11 +2,11 @@ package grpc
 
 import (
 	"errors"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service"
 	v1 "rockimserver/apis/rockim/service/comet/v1"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/task/job/conf"
-	"rockimserver/pkg/log"
 	"time"
 )
 

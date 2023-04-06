@@ -7,10 +7,10 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	jwtV4 "github.com/golang-jwt/jwt/v4"
+	"github.com/soukengo/gopkg/component/auth"
 	v1 "rockimserver/apis/rockim/api/admin/tenant/v1"
 	"rockimserver/app/access/admin/module/tenant/biz"
 	"rockimserver/app/access/admin/module/tenant/service"
-	"rockimserver/pkg/component/auth"
 )
 
 type TenantServiceGroup struct {

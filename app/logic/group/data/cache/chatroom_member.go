@@ -2,11 +2,12 @@ package cache
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/database/redis"
+	"github.com/soukengo/gopkg/component/paginate"
+	"github.com/soukengo/gopkg/errors"
 	"rockimserver/apis/rockim/service/group/v1/types"
 	"rockimserver/apis/rockim/shared"
-	"rockimserver/pkg/component/cache"
-	"rockimserver/pkg/component/database/redis"
-	"rockimserver/pkg/errors"
 )
 
 type ChatRoomMemberData struct {
@@ -57,11 +58,12 @@ func (d *ChatRoomMemberData) Find(ctx context.Context, productId string, groupId
 func (d *ChatRoomMemberData) List(ctx context.Context, productId string, groupId string, uids []string) (members []*types.GroupMember, err error) {
 	return d.cache.MGet(ctx, cache.Parts(productId, groupId), uids)
 }
-func (d *ChatRoomMemberData) PaginateUid(ctx context.Context, productId string, groupId string, paginate *shared.Paginating) (members []string, paginated *shared.Paginated, err error) {
-	uids, paginated, err := d.setCache.Paginate(ctx, cache.Parts(productId, groupId), paginate)
+func (d *ChatRoomMemberData) PaginateUid(ctx context.Context, productId string, groupId string, paging *shared.Paginating) (members []string, paginated *shared.Paginated, err error) {
+	uids, p, err := d.setCache.Paginate(ctx, cache.Parts(productId, groupId), &paginate.Paginating{PageSize: paging.PageSize, PageNo: paging.PageNo})
 	if errors.IsNotFound(err) {
 		err = nil
 	}
+	paginated = &shared.Paginated{Total: p.Total}
 	for _, uid := range uids {
 		members = append(members, *uid)
 	}

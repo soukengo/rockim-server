@@ -2,14 +2,14 @@ package biz
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/errors"
+	"github.com/soukengo/gopkg/util/copier"
+	"github.com/soukengo/gopkg/util/encrypt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"rockimserver/apis/rockim/shared"
 	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/access/admin/module/manager/biz/options"
 	"rockimserver/app/access/admin/module/manager/biz/types"
-	"rockimserver/pkg/errors"
-	"rockimserver/pkg/util/copier"
-	"rockimserver/pkg/util/encrypt"
 	"time"
 )
 

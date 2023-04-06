@@ -8,17 +8,17 @@ package group
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/database/redis"
+	"github.com/soukengo/gopkg/component/discovery"
+	servercomponent "github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/logic/group/biz"
 	"rockimserver/app/logic/group/conf"
 	"rockimserver/app/logic/group/data"
 	"rockimserver/app/logic/group/server"
 	"rockimserver/app/logic/group/service"
-	"rockimserver/pkg/component/cache"
-	"rockimserver/pkg/component/database/mongo"
-	"rockimserver/pkg/component/database/redis"
-	"rockimserver/pkg/component/discovery"
-	servercomponent "rockimserver/pkg/component/server"
-	"rockimserver/pkg/log"
 )
 
 // wireApp init kratos application.

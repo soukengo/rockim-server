@@ -2,9 +2,9 @@ package biz
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/log"
 	v1 "rockimserver/apis/rockim/service/job/v1"
 	"rockimserver/apis/rockim/service/job/v1/types"
-	"rockimserver/pkg/log"
 )
 
 type PushRepo interface {

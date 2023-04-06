@@ -3,11 +3,11 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service"
 	v1 "rockimserver/apis/rockim/service/comet/v1"
 	"rockimserver/apis/rockim/service/job/v1/types"
 	"rockimserver/apis/rockim/shared/enums"
-	"rockimserver/pkg/log"
 )
 
 func (c *PushManager) Push(ctx context.Context, message *types.Message) (err error) {

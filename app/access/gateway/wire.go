@@ -8,13 +8,13 @@ package gateway
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
+	"github.com/soukengo/gopkg/component/discovery"
+	servercomponent "github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/access/gateway/conf"
 	"rockimserver/app/access/gateway/infra"
 	"rockimserver/app/access/gateway/module"
 	"rockimserver/app/access/gateway/server"
-	"rockimserver/pkg/component/discovery"
-	servercomponent "rockimserver/pkg/component/server"
-	"rockimserver/pkg/log"
 )
 
 // wireApp init kratos application.

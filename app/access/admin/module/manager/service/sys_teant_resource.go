@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/util/copier"
 	v1 "rockimserver/apis/rockim/api/admin/manager/v1"
 	"rockimserver/apis/rockim/api/admin/manager/v1/types"
 	"rockimserver/app/access/admin/module/manager/biz"
 	"rockimserver/app/access/admin/module/manager/biz/options"
 	"rockimserver/app/access/admin/module/manager/service/converter"
-	"rockimserver/pkg/util/copier"
 )
 
 type SysTenantResourceService struct {

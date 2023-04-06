@@ -2,15 +2,15 @@ package biz
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/idgen"
+	"github.com/soukengo/gopkg/component/queue"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service/message/v1/types"
 	usertypes "rockimserver/apis/rockim/service/user/v1/types"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/logic/message/biz/consts"
 	"rockimserver/app/logic/message/biz/options"
 	biztypes "rockimserver/app/logic/message/biz/types"
-	"rockimserver/pkg/component/idgen"
-	"rockimserver/pkg/component/queue"
-	"rockimserver/pkg/log"
 	"time"
 )
 

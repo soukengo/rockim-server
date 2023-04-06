@@ -2,11 +2,11 @@ package database
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"rockimserver/app/logic/platform/data/database/entity"
-	"rockimserver/pkg/component/database/mongo"
-	"rockimserver/pkg/errors"
 )
 
 func genMongoSeq(ctx context.Context, client *mongo.Client, idType string, allowCreate bool, incr ...int64) (int64, error) {

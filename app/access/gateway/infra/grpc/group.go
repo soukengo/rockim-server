@@ -2,9 +2,9 @@ package grpc
 
 import (
 	"github.com/go-kratos/kratos/v2/registry"
+	"github.com/soukengo/gopkg/component/discovery"
 	"rockimserver/apis/rockim/service"
 	v1 "rockimserver/apis/rockim/service/group/v1"
-	"rockimserver/pkg/component/discovery"
 )
 
 func NewGroupAPIClient(r registry.Discovery) (v1.GroupAPIClient, error) {

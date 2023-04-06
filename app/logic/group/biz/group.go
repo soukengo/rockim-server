@@ -2,9 +2,9 @@ package biz
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/errors"
 	"rockimserver/apis/rockim/service/group/v1/types"
 	"rockimserver/apis/rockim/shared/reasons"
-	"rockimserver/pkg/errors"
 )
 
 var (

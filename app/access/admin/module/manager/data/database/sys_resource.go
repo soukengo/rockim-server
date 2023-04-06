@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/database/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	mgo "go.mongodb.org/mongo-driver/mongo"
@@ -9,7 +10,6 @@ import (
 	"rockimserver/app/access/admin/module/manager/biz/types"
 	"rockimserver/app/access/admin/module/manager/data/database/convert"
 	"rockimserver/app/access/admin/module/manager/data/database/entity"
-	"rockimserver/pkg/component/database/mongo"
 )
 
 type SysResourceData struct {

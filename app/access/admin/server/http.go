@@ -5,7 +5,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/gorilla/handlers"
-	"rockimserver/pkg/component/server"
+	"github.com/soukengo/gopkg/component/server"
 )
 
 // NewHTTPServer new a HTTP server.

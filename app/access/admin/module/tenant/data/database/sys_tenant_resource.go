@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/database/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	mgo "go.mongodb.org/mongo-driver/mongo"
@@ -9,7 +10,6 @@ import (
 	"rockimserver/app/access/admin/module/tenant/biz/types"
 	"rockimserver/app/access/admin/module/tenant/data/database/convert"
 	"rockimserver/app/access/admin/module/tenant/data/database/entity"
-	"rockimserver/pkg/component/database/mongo"
 )
 
 type SysTenantResourceData struct {

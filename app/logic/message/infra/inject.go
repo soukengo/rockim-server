@@ -2,16 +2,16 @@ package infra
 
 import (
 	"github.com/google/wire"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/component/database/redis"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/idgen"
+	"github.com/soukengo/gopkg/component/lock"
+	"github.com/soukengo/gopkg/component/mq"
+	"github.com/soukengo/gopkg/component/mq/kafka"
+	"github.com/soukengo/gopkg/component/queue"
 	"rockimserver/app/logic/message/biz/consts"
 	"rockimserver/app/logic/message/infra/grpc"
-	"rockimserver/pkg/component/database"
-	"rockimserver/pkg/component/database/redis"
-	"rockimserver/pkg/component/discovery"
-	"rockimserver/pkg/component/idgen"
-	"rockimserver/pkg/component/lock"
-	"rockimserver/pkg/component/mq"
-	"rockimserver/pkg/component/mq/kafka"
-	"rockimserver/pkg/component/queue"
 )
 
 // ProviderSet is biz providers.

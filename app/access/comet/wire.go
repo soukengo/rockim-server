@@ -8,13 +8,13 @@ package comet
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
+	"github.com/soukengo/gopkg/component/discovery"
+	servercomponent "github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/access/comet/conf"
 	"rockimserver/app/access/comet/infra"
 	"rockimserver/app/access/comet/module"
 	"rockimserver/app/access/comet/server"
-	"rockimserver/pkg/component/discovery"
-	servercomponent "rockimserver/pkg/component/server"
-	"rockimserver/pkg/log"
 )
 
 // wireApp init kratos application.

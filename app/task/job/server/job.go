@@ -1,10 +1,10 @@
 package server
 
 import (
-	"rockimserver/pkg/component/mq"
-	"rockimserver/pkg/component/server"
-	"rockimserver/pkg/component/server/job"
-	"rockimserver/pkg/log"
+	"github.com/soukengo/gopkg/component/mq"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/component/server/job"
+	"github.com/soukengo/gopkg/log"
 )
 
 // NewJobServer new a job server.

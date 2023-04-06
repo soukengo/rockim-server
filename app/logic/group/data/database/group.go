@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/component/database/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -9,7 +10,6 @@ import (
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/logic/group/data/database/convert"
 	"rockimserver/app/logic/group/data/database/entity"
-	"rockimserver/pkg/component/database/mongo"
 )
 
 type GroupData struct {

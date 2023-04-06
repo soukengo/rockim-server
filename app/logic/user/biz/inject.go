@@ -2,8 +2,8 @@ package biz
 
 import (
 	"github.com/google/wire"
-	"rockimserver/pkg/component/idgen"
-	"rockimserver/pkg/component/lock"
+	"github.com/soukengo/gopkg/component/idgen"
+	"github.com/soukengo/gopkg/component/lock"
 )
 
 // ProviderSet is biz providers.

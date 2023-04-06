@@ -3,9 +3,9 @@ package admin
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver"
 	"rockimserver/app/access/admin/conf"
-	"rockimserver/pkg/log"
 )
 
 // New new a new User Application

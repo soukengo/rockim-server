@@ -2,8 +2,8 @@ package infra
 
 import (
 	"github.com/google/wire"
+	"github.com/soukengo/gopkg/component/discovery"
 	"rockimserver/app/access/comet/infra/grpc"
-	"rockimserver/pkg/component/discovery"
 )
 
 // ProviderSet is biz providers.

@@ -6,10 +6,10 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/soukengo/gopkg/util/encrypt"
 	v1 "rockimserver/apis/rockim/api/openapi/v1"
 	"rockimserver/app/access/gateway/module/openapi/biz"
 	"rockimserver/app/access/gateway/module/openapi/service"
-	"rockimserver/pkg/util/encrypt"
 )
 
 const (

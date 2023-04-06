@@ -2,10 +2,10 @@ package grpc
 
 import (
 	"github.com/go-kratos/kratos/v2/registry"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/log"
+	"github.com/soukengo/gopkg/util/host"
 	"rockimserver/apis/rockim/service"
-	"rockimserver/pkg/component/discovery"
-	"rockimserver/pkg/log"
-	"rockimserver/pkg/util/host"
 	"time"
 )
 

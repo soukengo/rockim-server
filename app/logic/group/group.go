@@ -4,9 +4,9 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver"
 	"rockimserver/app/logic/group/conf"
-	"rockimserver/pkg/log"
 )
 
 // New new a new User Application

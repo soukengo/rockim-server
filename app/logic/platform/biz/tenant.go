@@ -2,13 +2,13 @@ package biz
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/errors"
+	"github.com/soukengo/gopkg/log"
+	"github.com/soukengo/gopkg/util/encrypt"
 	"rockimserver/apis/rockim/service/platform/v1/types"
 	"rockimserver/apis/rockim/shared"
 	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/logic/platform/biz/options"
-	"rockimserver/pkg/errors"
-	"rockimserver/pkg/log"
-	"rockimserver/pkg/util/encrypt"
 	"time"
 )
 

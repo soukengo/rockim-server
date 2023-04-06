@@ -3,8 +3,8 @@ package server
 import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"rockimserver/pkg/component/server"
-	_ "rockimserver/pkg/util/encoding/proto"
+	"github.com/soukengo/gopkg/component/server"
+	_ "github.com/soukengo/gopkg/util/encoding/proto"
 )
 
 // NewHTTPServer new a HTTP server.

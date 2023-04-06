@@ -2,12 +2,12 @@ package data
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/errors"
+	"github.com/soukengo/gopkg/util/chain"
 	"rockimserver/apis/rockim/service/user/v1/types"
 	"rockimserver/app/logic/user/biz"
 	"rockimserver/app/logic/user/data/cache"
 	"rockimserver/app/logic/user/data/database"
-	"rockimserver/pkg/errors"
-	"rockimserver/pkg/util/chain"
 )
 
 type userRepo struct {

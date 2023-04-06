@@ -2,12 +2,12 @@ package data
 
 import (
 	"context"
+	"github.com/soukengo/gopkg/errors"
+	"github.com/soukengo/gopkg/util/chain"
 	"rockimserver/apis/rockim/service/group/v1/types"
 	"rockimserver/app/logic/group/biz"
 	"rockimserver/app/logic/group/data/cache"
 	"rockimserver/app/logic/group/data/database"
-	"rockimserver/pkg/errors"
-	"rockimserver/pkg/util/chain"
 )
 
 type groupRepo struct {
