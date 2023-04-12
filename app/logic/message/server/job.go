@@ -6,7 +6,7 @@ import (
 )
 
 func NewJobServer(queue queue.Delayed, group *TaskGroup) job.Server {
-	js := job.NewDelayQueueServer(queue)
+	js := job.NewQueueServer(queue)
 	group.Register(js)
 	return js
 }

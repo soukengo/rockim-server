@@ -7,7 +7,6 @@ import (
 	"github.com/soukengo/gopkg/component/server/job"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service"
-	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/conf"
 	"time"
 )
@@ -37,7 +36,7 @@ func Load() (cfg *Config, err error) {
 	cfg.Server = &server.Config{
 		Job: &job.Config{
 			GroupId: service.AppJob,
-			Topics:  []string{enums.MQ_MESSAGE_PUSH.String()},
+			Topics:  []string{service.MQ_MESSAGE_PUSH.String()},
 		},
 	}
 	return

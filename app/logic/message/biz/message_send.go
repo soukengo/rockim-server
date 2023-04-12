@@ -159,9 +159,9 @@ func (uc *MessageUseCase) dispatchMessage(ctx context.Context, meta *biztypes.Me
 	conversationId := biztypes.EncodeConversationID(message.ProductId, message.ConversationId)
 	// 群消息延时投递
 	if message.ConversationId.Category == enums.Conversation_GROUP {
-		return uc.delayed.SubmitDelay(consts.QueueTopicMessageDelivery, conversationId, groupMessageDelay.Milliseconds(), false)
+		return uc.delayed.SubmitDelay(consts.QueueTopicMessageDelivery, []string{conversationId}, groupMessageDelay.Milliseconds(), false)
 	}
-	err = uc.delayed.Submit(consts.QueueTopicMessageDelivery, conversationId)
+	err = uc.delayed.Submit(consts.QueueTopicMessageDelivery, []string{conversationId})
 	return
 }
 

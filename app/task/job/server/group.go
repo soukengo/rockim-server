@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/soukengo/gopkg/component/server/job"
+	service "rockimserver/apis/rockim/service"
 	v1 "rockimserver/apis/rockim/service/job/v1"
-	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/task/job/task"
 )
 
@@ -16,5 +16,5 @@ func NewServiceGroup(messageTask *task.MessageTask) *ServiceGroup {
 }
 
 func (g *ServiceGroup) Register(srv job.Server) {
-	srv.Register(enums.MQ_MESSAGE_PUSH.String(), wrapAction[v1.MessagePushRequest](g.messageTask.Push))
+	srv.Register(service.MQ_MESSAGE_PUSH.String(), wrapAction[v1.MessagePushRequest](g.messageTask.Push))
 }

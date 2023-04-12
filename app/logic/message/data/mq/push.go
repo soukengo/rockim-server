@@ -4,9 +4,9 @@ import (
 	"context"
 	"github.com/golang/protobuf/proto"
 	"github.com/soukengo/gopkg/component/mq"
+	"rockimserver/apis/rockim/service"
 	v1 "rockimserver/apis/rockim/service/job/v1"
 	"rockimserver/apis/rockim/service/job/v1/types"
-	"rockimserver/apis/rockim/shared/enums"
 )
 
 type PushMessageData struct {
@@ -26,7 +26,7 @@ func (d *PushMessageData) SavePushMessage(ctx context.Context, messages []*types
 	if err != nil {
 		return
 	}
-	err = d.cli.Send(ctx, enums.MQ_MESSAGE_PUSH.String(), bytes)
+	err = d.cli.Send(ctx, service.MQ_MESSAGE_PUSH.String(), bytes)
 	if err != nil {
 		return
 	}
