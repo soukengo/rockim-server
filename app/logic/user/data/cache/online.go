@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database/redis"
 	biztypes "rockimserver/app/logic/user/biz/types"
 )
 
@@ -11,9 +10,9 @@ type OnlineData struct {
 	cache cache.HashCache[biztypes.OnlineChannel]
 }
 
-func NewOnlineData(rds *redis.Client, cfg *cache.Config) *OnlineData {
+func NewOnlineData(mgr *cache.Manager, cfg *cache.Config) *OnlineData {
 	return &OnlineData{
-		cache: newHashCache[biztypes.OnlineChannel](rds, cfg.Category(keyOnline)),
+		cache: cache.NewHashCache[biztypes.OnlineChannel](mgr, cfg.Category(keyOnline)),
 	}
 }
 

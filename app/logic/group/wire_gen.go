@@ -8,36 +8,35 @@ package group
 
 import (
 	"github.com/go-kratos/kratos/v2"
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/idgen"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/logic/group/biz"
 	"rockimserver/app/logic/group/conf"
 	"rockimserver/app/logic/group/data"
 	cache2 "rockimserver/app/logic/group/data/cache"
-	"rockimserver/app/logic/group/data/database"
+	database2 "rockimserver/app/logic/group/data/database"
+	"rockimserver/app/logic/group/infra"
 	server2 "rockimserver/app/logic/group/server"
 	"rockimserver/app/logic/group/service"
-	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database/mongo"
-	"github.com/soukengo/gopkg/component/database/redis"
-	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/idgen"
-	"github.com/soukengo/gopkg/component/lock"
-	"github.com/soukengo/gopkg/component/server"
-	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
-	client := mongo.NewClient(mongoConfig)
-	groupData := database.NewChatRoomData(client)
-	redisClient := redis.NewClient(redisConfig, logger)
-	cacheGroupData := cache2.NewGroupData(redisClient, cacheConfig)
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, databaseConfig *database.Config, cacheConfig *cache.Config) (*kratos.App, error) {
+	manager := infra.NewDatabaseManager(config)
+	groupData := database2.NewChatRoomData(manager)
+	cacheManager := infra.NewCacheManager(config, logger)
+	cacheGroupData := cache2.NewGroupData(cacheManager, cacheConfig)
 	groupRepo := data.NewGroupRepo(groupData, cacheGroupData)
-	chatRoomMemberData := cache2.NewChatRoomMemberData(redisClient, cacheConfig)
+	chatRoomMemberData := cache2.NewChatRoomMemberData(cacheManager, cacheConfig)
 	chatRoomMemberRepo := data.NewChatRoomMemberRepo(chatRoomMemberData)
 	generator := idgen.NewMongoGenerator()
-	builder := lock.NewRedisBuilder(logger, redisClient)
+	builder := infra.NewLockBuilder(config, logger)
 	chatRoomMemberManager := biz.NewChatRoomMemberManager(groupRepo, chatRoomMemberRepo, generator)
 	chatRoomUseCase := biz.NewChatRoomUseCase(groupRepo, chatRoomMemberRepo, generator, builder, chatRoomMemberManager)
 	chatRoomService := service.NewChatRoomService(chatRoomUseCase)

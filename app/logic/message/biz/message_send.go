@@ -21,10 +21,10 @@ type MessageUseCase struct {
 	userRepo     UserRepo
 	groupRepo    GroupRepo
 	idgen        idgen.Generator
-	delayed      queue.Delayed
+	delayed      queue.DelayedProducer
 }
 
-func NewMessageUseCase(repo MessageRepo, deliveryRepo MessageDeliveryRepo, boxRepo MessageBoxRepo, userRepo UserRepo, groupRepo GroupRepo, idgen idgen.Generator, delayed queue.Delayed) *MessageUseCase {
+func NewMessageUseCase(repo MessageRepo, deliveryRepo MessageDeliveryRepo, boxRepo MessageBoxRepo, userRepo UserRepo, groupRepo GroupRepo, idgen idgen.Generator, delayed queue.DelayedProducer) *MessageUseCase {
 	return &MessageUseCase{repo: repo, deliveryRepo: deliveryRepo, boxRepo: boxRepo, userRepo: userRepo, groupRepo: groupRepo, idgen: idgen, delayed: delayed}
 }
 
@@ -159,9 +159,9 @@ func (uc *MessageUseCase) dispatchMessage(ctx context.Context, meta *biztypes.Me
 	conversationId := biztypes.EncodeConversationID(message.ProductId, message.ConversationId)
 	// 群消息延时投递
 	if message.ConversationId.Category == enums.Conversation_GROUP {
-		return uc.delayed.SubmitDelay(consts.QueueTopicMessageDelivery, []string{conversationId}, groupMessageDelay.Milliseconds(), false)
+		return uc.delayed.SubmitDelay(ctx, consts.QueueMessageDelivery, []queue.Value{queue.Value(conversationId)}, groupMessageDelay.Milliseconds(), false)
 	}
-	err = uc.delayed.Submit(consts.QueueTopicMessageDelivery, []string{conversationId})
+	err = uc.delayed.Submit(ctx, consts.QueueMessageDelivery, []queue.Value{queue.Value(conversationId)})
 	return
 }
 

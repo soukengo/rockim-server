@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database/redis"
 	"github.com/soukengo/gopkg/errors"
 	"github.com/soukengo/gopkg/log"
 )
@@ -19,18 +18,18 @@ type AccessTokenData struct {
 	reverseCache cache.ValueCache[string]
 }
 
-func NewAuthCodeData(logger log.Logger, redisCli *redis.Client, cfg *cache.Config) *AuthCodeData {
+func NewAuthCodeData(mgr *cache.Manager, cfg *cache.Config, logger log.Logger) *AuthCodeData {
 	return &AuthCodeData{
 		logger:       logger.Helper(),
-		cache:        newValueCache[string](redisCli, cfg.Category(keyAuthCode)),
-		reverseCache: newValueCache[string](redisCli, cfg.Category(keyAuthCodeReverse)),
+		cache:        cache.NewValueCache[string](mgr, cfg.Category(keyAuthCode)),
+		reverseCache: cache.NewValueCache[string](mgr, cfg.Category(keyAuthCodeReverse)),
 	}
 }
-func NewAccessTokenData(logger log.Logger, redisCli *redis.Client, cfg *cache.Config) *AccessTokenData {
+func NewAccessTokenData(mgr *cache.Manager, cfg *cache.Config, logger log.Logger) *AccessTokenData {
 	return &AccessTokenData{
 		logger:       logger.Helper(),
-		cache:        newValueCache[string](redisCli, cfg.Category(keyAuthToken)),
-		reverseCache: newValueCache[string](redisCli, cfg.Category(keyAuthTokenReverse)),
+		cache:        cache.NewValueCache[string](mgr, cfg.Category(keyAuthToken)),
+		reverseCache: cache.NewValueCache[string](mgr, cfg.Category(keyAuthTokenReverse)),
 	}
 }
 

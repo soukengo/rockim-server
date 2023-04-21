@@ -1,7 +1,14 @@
 package consts
 
-import "github.com/soukengo/gopkg/component/queue"
+import (
+	"github.com/soukengo/gopkg/component/queue"
+	"rockimserver/apis/rockim/service"
+)
 
 var (
-	QueueTopicMessageDelivery = queue.Topic("message.delivery")
+	QueueMessageDelivery = queue.Topic("message.delivery")
+)
+
+var (
+	DistributedQueueMessagePush = queue.Topic(service.MQ_MESSAGE_PUSH.String())
 )

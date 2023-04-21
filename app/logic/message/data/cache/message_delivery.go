@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database/redis"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service/message/v1/types"
 	biztypes "rockimserver/app/logic/message/biz/types"
@@ -14,10 +13,10 @@ type MessageDeliveryData struct {
 	cache   cache.SortedSetCache[biztypes.IMMessageDelivery]
 }
 
-func NewMessageDeliveryData(rds *redis.Client, cfg *cache.Config) *MessageDeliveryData {
+func NewMessageDeliveryData(mgr *cache.Manager, cfg *cache.Config) *MessageDeliveryData {
 	return &MessageDeliveryData{
 		maxSize: 100,
-		cache:   newSortedSetCache[biztypes.IMMessageDelivery](rds, cfg.Category(keyMessageDelivery)),
+		cache:   cache.NewSortedSetCache[biztypes.IMMessageDelivery](mgr, cfg.Category(keyMessageDelivery)),
 	}
 }
 

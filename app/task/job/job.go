@@ -24,7 +24,7 @@ func New(version string) (app *kratos.App, logger log.Logger, err error) {
 	if err != nil {
 		return
 	}
-	app, err = wireApp(logger, cfg, cfg.Global.Discovery, cfg.Server, cfg.MQ)
+	app, err = wireApp(logger, cfg, cfg.Global.Discovery, cfg.Server)
 	if err != nil {
 		return
 	}
@@ -32,8 +32,13 @@ func New(version string) (app *kratos.App, logger log.Logger, err error) {
 }
 
 func configure(cfg *conf.Config) (err error) {
+	err = cfg.Parse()
+	if err != nil {
+		return
+	}
 	return
 }
+
 func newApp(logger log.Logger, cfg *conf.Config, js job.Server) *kratos.App {
 	return kratos.New(
 		kratos.Name(cfg.Global.AppId),

@@ -2,9 +2,12 @@ package conf
 
 import (
 	"github.com/soukengo/gopkg/component/config"
-	"github.com/soukengo/gopkg/component/mq"
+	"github.com/soukengo/gopkg/component/queue"
+	kafkaqueue "github.com/soukengo/gopkg/component/queue/core/kafka"
 	"github.com/soukengo/gopkg/component/server"
 	"github.com/soukengo/gopkg/component/server/job"
+	"github.com/soukengo/gopkg/infra/storage"
+	"github.com/soukengo/gopkg/infra/storage/kafka"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service"
 	"rockimserver/conf"
@@ -20,10 +23,7 @@ func Load() (cfg *Config, err error) {
 	if err != nil {
 		return
 	}
-	cfg = &Config{
-		Log:   log.Default,
-		Comet: &Comet{RoutineSize: 32, RoutineChan: 1024},
-	}
+	cfg = defaultConfig()
 	source := config.NewEnvSource(global.Config, configName)
 	defer source.Close()
 	loader := config.NewLoader(source)
@@ -33,13 +33,30 @@ func Load() (cfg *Config, err error) {
 	}
 	cfg.Global = global
 	//  这里写死，不使用配置文件的内容
-	cfg.Server = &server.Config{
-		Job: &job.Config{
-			GroupId: service.AppJob,
-			Topics:  []string{service.MQ_MESSAGE_PUSH.String()},
+	return
+}
+
+func defaultConfig() *Config {
+	return &Config{
+		Log:   log.Default,
+		Comet: &Comet{RoutineSize: 32, RoutineChan: 1024},
+		Server: &server.Config{
+			Job: &job.Config{
+				Queue: &queue.Config{
+					General: &queue.GeneralConfig{
+						Kafka: &kafkaqueue.Config{
+							Reference: kafka.Reference{Key: storage.DefaultKey},
+							Consumer: &kafkaqueue.ConsumerConfig{
+								GroupId: service.AppJob,
+								Topics:  []queue.Topic{queue.Topic(service.MQ_MESSAGE_PUSH.String())},
+								Workers: 10,
+							},
+						},
+					},
+				},
+			},
 		},
 	}
-	return
 }
 
 type Config struct {
@@ -47,7 +64,6 @@ type Config struct {
 	Server *server.Config
 	Log    *log.Config
 	Comet  *Comet
-	MQ     *mq.Config
 }
 
 // Comet is comet config.
@@ -61,4 +77,9 @@ type Group struct {
 	Batch  int
 	Signal time.Duration
 	Idle   time.Duration
+}
+
+func (c *Config) Parse() (err error) {
+	c.Server.Job.Parse(c.Global.Storage)
+	return
 }

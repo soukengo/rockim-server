@@ -2,7 +2,8 @@ package database
 
 import (
 	"context"
-	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/infra/storage/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -16,8 +17,8 @@ type GroupData struct {
 	mgo *mongo.Client
 }
 
-func NewChatRoomData(mgo *mongo.Client) *GroupData {
-	return &GroupData{mgo: mgo}
+func NewChatRoomData(mgr *database.Manager) *GroupData {
+	return &GroupData{mgo: mgr.Mongo()}
 }
 func (d *GroupData) collection() *mgo.Collection {
 	return d.mgo.Collection(entity.TableImGroup)

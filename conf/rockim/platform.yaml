@@ -2,19 +2,14 @@ server:
   grpc:
     addr: :6102
     timeout: "10s"
-database:
-  mongodb:
-    address: mongodb://127.0.0.1:27017
-    username: rockim
-    password: rockim2022
-    database: rockim
-    authSource: admin
-  redis:
-    prefix: "ROCKIM:"
-    addr:
-      - 127.0.0.1:6379
-    password: ""
+
 cache:
   default:
     expire: "72h"
   categories:
+  redis:
+    key: default
+
+database:
+  mongodb:
+    key: default

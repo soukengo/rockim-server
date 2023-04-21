@@ -2,8 +2,9 @@ package database
 
 import (
 	"context"
-	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/database"
 	"github.com/soukengo/gopkg/component/paginate"
+	"github.com/soukengo/gopkg/infra/storage/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	mgoopts "go.mongodb.org/mongo-driver/mongo/options"
@@ -19,8 +20,8 @@ type TenantData struct {
 	mgo *mongo.Client
 }
 
-func NewTenantData(mgo *mongo.Client) *TenantData {
-	return &TenantData{mgo: mgo}
+func NewTenantData(mgr *database.Manager) *TenantData {
+	return &TenantData{mgo: mgr.Mongo()}
 }
 
 func (d *TenantData) collection() *mgo.Collection {

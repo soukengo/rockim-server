@@ -2,7 +2,8 @@ package database
 
 import (
 	"context"
-	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/infra/storage/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	mgo "go.mongodb.org/mongo-driver/mongo"
@@ -16,8 +17,8 @@ type SysTenantResourceData struct {
 	mgo *mongo.Client
 }
 
-func NewTenantResourceData(mgo *mongo.Client) *SysTenantResourceData {
-	return &SysTenantResourceData{mgo: mgo}
+func NewTenantResourceData(mgr *database.Manager) *SysTenantResourceData {
+	return &SysTenantResourceData{mgo: mgr.Mongo()}
 }
 
 func (d *SysTenantResourceData) collection() *mgo.Collection {

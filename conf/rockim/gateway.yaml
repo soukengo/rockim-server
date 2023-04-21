@@ -5,6 +5,6 @@ server:
 
 comet:
   tcp:
-    addr: 10.22.1.161:6003
+    addr: 10.22.3.35:6003
   websocket:
-    addr: ws://10.22.1.161:6004/
+    addr: ws://10.22.3.35:6004/

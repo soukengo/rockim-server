@@ -4,16 +4,7 @@ server:
     timeout: "10s"
 database:
   mongodb:
-    address: mongodb://127.0.0.1:27017
-    username: rockim
-    password: rockim2022
-    database: rockim
-    authSource: admin
-  redis:
-    prefix: "ROCKIM:"
-    addr:
-      - 127.0.0.1:6379
-    password: ""
+    key: default
 cache:
   default:
     expire: "72h"
@@ -22,9 +13,10 @@ cache:
       expire: "10m"
     - key: "online"
       expire: "10m"
+  redis:
+    key: default
 
-#log:
-#  level: info
-#  console: false
-#  appender:
-#    fileName: ./log/rockim/user/app.log
+log:
+  level: info
+  appender:
+    fileName: ./log/rockim/user/app.log

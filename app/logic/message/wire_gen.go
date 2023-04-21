@@ -8,38 +8,38 @@ package message
 
 import (
 	"github.com/go-kratos/kratos/v2"
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/idgen"
+	"github.com/soukengo/gopkg/component/queue"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/logic/message/biz"
 	"rockimserver/app/logic/message/conf"
 	"rockimserver/app/logic/message/data"
 	cache2 "rockimserver/app/logic/message/data/cache"
 	database2 "rockimserver/app/logic/message/data/database"
-	mq2 "rockimserver/app/logic/message/data/mq"
+	"rockimserver/app/logic/message/data/mq"
 	"rockimserver/app/logic/message/infra"
 	"rockimserver/app/logic/message/infra/grpc"
 	server2 "rockimserver/app/logic/message/server"
 	"rockimserver/app/logic/message/service"
 	"rockimserver/app/logic/message/task"
-	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database"
-	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/idgen"
-	"github.com/soukengo/gopkg/component/mq"
-	"github.com/soukengo/gopkg/component/server"
-	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, databaseConfig *database.Config, cacheConfig *cache.Config, mqConfig *mq.Config) (*kratos.App, error) {
-	client := database.NewRedisClient(databaseConfig, logger)
-	messageData := cache2.NewMessageData(client, cacheConfig)
-	mongoClient := database.NewMongoClient(databaseConfig, logger)
-	databaseMessageData := database2.NewMessageSequenceData(mongoClient)
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, databaseConfig *database.Config, cacheConfig *cache.Config, queueConfig *queue.Config) (*kratos.App, error) {
+	manager := infra.NewCacheManager(config, logger)
+	messageData := cache2.NewMessageData(manager, cacheConfig)
+	databaseManager := infra.NewDatabaseManager(config)
+	databaseMessageData := database2.NewMessageSequenceData(databaseManager)
 	messageRepo := data.NewMessageRepo(messageData, databaseMessageData)
-	messageDeliveryData := cache2.NewMessageDeliveryData(client, cacheConfig)
+	messageDeliveryData := cache2.NewMessageDeliveryData(manager, cacheConfig)
 	messageDeliveryRepo := data.NewMessageDeliveryRepo(messageDeliveryData)
-	messageBoxData := cache2.NewMessageBoxData(client, cacheConfig)
+	messageBoxData := cache2.NewMessageBoxData(manager, cacheConfig)
 	messageBoxRepo := data.NewMessageBoxRepo(messageBoxData)
 	registryDiscovery, err := discovery.NewDiscovery(discoveryConfig)
 	if err != nil {
@@ -56,17 +56,20 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	}
 	groupRepo := data.NewGroupRepo(groupAPIClient)
 	generator := idgen.NewMongoGenerator()
-	delayed := infra.NewRedisDelayQueue(client)
-	messageUseCase := biz.NewMessageUseCase(messageRepo, messageDeliveryRepo, messageBoxRepo, userRepo, groupRepo, generator, delayed)
+	delayedProducer, err := infra.NewDelayedQueueProducer(queueConfig, logger)
+	if err != nil {
+		return nil, err
+	}
+	messageUseCase := biz.NewMessageUseCase(messageRepo, messageDeliveryRepo, messageBoxRepo, userRepo, groupRepo, generator, delayedProducer)
 	messageService := service.NewMessageService(messageUseCase)
 	serviceGroup := server2.NewServiceGroup(messageService)
 	grpcServer := server2.NewGRPCServer(serverConfig, serviceGroup)
 	messageQueryRepo := data.NewMessageQueryRepo(messageData)
-	producer, err := infra.NewKafkaProducer(mqConfig)
+	producer, err := infra.NewGeneralQueueProducer(queueConfig, logger)
 	if err != nil {
 		return nil, err
 	}
-	pushMessageData := mq2.NewPushMessageData(producer)
+	pushMessageData := mq.NewPushMessageData(producer)
 	pushMessageRepo := data.NewPushMessageRepo(pushMessageData)
 	onlineQueryAPIClient, err := grpc.NewOnlineQueryAPIClient(registryDiscovery)
 	if err != nil {
@@ -77,7 +80,10 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	messageDeliveryUseCase := biz.NewMessageDeliveryUseCase(messageDeliveryRepo, messageQueryRepo, pushManager)
 	messageTask := task.NewMessageTask(messageDeliveryUseCase)
 	taskGroup := server2.NewTaskGroup(messageTask)
-	jobServer := server2.NewJobServer(delayed, taskGroup)
+	jobServer, err := server2.NewJobServer(serverConfig, taskGroup, logger)
+	if err != nil {
+		return nil, err
+	}
 	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {
 		return nil, err

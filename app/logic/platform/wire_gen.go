@@ -8,33 +8,33 @@ package platform
 
 import (
 	"github.com/go-kratos/kratos/v2"
+	"github.com/soukengo/gopkg/component/cache"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/logic/platform/biz"
 	"rockimserver/app/logic/platform/conf"
 	"rockimserver/app/logic/platform/data"
 	cache2 "rockimserver/app/logic/platform/data/cache"
-	"rockimserver/app/logic/platform/data/database"
+	database2 "rockimserver/app/logic/platform/data/database"
+	"rockimserver/app/logic/platform/infra"
 	server2 "rockimserver/app/logic/platform/server"
 	"rockimserver/app/logic/platform/service"
-	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database/mongo"
-	"github.com/soukengo/gopkg/component/database/redis"
-	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/server"
-	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, mongoConfig *mongo.Config, redisConfig *redis.Config, cacheConfig *cache.Config) (*kratos.App, error) {
-	client := mongo.NewClient(mongoConfig)
-	tenantData := database.NewTenantData(client)
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, databaseConfig *database.Config, cacheConfig *cache.Config) (*kratos.App, error) {
+	manager := infra.NewDatabaseManager(config)
+	tenantData := database2.NewTenantData(manager)
 	tenantRepo := data.NewTenantRepo(tenantData)
 	tenantUseCase := biz.NewTenantUseCase(tenantRepo)
 	tenantService := service.NewTenantService(tenantUseCase)
-	productData := database.NewProductData(client)
-	redisClient := redis.NewClient(redisConfig, logger)
-	cacheProductData := cache2.NewProductData(redisClient, cacheConfig)
+	productData := database2.NewProductData(manager)
+	cacheManager := infra.NewCacheManager(config, logger)
+	cacheProductData := cache2.NewProductData(cacheManager, cacheConfig)
 	productRepo := data.NewProductRepo(productData, cacheProductData)
 	productUseCase := biz.NewProductUseCase(productRepo)
 	productService := service.NewProductService(productUseCase)

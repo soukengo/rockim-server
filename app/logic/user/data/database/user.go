@@ -2,7 +2,8 @@ package database
 
 import (
 	"context"
-	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/infra/storage/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -15,8 +16,8 @@ type UserData struct {
 	mgo *mongo.Client
 }
 
-func NewUserData(mgo *mongo.Client) *UserData {
-	return &UserData{mgo: mgo}
+func NewUserData(mgr *database.Manager) *UserData {
+	return &UserData{mgo: mgr.Mongo()}
 }
 
 func (d *UserData) collection() *mgo.Collection {

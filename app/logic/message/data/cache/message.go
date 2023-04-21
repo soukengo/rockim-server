@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database/redis"
 	"rockimserver/apis/rockim/service/message/v1/types"
 )
 
@@ -11,9 +10,9 @@ type MessageData struct {
 	cache cache.ValueCache[types.IMMessage]
 }
 
-func NewMessageData(rds *redis.Client, cfg *cache.Config) *MessageData {
+func NewMessageData(rds *cache.Manager, cfg *cache.Config) *MessageData {
 	return &MessageData{
-		cache: newValueCache[types.IMMessage](rds, cfg.Category(keyMessage)),
+		cache: cache.NewValueCache[types.IMMessage](rds, cfg.Category(keyMessage)),
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/soukengo/gopkg/component/config"
 	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/infra/storage"
 	"github.com/soukengo/gopkg/util/ip"
 	"os"
 	"time"
@@ -27,6 +28,7 @@ type Global struct {
 	Env       string
 	Config    *config.Config
 	Discovery *discovery.Config
+	Storage   *storage.Config
 }
 
 func Load(appId string) (cfg *Global, err error) {

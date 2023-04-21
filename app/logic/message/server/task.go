@@ -15,5 +15,5 @@ func NewTaskGroup(messageTask *task.MessageTask) *TaskGroup {
 }
 
 func (g *TaskGroup) Register(srv job.Server) {
-	srv.Register(string(consts.QueueTopicMessageDelivery), g.messageTask.Delivery)
+	srv.Register(string(consts.QueueMessageDelivery), g.messageTask.Delivery)
 }

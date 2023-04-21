@@ -2,8 +2,9 @@ package database
 
 import (
 	"context"
-	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/database"
 	"github.com/soukengo/gopkg/component/paginate"
+	"github.com/soukengo/gopkg/infra/storage/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	mgo "go.mongodb.org/mongo-driver/mongo"
@@ -20,8 +21,8 @@ type SysRoleData struct {
 	mgo *mongo.Client
 }
 
-func NewSysRoleData(mgo *mongo.Client) *SysRoleData {
-	return &SysRoleData{mgo: mgo}
+func NewSysRoleData(mgr *database.Manager) *SysRoleData {
+	return &SysRoleData{mgo: mgr.Mongo()}
 }
 
 func (d *SysRoleData) collection() *mgo.Collection {

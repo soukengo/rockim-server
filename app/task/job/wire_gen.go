@@ -8,22 +8,21 @@ package job
 
 import (
 	"github.com/go-kratos/kratos/v2"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/task/job/biz"
 	"rockimserver/app/task/job/conf"
 	"rockimserver/app/task/job/data"
 	"rockimserver/app/task/job/data/grpc"
 	server2 "rockimserver/app/task/job/server"
 	"rockimserver/app/task/job/task"
-	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/mq"
-	"github.com/soukengo/gopkg/component/server"
-	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, mqConfig *mq.Config) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config) (*kratos.App, error) {
 	registryDiscovery, err := discovery.NewDiscovery(discoveryConfig)
 	if err != nil {
 		return nil, err
@@ -36,7 +35,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	messagePushUseCase := biz.NewMessagePushUseCase(pushRepo)
 	messageTask := task.NewMessageTask(messagePushUseCase)
 	serviceGroup := server2.NewServiceGroup(messageTask)
-	jobServer, err := server2.NewJobServer(serverConfig, mqConfig, serviceGroup, logger)
+	jobServer, err := server2.NewJobServer(serverConfig, serviceGroup, logger)
 	if err != nil {
 		return nil, err
 	}

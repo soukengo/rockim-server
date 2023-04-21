@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/access/admin"
 )
 
@@ -13,10 +14,11 @@ var (
 
 func main() {
 	flag.Parse()
-	app, err := admin.New(version)
+	app, logger, err := admin.New(version)
 	if err != nil {
 		panic(err)
 	}
+	log.SetLogger(logger)
 	err = app.Run()
 	if err != nil {
 		panic(err)

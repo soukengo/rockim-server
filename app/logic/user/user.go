@@ -33,10 +33,7 @@ func New(version string) (app *kratos.App, logger log.Logger, err error) {
 }
 
 func configure(cfg *conf.Config) (err error) {
-	if err != nil {
-		return
-	}
-	err = cfg.Cache.Parse()
+	err = cfg.Parse()
 	if err != nil {
 		return
 	}

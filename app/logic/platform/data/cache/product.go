@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database/redis"
 	"rockimserver/apis/rockim/service/platform/v1/types"
 )
 
@@ -11,9 +10,9 @@ type ProductData struct {
 	cache cache.ValueCache[types.Product]
 }
 
-func NewProductData(redisCli *redis.Client, cfg *cache.Config) *ProductData {
+func NewProductData(mgr *cache.Manager, cfg *cache.Config) *ProductData {
 	return &ProductData{
-		cache: newValueCache[types.Product](redisCli, cfg.Category(keyProduct)),
+		cache: cache.NewValueCache[types.Product](mgr, cfg.Category(keyProduct)),
 	}
 }
 

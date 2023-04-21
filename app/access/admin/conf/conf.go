@@ -5,6 +5,8 @@ import (
 	"github.com/soukengo/gopkg/component/config"
 	"github.com/soukengo/gopkg/component/database"
 	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/infra/storage"
+	"github.com/soukengo/gopkg/infra/storage/mongo"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service"
 	"rockimserver/conf"
@@ -19,9 +21,7 @@ func Load() (cfg *Config, err error) {
 	if err != nil {
 		return
 	}
-	cfg = &Config{
-		Log: log.Default,
-	}
+	cfg = defaultConfig()
 	source := config.NewEnvSource(global.Config, configName)
 	defer source.Close()
 	loader := config.NewLoader(source)
@@ -33,10 +33,24 @@ func Load() (cfg *Config, err error) {
 	return
 }
 
+func defaultConfig() *Config {
+	return &Config{
+		Log: log.Default,
+		Database: &database.Config{
+			Mongodb: &mongo.Reference{Key: storage.DefaultKey},
+		},
+	}
+}
+
 type Config struct {
 	Global   *conf.Global
 	Log      *log.Config
 	Server   *server.Config
 	Auth     *auth.Config
 	Database *database.Config
+}
+
+func (c *Config) Parse() (err error) {
+	c.Database.Parse(c.Global.Storage)
+	return
 }

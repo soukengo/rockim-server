@@ -16,6 +16,10 @@ func New(version string) (app *kratos.App, logger log.Logger, err error) {
 	}
 	version = rockimserver.SetVersion(version)
 	cfg.Global.Version = version
+	err = configure(cfg)
+	if err != nil {
+		return
+	}
 	logger, err = log.Configure(cfg.Log, log.AppInfo(cfg.Global.AppId, cfg.Global.Version))
 	if err != nil {
 		return
@@ -27,6 +31,15 @@ func New(version string) (app *kratos.App, logger log.Logger, err error) {
 	}
 	return
 }
+
+func configure(cfg *conf.Config) (err error) {
+	err = cfg.Parse()
+	if err != nil {
+		return
+	}
+	return
+}
+
 func newApp(logger log.Logger, env *conf.Config, hs *http.Server) *kratos.App {
 	return kratos.New(
 		kratos.Name(env.Global.AppId),

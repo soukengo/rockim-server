@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database/redis"
 	"github.com/soukengo/gopkg/component/paginate"
 	"github.com/soukengo/gopkg/errors"
 	"rockimserver/apis/rockim/service/group/v1/types"
@@ -15,10 +14,10 @@ type ChatRoomMemberData struct {
 	setCache cache.SortedSetCache[string]
 }
 
-func NewChatRoomMemberData(rds *redis.Client, cfg *cache.Config) *ChatRoomMemberData {
+func NewChatRoomMemberData(mgr *cache.Manager, cfg *cache.Config) *ChatRoomMemberData {
 	return &ChatRoomMemberData{
-		cache:    newHashCache[types.GroupMember](rds, cfg.Category(keyChatRoomMemberHash)),
-		setCache: newSortedSetCache[string](rds, cfg.Category(keyChatRoomMemberSet)),
+		cache:    cache.NewHashCache[types.GroupMember](mgr, cfg.Category(keyChatRoomMemberHash)),
+		setCache: cache.NewSortedSetCache[string](mgr, cfg.Category(keyChatRoomMemberSet)),
 	}
 }
 

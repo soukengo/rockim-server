@@ -2,7 +2,8 @@ package database
 
 import (
 	"context"
-	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/infra/storage/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	mgo "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -18,8 +19,8 @@ type MessageData struct {
 	mgo *mongo.Client
 }
 
-func NewMessageSequenceData(mgo *mongo.Client) *MessageData {
-	return &MessageData{mgo: mgo}
+func NewMessageSequenceData(mgr *database.Manager) *MessageData {
+	return &MessageData{mgo: mgr.Mongo()}
 }
 
 func (d *MessageData) GenSequence(ctx context.Context, productId string, conversationId *types.ConversationID) (int64, error) {

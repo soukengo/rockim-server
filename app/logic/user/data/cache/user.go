@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database/redis"
 	"rockimserver/apis/rockim/service/user/v1/types"
 )
 
@@ -12,10 +11,10 @@ type UserData struct {
 	accountCache cache.ValueCache[string]
 }
 
-func NewUserData(redisCli *redis.Client, cfg *cache.Config) *UserData {
+func NewUserData(mgr *cache.Manager, cfg *cache.Config) *UserData {
 	return &UserData{
-		cache:        newValueCache[types.User](redisCli, cfg.Category(keyUser)),
-		accountCache: newValueCache[string](redisCli, cfg.Category(keyUserAccount)),
+		cache:        cache.NewValueCache[types.User](mgr, cfg.Category(keyUser)),
+		accountCache: cache.NewValueCache[string](mgr, cfg.Category(keyUserAccount)),
 	}
 }
 

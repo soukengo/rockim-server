@@ -9,3 +9,23 @@ discovery:
   etcd:
     nodes:
       - 127.0.0.1:2379
+
+storage:
+  mongodb:
+    default:
+      address: mongodb://127.0.0.1:27017
+      username: rockim
+      password: rockim2022
+      database: rockim
+      authSource: admin
+  redis:
+    default:
+      prefix: "ROCKIM:"
+      addr:
+        - 127.0.0.1:6379
+      password: ""
+  kafka:
+    default:
+      brokers:
+        - 127.0.0.1:9092
+      topicPrefix: "ROCKIM-"

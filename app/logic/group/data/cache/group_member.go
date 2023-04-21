@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database/redis"
 	"rockimserver/apis/rockim/service/group/v1/types"
 )
 
@@ -12,10 +11,10 @@ type GroupMemberData struct {
 	setCache cache.SortedSetCache[string]
 }
 
-func NewGroupMemberData(rds *redis.Client, cfg *cache.Config) *GroupMemberData {
+func NewGroupMemberData(mgr *cache.Manager, cfg *cache.Config) *GroupMemberData {
 	return &GroupMemberData{
-		cache:    newValueCache[types.GroupMember](rds, cfg.Category(keyGroupMemberInfo)),
-		setCache: newSortedSetCache[string](rds, cfg.Category(keyGroupMemberSet)),
+		cache:    cache.NewValueCache[types.GroupMember](mgr, cfg.Category(keyGroupMemberInfo)),
+		setCache: cache.NewSortedSetCache[string](mgr, cfg.Category(keyGroupMemberSet)),
 	}
 }
 

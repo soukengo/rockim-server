@@ -2,27 +2,32 @@ server:
   grpc:
     addr: :6105
     timeout: "10s"
+  job:
+    queue:
+      delayed:
+        redis:
+          key: default
+          consumer:
+            worker: 10
 
 database:
   mongodb:
-    address: mongodb://127.0.0.1:27017
-    username: rockim
-    password: rockim2022
-    database: rockim
-    authSource: admin
-  redis:
-    prefix: "ROCKIM:"
-    addr:
-      - 127.0.0.1:6379
-    password: ""
+    key: default
+
 cache:
   default:
     expire: "72h"
   categories:
-mq:
-  kafka:
-    brokers:
-      - 127.0.0.1:9092
-    topicPrefix: "ROCKIM-"
+  redis:
+    key: default
+
 queue:
-  workers: 10
+  general:
+    kafka:
+      key: default
+  delay:
+    redis:
+      key: default
+lock:
+  redis:
+    key: default

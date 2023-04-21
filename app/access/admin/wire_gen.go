@@ -8,6 +8,11 @@ package admin
 
 import (
 	"github.com/go-kratos/kratos/v2"
+	"github.com/soukengo/gopkg/component/auth"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/access/admin/conf"
 	database2 "rockimserver/app/access/admin/infra/database"
 	"rockimserver/app/access/admin/infra/grpc"
@@ -20,25 +25,20 @@ import (
 	database4 "rockimserver/app/access/admin/module/tenant/data/database"
 	service2 "rockimserver/app/access/admin/module/tenant/service"
 	server2 "rockimserver/app/access/admin/server"
-	"github.com/soukengo/gopkg/component/auth"
-	"github.com/soukengo/gopkg/component/database"
-	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/server"
-	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
 func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, authConfig *auth.Config, databaseConfig *database.Config) (*kratos.App, error) {
-	client := database2.NewMongoClient(databaseConfig)
-	sysUserData := database3.NewSysUserData(client)
+	manager := database2.NewDatabaseManager(config)
+	sysUserData := database3.NewSysUserData(manager)
 	sysUserRepo := data.NewSysUserRepo(sysUserData)
 	authUseCase := biz.NewAuthUseCase(authConfig, sysUserRepo)
 	authService := service.NewAuthService(authUseCase)
-	sysRoleData := database3.NewSysRoleData(client)
+	sysRoleData := database3.NewSysRoleData(manager)
 	sysRoleRepo := data.NewSysRoleRepo(sysRoleData)
-	sysResourceData := database3.NewSysResourceData(client)
+	sysResourceData := database3.NewSysResourceData(manager)
 	sysResourceRepo := data.NewSysResourceRepo(sysResourceData)
 	sessionUseCase := biz.NewSessionUseCase(sysUserRepo, sysRoleRepo, sysResourceRepo)
 	sessionService := service.NewSessionService(sessionUseCase)
@@ -59,7 +59,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	tenantRepo := data.NewTenantRepo(tenantAPIClient)
 	tenantUseCase := biz.NewTenantUseCase(tenantRepo)
 	tenantService := service.NewTenantService(tenantUseCase)
-	sysTenantResourceData := database3.NewTenantResourceData(client)
+	sysTenantResourceData := database3.NewTenantResourceData(manager)
 	sysTenantResourceRepo := data.NewSysTenantResourceRepo(sysTenantResourceData)
 	sysTenantResourceUseCase := biz.NewSysTenantResourceUseCase(sysTenantResourceRepo)
 	sysTenantResourceService := service.NewSysTenantResourceService(sysTenantResourceUseCase)
@@ -67,7 +67,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	bizTenantRepo := data2.NewTenantRepo(tenantAPIClient)
 	bizAuthUseCase := biz2.NewAuthUseCase(authConfig, bizTenantRepo)
 	serviceAuthService := service2.NewAuthService(bizAuthUseCase)
-	databaseSysTenantResourceData := database4.NewTenantResourceData(client)
+	databaseSysTenantResourceData := database4.NewTenantResourceData(manager)
 	bizSysTenantResourceRepo := data2.NewSysTenantResourceRepo(databaseSysTenantResourceData)
 	bizSessionUseCase := biz2.NewSessionUseCase(bizSysTenantResourceRepo)
 	serviceSessionService := service2.NewSessionService(bizSessionUseCase)

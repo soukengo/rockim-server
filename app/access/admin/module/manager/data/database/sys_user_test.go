@@ -2,7 +2,8 @@ package database
 
 import (
 	"context"
-	"github.com/soukengo/gopkg/component/database/mongo"
+	"github.com/soukengo/gopkg/component/database"
+	"github.com/soukengo/gopkg/infra/storage/mongo"
 	"github.com/stretchr/testify/suite"
 	"rockimserver/apis/rockim/shared"
 	"rockimserver/app/access/admin/module/manager/biz/options"
@@ -15,14 +16,18 @@ type SysUserDataSuite struct {
 }
 
 func (s *SysUserDataSuite) SetupSuite() {
-	mgo := mongo.NewClient(&mongo.Config{
-		Address:    "mongodb://127.0.0.1:27017",
-		Username:   "rockim",
-		Password:   "rockim2022",
-		Database:   "rockim",
-		AuthSource: "admin",
+	mgr := database.NewManager(&database.Config{
+		Mongodb: &mongo.Reference{
+			Config: &mongo.Config{
+				Address:    "mongodb://127.0.0.1:27017",
+				Username:   "rockim",
+				Password:   "rockim2022",
+				Database:   "rockim",
+				AuthSource: "admin",
+			},
+		},
 	})
-	s.target = NewSysUserData(mgo)
+	s.target = NewSysUserData(mgr)
 }
 
 func (s *SysUserDataSuite) Test_Paging() {

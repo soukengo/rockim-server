@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"github.com/soukengo/gopkg/component/cache"
-	"github.com/soukengo/gopkg/component/database/redis"
 	"github.com/soukengo/gopkg/log"
 	biztypes "rockimserver/app/logic/message/biz/types"
 )
@@ -12,9 +11,9 @@ type MessageBoxData struct {
 	cache cache.SortedSetCache[biztypes.IMMessageLetter]
 }
 
-func NewMessageBoxData(rds *redis.Client, cfg *cache.Config) *MessageBoxData {
+func NewMessageBoxData(rds *cache.Manager, cfg *cache.Config) *MessageBoxData {
 	return &MessageBoxData{
-		cache: newSortedSetCache[biztypes.IMMessageLetter](rds, cfg.Category(keyMessageBox)),
+		cache: cache.NewSortedSetCache[biztypes.IMMessageLetter](rds, cfg.Category(keyMessageBox)),
 	}
 }
 

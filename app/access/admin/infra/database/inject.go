@@ -3,11 +3,11 @@ package database
 import (
 	"github.com/google/wire"
 	"github.com/soukengo/gopkg/component/database"
-	"github.com/soukengo/gopkg/component/database/mongo"
+	"rockimserver/app/access/admin/conf"
 )
 
-var ProviderSet = wire.NewSet(NewMongoClient)
+var ProviderSet = wire.NewSet(NewDatabaseManager)
 
-func NewMongoClient(cfg *database.Config) *mongo.Client {
-	return mongo.NewClient(cfg.Mongodb)
+func NewDatabaseManager(cfg *conf.Config) *database.Manager {
+	return database.NewManager(cfg.Database)
 }
