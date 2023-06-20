@@ -16,10 +16,10 @@ func NewGroupRepo(ac v1.GroupAPIClient) biz.GroupRepo {
 	return &groupRepo{ac: ac}
 }
 
-func (r *groupRepo) Find(ctx context.Context, productId string, customGroupId string) (out *types.Group, err error) {
+func (r *groupRepo) Find(ctx context.Context, productId string, bizId string) (out *types.Group, err error) {
 	ret, err := r.ac.Find(ctx, &v1.GroupFindRequest{
-		Base:          service.GenRequest(productId),
-		CustomGroupId: customGroupId,
+		Base:  service.GenRequest(productId),
+		BizId: bizId,
 	})
 	if err != nil {
 		return

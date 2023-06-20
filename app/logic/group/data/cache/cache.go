@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	keyGroup              cache.Key = "group"
-	keyGroupCustomGroupId cache.Key = "group.custom_group_id"
+	keyGroup      cache.Key = "group"
+	keyGroupBizId cache.Key = "group.biz_id"
 
 	keyGroupMemberSet  cache.Key = "group.member.set"
 	keyGroupMemberInfo cache.Key = "group.member.info"

@@ -17,6 +17,9 @@ func MessageProto(source *entity.IMMessage) *types.IMMessage {
 		MsgId:          source.MsgId,
 		ConversationId: conversationId,
 		Body:           MessageBodyProto(source.Body),
+		Sender:         MessageSenderProto(source.Sender),
+		From:           &types.TargetID{Category: source.From.Category, Value: source.From.Value},
+		To:             &types.TargetID{Category: source.To.Category, Value: source.To.Value},
 		Sequence:       source.Sequence,
 		Status:         enums.Message_Status(source.Status),
 		Version:        source.Version,
@@ -29,12 +32,10 @@ func MessageBodyProto(source *entity.IMMessageBody) *types.IMMessageBody {
 	}
 	return &types.IMMessageBody{
 		Timestamp:   source.Timestamp,
-		Sender:      MessageSenderProto(source.Sender),
 		ClientMsgId: source.ClientMsgId,
 		MessageType: enums.Message_MessageType(source.MessageType),
 		Content:     source.Content,
 		Payload:     source.Payload,
-		NeedReceipt: source.NeedReceipt,
 	}
 }
 func MessageSenderProto(source *entity.IMMessageSender) *types.IMMessageSender {
@@ -58,6 +59,9 @@ func MessageEntity(source *types.IMMessage) *entity.IMMessage {
 		ProductId:      source.ProductId,
 		MsgId:          source.MsgId,
 		ConversationId: biztypes.EncodeConversationID(source.ProductId, source.ConversationId),
+		Sender:         MessageSenderEntity(source.Sender),
+		From:           &entity.MessageTargetID{Category: source.From.Category, Value: source.From.Value},
+		To:             &entity.MessageTargetID{Category: source.To.Category, Value: source.To.Value},
 		Body:           MessageBodyEntity(source.Body),
 		Sequence:       source.Sequence,
 		Status:         int32(source.Status),
@@ -71,12 +75,10 @@ func MessageBodyEntity(source *types.IMMessageBody) *entity.IMMessageBody {
 	}
 	return &entity.IMMessageBody{
 		Timestamp:   source.Timestamp,
-		Sender:      MessageSenderEntity(source.Sender),
 		ClientMsgId: source.ClientMsgId,
 		MessageType: int32(source.MessageType),
 		Content:     source.Content,
 		Payload:     source.Payload,
-		NeedReceipt: source.NeedReceipt,
 	}
 }
 func MessageSenderEntity(source *types.IMMessageSender) *entity.IMMessageSender {

@@ -54,9 +54,9 @@ func (uc *MessageDeliveryUseCase) Delivery(ctx context.Context, productId string
 	}
 	operation := enums.Network_MESSAGES
 	switch conversationId.Category {
-	case enums.Conversation_GROUP:
+	case enums.MessageTarget_GROUP:
 		err = uc.pushMgr.PushGroup(ctx, operation, productId, conversationId.Value, body)
-	case enums.Conversation_PERSON:
+	case enums.MessageTarget_PERSON:
 		uids, valid := biztypes.PersonUids(conversationId)
 		if !valid {
 			log.WithContext(ctx).Errorf("conversationId is not valid: %v", conversationId)
@@ -71,21 +71,18 @@ func (uc *MessageDeliveryUseCase) toClientMessage(delivery *biztypes.IMMessageDe
 	return &clienttypes.IMMessage{
 		ProductId: message.ProductId,
 		MsgId:     message.MsgId,
-		From:      &clienttypes.TargetID{Category: delivery.From.Category, Value: delivery.From.Value},
-		To:        &clienttypes.TargetID{Category: delivery.To.Category, Value: delivery.To.Value},
+		Sender: &clienttypes.IMMessageSender{
+			Account:   message.Sender.Account,
+			Name:      message.Sender.Name,
+			AvatarUrl: message.Sender.AvatarUrl,
+		},
+		Target: &clienttypes.TargetID{Category: delivery.From.Category, Value: delivery.From.Value},
 		Body: &clienttypes.IMMessageBody{
-			Timestamp: message.Body.Timestamp,
-			Sender: &clienttypes.IMMessageSender{
-				Uid:       message.Body.Sender.Uid,
-				Account:   message.Body.Sender.Account,
-				Name:      message.Body.Sender.Name,
-				AvatarUrl: message.Body.Sender.AvatarUrl,
-			},
+			Timestamp:   message.Body.Timestamp,
 			ClientMsgId: message.Body.ClientMsgId,
 			MessageType: message.Body.MessageType,
 			Content:     message.Body.Content,
 			Payload:     message.Body.Payload,
-			NeedReceipt: message.Body.NeedReceipt,
 		},
 		Sequence: message.Sequence,
 		Status:   message.Status,

@@ -8,7 +8,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/soukengo/gopkg/util/encrypt"
-	v1 "rockimserver/apis/rockim/api/client/v1/http"
+	v1 "rockimserver/apis/rockim/api/client/v1/protocol/http"
 	"rockimserver/app/access/gateway/module/client/biz"
 	"rockimserver/app/access/gateway/module/client/biz/options"
 	"rockimserver/app/access/gateway/module/client/service"

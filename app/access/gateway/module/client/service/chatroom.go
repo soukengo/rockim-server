@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	v1 "rockimserver/apis/rockim/api/client/v1/http"
+	v1 "rockimserver/apis/rockim/api/client/v1/protocol/http"
 	"rockimserver/app/access/gateway/module/client/biz"
 	"rockimserver/app/access/gateway/module/client/service/converter"
 )
@@ -16,7 +16,7 @@ func NewChatRoomService(uc *biz.ChatRoomUseCase) *ChatRoomService {
 }
 
 func (s *ChatRoomService) Find(ctx context.Context, in *v1.ChatRoomFindRequest) (out *v1.ChatRoomFindResponse, err error) {
-	group, err := s.uc.Find(ctx, in.Base.ProductId, in.CustomGroupId)
+	group, err := s.uc.Find(ctx, in.Base.ProductId, in.BizId)
 	if err != nil {
 		return nil, err
 	}

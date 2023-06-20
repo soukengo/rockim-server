@@ -2,9 +2,11 @@ package server
 
 import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/soukengo/gopkg/component/server"
 	_ "github.com/soukengo/gopkg/util/encoding/proto"
+	"rockimserver/app/access/gateway/server/middleware"
 )
 
 // NewHTTPServer new a HTTP server.
@@ -12,6 +14,8 @@ func NewHTTPServer(c *server.Config, clientGroup *ClientServiceGroup, openapiGro
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
+			tracing.Server(),
+			middleware.Trace(),
 		),
 	}
 	if c.Http.Network != "" {

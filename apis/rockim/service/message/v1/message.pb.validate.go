@@ -101,9 +101,9 @@ func (m *MessageSendRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetUid()) < 1 {
+	if utf8.RuneCountInString(m.GetFrom()) < 1 {
 		err := MessageSendRequestValidationError{
-			field:  "Uid",
+			field:  "From",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -151,6 +151,8 @@ func (m *MessageSendRequest) validate(all bool) error {
 			}
 		}
 	}
+
+	// no validation rules for IsSystem
 
 	if utf8.RuneCountInString(m.GetClientMsgId()) < 1 {
 		err := MessageSendRequestValidationError{

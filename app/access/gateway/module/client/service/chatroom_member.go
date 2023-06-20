@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	v1 "rockimserver/apis/rockim/api/client/v1/http"
+	v1 "rockimserver/apis/rockim/api/client/v1/protocol/http"
 	"rockimserver/app/access/gateway/module/client/biz"
 	"rockimserver/app/access/gateway/module/client/biz/options"
 )
@@ -21,7 +21,7 @@ func (s *ChatRoomMemberService) Join(ctx context.Context, in *v1.ChatRoomJoinReq
 	if err != nil {
 		return
 	}
-	groupId, err := s.chatRoomUc.FindGroupId(ctx, in.Base.ProductId, in.CustomGroupId)
+	groupId, err := s.chatRoomUc.FindGroupId(ctx, in.Base.ProductId, in.BizId)
 	if err != nil {
 		return
 	}
@@ -42,7 +42,7 @@ func (s *ChatRoomMemberService) Quit(ctx context.Context, in *v1.ChatRoomQuitReq
 	if err != nil {
 		return
 	}
-	groupId, err := s.chatRoomUc.FindGroupId(ctx, in.Base.ProductId, in.CustomGroupId)
+	groupId, err := s.chatRoomUc.FindGroupId(ctx, in.Base.ProductId, in.BizId)
 	if err != nil {
 		return
 	}

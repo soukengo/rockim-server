@@ -15,47 +15,40 @@ const (
 )
 
 var (
-	conversationUnknown = &types.ConversationID{Category: enums.Conversation_UNKNOWN}
+	conversationUnknown = &types.ConversationID{Category: enums.MessageTarget_UNKNOWN}
 )
 
 type MessageMeta struct {
 	MsgId     string
 	ProductId string
 	Sender    *usertypes.User
-	Target    *types.TargetID
+	From      *types.TargetID
+	To        *types.TargetID
 	RecvUser  *usertypes.User
 	Group     *grouptypes.Group
 	Body      *types.IMMessageBody
 	Receivers []string
 }
 
-func NewPersonMessageMeta(productId string, sender *usertypes.User, target *types.TargetID, recvUser *usertypes.User, body *types.IMMessageBody) *MessageMeta {
-	return &MessageMeta{ProductId: productId, Sender: sender, Target: target, RecvUser: recvUser, Body: body}
+func NewPersonMessageMeta(productId string, sender *usertypes.User, from *types.TargetID, to *types.TargetID, recvUser *usertypes.User, body *types.IMMessageBody) *MessageMeta {
+	return &MessageMeta{ProductId: productId, Sender: sender, From: from, To: to, RecvUser: recvUser, Body: body}
 }
 
 func NewGroupMessageMeta(productId string, sender *usertypes.User, target *types.TargetID, group *grouptypes.Group, body *types.IMMessageBody) *MessageMeta {
-	return &MessageMeta{ProductId: productId, Sender: sender, Target: target, Group: group, Body: body}
+	return &MessageMeta{ProductId: productId, Sender: sender, From: target, To: target, Group: group, Body: body}
 }
 
 func (m *MessageMeta) ConversationId() *types.ConversationID {
-	switch m.Target.Category {
-	case enums.Conversation_PERSON:
+	switch m.To.Category {
+	case enums.MessageTarget_PERSON:
 		uids := []string{m.Sender.Id, m.RecvUser.Id}
 		sort.Strings(uids)
-		return &types.ConversationID{Category: m.Target.Category, Value: strings.Join(uids, conversationIdValueSeparator)}
-	case enums.Conversation_GROUP:
-		return &types.ConversationID{Category: m.Target.Category, Value: m.Group.Id}
+		return &types.ConversationID{Category: m.To.Category, Value: strings.Join(uids, conversationIdValueSeparator)}
+	case enums.MessageTarget_GROUP:
+		return &types.ConversationID{Category: m.To.Category, Value: m.Group.Id}
 	default:
-		return &types.ConversationID{Category: enums.Conversation_UNKNOWN}
+		return &types.ConversationID{Category: enums.MessageTarget_UNKNOWN}
 	}
-}
-
-func (m *MessageMeta) FromTarget() *types.TargetID {
-	target := &types.TargetID{Category: m.Target.Category, Value: m.Target.Value}
-	if m.Target.Category == enums.Conversation_PERSON {
-		target.Value = m.Sender.Account
-	}
-	return target
 }
 
 // EncodeConversationID encodes the conversation id
@@ -75,12 +68,12 @@ func DecodeConversationID(source string) (productId string, id *types.Conversati
 	productId = arr[0]
 	category := arr[1]
 	value := arr[2]
-	categoryNum, ok := enums.Conversation_Category_value[category]
+	categoryNum, ok := enums.MessageTarget_Category_value[category]
 	if !ok {
 		id = conversationUnknown
 		return
 	}
-	id = &types.ConversationID{Category: enums.Conversation_Category(categoryNum), Value: value}
+	id = &types.ConversationID{Category: enums.MessageTarget_Category(categoryNum), Value: value}
 	return
 }
 

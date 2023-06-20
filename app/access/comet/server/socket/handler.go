@@ -10,12 +10,13 @@ import (
 	"github.com/soukengo/gopkg/errors"
 	"github.com/soukengo/gopkg/log"
 	"github.com/soukengo/gopkg/util/runtimes"
-	v1 "rockimserver/apis/rockim/api/client/v1/socket"
+	v1 "rockimserver/apis/rockim/api/client/v1/protocol/socket"
 	"rockimserver/apis/rockim/shared"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/access/comet/conf"
 	"rockimserver/app/access/comet/module/client/service"
+	"rockimserver/app/access/comet/protocol"
 )
 
 var (
@@ -65,7 +66,7 @@ func (h *ClientHandler) OnClosed(ctx *socket.Context) {
 
 func (h *ClientHandler) OnReceived(ctx *socket.Context, p packet.IPacket) {
 	ch := ctx.Channel()
-	pkt, ok := p.(*v1.Packet)
+	pkt, ok := p.(*protocol.Packet)
 	if !ok {
 		log.Errorf("OnReceived packet not invalid: %v", p)
 		return
@@ -137,7 +138,7 @@ func (h *ClientHandler) render(ctx context.Context, ch socket.Channel, header *v
 	if err1 != nil {
 		log.WithContext(ctx).Errorf("encode body error: %v", err1)
 	}
-	p := v1.NewPacket(uint8(enums.Network_RESPONSE), headerBytes, bodyBytes)
+	p := protocol.NewPacket(uint8(enums.Network_RESPONSE), headerBytes, bodyBytes)
 	err = ch.Send(p)
 	if err != nil {
 		log.WithContext(ctx).Errorf("channel.Send channelId: %v error: %v", ch.Id(), err)

@@ -19,7 +19,7 @@ func NewMessageRepo(ac v1.MessageAPIClient) biz.MessageRepo {
 func (r *messageRepo) Send(ctx context.Context, in *options.MessageSendOptions) (err error) {
 	_, err = r.ac.Send(ctx, &v1.MessageSendRequest{
 		Base:        service.GenRequest(in.ProductId),
-		Uid:         in.Uid,
+		From:        in.Uid,
 		Target:      in.Target,
 		ClientMsgId: in.ClientMsgId,
 		MessageType: in.MessageType,

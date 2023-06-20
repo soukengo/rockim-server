@@ -18,12 +18,12 @@ func NewChatRoomService(uc *biz.ChatRoomUseCase) *ChatRoomService {
 
 func (s *ChatRoomService) Create(ctx context.Context, in *v1.ChatRoomCreateRequest) (out *v1.ChatRoomCreateResponse, err error) {
 	group, err := s.uc.Create(ctx, &options.ChatRoomCreateOptions{
-		ProductId:     in.Base.ProductId,
-		CustomGroupId: in.CustomGroupId,
-		Name:          in.Name,
-		IconUrl:       in.IconUrl,
-		Fields:        in.Fields,
-		Owner:         in.Owner,
+		ProductId: in.Base.ProductId,
+		BizId:     in.BizId,
+		Name:      in.Name,
+		IconUrl:   in.IconUrl,
+		Fields:    in.Fields,
+		Owner:     in.Owner,
 	})
 	if err != nil {
 		return

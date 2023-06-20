@@ -6,5 +6,5 @@ import (
 )
 
 type GroupRepo interface {
-	Find(ctx context.Context, productId string, customGroupId string) (*types.Group, error)
+	Find(ctx context.Context, productId string, bizId string) (*types.Group, error)
 }

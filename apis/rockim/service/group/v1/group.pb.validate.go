@@ -97,9 +97,9 @@ func (m *GroupIdFindRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetCustomGroupId()) > 64 {
+	if utf8.RuneCountInString(m.GetBizId()) > 64 {
 		err := GroupIdFindRequestValidationError{
-			field:  "CustomGroupId",
+			field:  "BizId",
 			reason: "value length must be at most 64 runes",
 		}
 		if !all {
@@ -354,9 +354,9 @@ func (m *GroupFindRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetCustomGroupId()) > 64 {
+	if utf8.RuneCountInString(m.GetBizId()) > 64 {
 		err := GroupFindRequestValidationError{
-			field:  "CustomGroupId",
+			field:  "BizId",
 			reason: "value length must be at most 64 runes",
 		}
 		if !all {

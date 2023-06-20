@@ -1,5 +1,9 @@
 package entity
 
+import (
+	"rockimserver/apis/rockim/shared/enums"
+)
+
 const (
 	TableImMessage         = "im_message"
 	TableImMessageSequence = "im_message_sequence"
@@ -7,15 +11,22 @@ const (
 )
 
 type IMMessage struct {
-	Id             string         `bson:"_id,omitempty"`         // ID
-	UpdateTime     int64          `bson:"update_time,omitempty"` // 更新时间
-	ProductId      string         `bson:"product_id"`
-	MsgId          string         `bson:"msg_id"`
-	ConversationId string         `bson:"conversation_id"`
-	Body           *IMMessageBody `bson:"body"`
-	Sequence       int64          `bson:"sequence"`
-	Status         int32          `bson:"status"`
-	Version        int64          `bson:"version"`
+	Id             string `bson:"_id,omitempty"`         // ID
+	UpdateTime     int64  `bson:"update_time,omitempty"` // 更新时间
+	ProductId      string `bson:"product_id"`
+	MsgId          string `bson:"msg_id"`
+	ConversationId string `bson:"conversation_id"`
+	// 消息发送者
+	Sender *IMMessageSender `bson:"sender"`
+	// 来源目标ID
+	From *MessageTargetID `protobuf:"bytes,5,opt,name=from,proto3" json:"from,omitempty"`
+	// 接收者的目标ID
+	To *MessageTargetID `protobuf:"bytes,6,opt,name=to,proto3" json:"to,omitempty"`
+	// 消息主体
+	Body     *IMMessageBody `bson:"body"`
+	Sequence int64          `bson:"sequence"`
+	Status   int32          `bson:"status"`
+	Version  int64          `bson:"version"`
 }
 
 func (*IMMessage) TableName() string {
@@ -25,8 +36,6 @@ func (*IMMessage) TableName() string {
 type IMMessageBody struct {
 	// 消息发送时间
 	Timestamp int64 `bson:"timestamp"`
-	// 消息发送者
-	Sender *IMMessageSender `bson:"sender"`
 	// 客户端的消息ID
 	ClientMsgId string `bson:"client_msg_id"`
 	// 消息类型
@@ -35,8 +44,6 @@ type IMMessageBody struct {
 	Content []byte `bson:"content"`
 	// 透传数据
 	Payload map[string]string `bson:"payload"`
-	// 是否需要已读回执
-	NeedReceipt bool `bson:"need_receipt"`
 }
 
 // IMMessageSender 消息发送者
@@ -49,6 +56,13 @@ type IMMessageSender struct {
 	Name string `bson:"name"`
 	// 发送者头像
 	AvatarUrl string `bson:"avatar_url"`
+}
+
+type MessageTargetID struct {
+	// 目标类型
+	Category enums.MessageTarget_Category `bson:"category"`
+	// 值（群聊为bizId，私聊为用户account）
+	Value string `bson:"value"`
 }
 
 type IMMessageSequence struct {

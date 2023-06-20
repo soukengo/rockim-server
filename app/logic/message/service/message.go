@@ -19,8 +19,9 @@ func NewMessageService(uc *biz.MessageUseCase) *MessageService {
 func (s *MessageService) Send(ctx context.Context, in *v1.MessageSendRequest) (out *v1.MessageSendResponse, err error) {
 	err = s.uc.Send(ctx, &options.MessageSendOptions{
 		ProductId:   in.Base.ProductId,
-		Uid:         in.Uid,
+		From:        in.From,
 		Target:      in.Target,
+		IsSystem:    in.IsSystem,
 		ClientMsgId: in.ClientMsgId,
 		MessageType: in.MessageType,
 		Content:     in.Content,

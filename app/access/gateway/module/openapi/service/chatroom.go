@@ -25,16 +25,16 @@ func (s *ChatRoomService) Create(ctx context.Context, in *v1.ChatRoomCreateReque
 		}
 	}
 	group, err := s.uc.Create(ctx, &options.ChatRoomCreateOptions{
-		ProductId:     in.Base.ProductId,
-		CustomGroupId: in.CustomGroupId,
-		Name:          in.Name,
-		IconUrl:       in.IconUrl,
-		Fields:        in.Fields,
-		Owner:         ownerUid,
+		ProductId: in.Base.ProductId,
+		BizId:     in.BizId,
+		Name:      in.Name,
+		IconUrl:   in.IconUrl,
+		Fields:    in.Fields,
+		Owner:     ownerUid,
 	})
 	if err != nil {
 		return
 	}
-	out = &v1.ChatRoomCreateResponse{CustomGroupId: group.CustomGroupId}
+	out = &v1.ChatRoomCreateResponse{BizId: group.BizId}
 	return
 }

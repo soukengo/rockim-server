@@ -18,7 +18,7 @@ func NewMessageTask(uc *biz.MessageDeliveryUseCase) *MessageTask {
 func (t *MessageTask) Delivery(ctx context.Context, topic string, data []byte) (err error) {
 	value := string(data)
 	productId, conversationId := biztypes.DecodeConversationID(value)
-	if conversationId.Category == enums.Conversation_UNKNOWN {
+	if conversationId.Category == enums.MessageTarget_UNKNOWN {
 		return
 	}
 	return t.uc.Delivery(ctx, productId, conversationId)

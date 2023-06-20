@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	v1 "rockimserver/apis/rockim/api/client/v1/http"
+	v1 "rockimserver/apis/rockim/api/client/v1/protocol/http"
 	"rockimserver/apis/rockim/service/message/v1/types"
 	"rockimserver/app/access/gateway/module/client/biz"
 	"rockimserver/app/access/gateway/module/client/biz/options"

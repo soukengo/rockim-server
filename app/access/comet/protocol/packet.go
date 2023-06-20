@@ -1,4 +1,4 @@
-package socket
+package protocol
 
 import (
 	"bufio"

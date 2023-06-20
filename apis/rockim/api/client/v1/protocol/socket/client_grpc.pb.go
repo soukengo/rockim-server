@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.20.0
-// source: rockim/api/client/v1/socket/client.proto
+// source: rockim/api/client/v1/protocol/socket/client.proto
 
 package socket
 
@@ -38,7 +38,7 @@ func NewChannelAPIClient(cc grpc.ClientConnInterface) ChannelAPIClient {
 
 func (c *channelAPIClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
 	out := new(AuthResponse)
-	err := c.cc.Invoke(ctx, "/rockim.api.client.socket.v1.ChannelAPI/Auth", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rockim.api.client.v1.protocol.socket.ChannelAPI/Auth", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (c *channelAPIClient) Auth(ctx context.Context, in *AuthRequest, opts ...gr
 
 func (c *channelAPIClient) HeartBeat(ctx context.Context, in *HeartBeatRequest, opts ...grpc.CallOption) (*HeartBeatResponse, error) {
 	out := new(HeartBeatResponse)
-	err := c.cc.Invoke(ctx, "/rockim.api.client.socket.v1.ChannelAPI/HeartBeat", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rockim.api.client.v1.protocol.socket.ChannelAPI/HeartBeat", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func _ChannelAPI_Auth_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.api.client.socket.v1.ChannelAPI/Auth",
+		FullMethod: "/rockim.api.client.v1.protocol.socket.ChannelAPI/Auth",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ChannelAPIServer).Auth(ctx, req.(*AuthRequest))
@@ -116,7 +116,7 @@ func _ChannelAPI_HeartBeat_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.api.client.socket.v1.ChannelAPI/HeartBeat",
+		FullMethod: "/rockim.api.client.v1.protocol.socket.ChannelAPI/HeartBeat",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ChannelAPIServer).HeartBeat(ctx, req.(*HeartBeatRequest))
@@ -128,7 +128,7 @@ func _ChannelAPI_HeartBeat_Handler(srv interface{}, ctx context.Context, dec fun
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ChannelAPI_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "rockim.api.client.socket.v1.ChannelAPI",
+	ServiceName: "rockim.api.client.v1.protocol.socket.ChannelAPI",
 	HandlerType: (*ChannelAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -141,5 +141,5 @@ var ChannelAPI_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "rockim/api/client/v1/socket/client.proto",
+	Metadata: "rockim/api/client/v1/protocol/socket/client.proto",
 }

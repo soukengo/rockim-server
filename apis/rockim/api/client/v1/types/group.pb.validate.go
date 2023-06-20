@@ -64,7 +64,7 @@ func (m *Group) validate(all bool) error {
 
 	// no validation rules for ProductId
 
-	// no validation rules for CustomGroupId
+	// no validation rules for BizId
 
 	// no validation rules for Name
 
@@ -179,7 +179,7 @@ func (m *GroupMember) validate(all bool) error {
 
 	// no validation rules for GroupId
 
-	// no validation rules for Uid
+	// no validation rules for Account
 
 	// no validation rules for Role
 

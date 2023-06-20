@@ -61,7 +61,7 @@ func (m *TargetID) validate(all bool) error {
 
 	var errors []error
 
-	if _, ok := enums.Conversation_Category_name[int32(m.GetCategory())]; !ok {
+	if _, ok := enums.MessageTarget_Category_name[int32(m.GetCategory())]; !ok {
 		err := TargetIDValidationError{
 			field:  "Category",
 			reason: "value must be one of the defined enum values",
@@ -187,11 +187,11 @@ func (m *IMMessage) validate(all bool) error {
 	// no validation rules for MsgId
 
 	if all {
-		switch v := interface{}(m.GetFrom()).(type) {
+		switch v := interface{}(m.GetSender()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, IMMessageValidationError{
-					field:  "From",
+					field:  "Sender",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -199,16 +199,16 @@ func (m *IMMessage) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, IMMessageValidationError{
-					field:  "From",
+					field:  "Sender",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetFrom()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetSender()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return IMMessageValidationError{
-				field:  "From",
+				field:  "Sender",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
@@ -216,11 +216,11 @@ func (m *IMMessage) validate(all bool) error {
 	}
 
 	if all {
-		switch v := interface{}(m.GetTo()).(type) {
+		switch v := interface{}(m.GetTarget()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, IMMessageValidationError{
-					field:  "To",
+					field:  "Target",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -228,16 +228,16 @@ func (m *IMMessage) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, IMMessageValidationError{
-					field:  "To",
+					field:  "Target",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
 			}
 		}
-	} else if v, ok := interface{}(m.GetTo()).(interface{ Validate() error }); ok {
+	} else if v, ok := interface{}(m.GetTarget()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return IMMessageValidationError{
-				field:  "To",
+				field:  "Target",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
@@ -380,35 +380,6 @@ func (m *IMMessageBody) validate(all bool) error {
 
 	// no validation rules for Timestamp
 
-	if all {
-		switch v := interface{}(m.GetSender()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, IMMessageBodyValidationError{
-					field:  "Sender",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, IMMessageBodyValidationError{
-					field:  "Sender",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		}
-	} else if v, ok := interface{}(m.GetSender()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return IMMessageBodyValidationError{
-				field:  "Sender",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
-
 	// no validation rules for ClientMsgId
 
 	// no validation rules for MessageType
@@ -416,8 +387,6 @@ func (m *IMMessageBody) validate(all bool) error {
 	// no validation rules for Content
 
 	// no validation rules for Payload
-
-	// no validation rules for NeedReceipt
 
 	if len(errors) > 0 {
 		return IMMessageBodyMultiError(errors)
@@ -518,8 +487,6 @@ func (m *IMMessageSender) validate(all bool) error {
 	}
 
 	var errors []error
-
-	// no validation rules for Uid
 
 	// no validation rules for Account
 

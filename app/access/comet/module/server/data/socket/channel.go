@@ -6,9 +6,10 @@ import (
 	"github.com/soukengo/gopkg/component/server/socket"
 	"github.com/soukengo/gopkg/component/server/socket/packet"
 	"github.com/soukengo/gopkg/log"
-	v1 "rockimserver/apis/rockim/api/client/v1/socket"
+	v1 "rockimserver/apis/rockim/api/client/v1/protocol/socket"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/access/comet/module/server/biz/options"
+	"rockimserver/app/access/comet/protocol"
 )
 
 type ChannelManager struct {
@@ -47,7 +48,7 @@ func newPushPacket(operation enums.Network_PushOperation, data []byte) packet.IP
 	}
 	headerBytes, _ := encode(header)
 	bodyBytes, _ := encode(body)
-	return v1.NewPacket(uint8(enums.Network_PUSH), headerBytes, bodyBytes)
+	return protocol.NewPacket(uint8(enums.Network_PUSH), headerBytes, bodyBytes)
 }
 
 func encode(in proto.Message) ([]byte, error) {

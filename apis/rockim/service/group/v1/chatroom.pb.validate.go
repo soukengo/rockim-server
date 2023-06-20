@@ -97,9 +97,9 @@ func (m *ChatRoomCreateRequest) validate(all bool) error {
 		}
 	}
 
-	if !_ChatRoomCreateRequest_CustomGroupId_Pattern.MatchString(m.GetCustomGroupId()) {
+	if !_ChatRoomCreateRequest_BizId_Pattern.MatchString(m.GetBizId()) {
 		err := ChatRoomCreateRequestValidationError{
-			field:  "CustomGroupId",
+			field:  "BizId",
 			reason: "value does not match regex pattern \"^[a-zA-Z0-9_.-]{0,64}$\"",
 		}
 		if !all {
@@ -214,7 +214,7 @@ var _ interface {
 	ErrorName() string
 } = ChatRoomCreateRequestValidationError{}
 
-var _ChatRoomCreateRequest_CustomGroupId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_.-]{0,64}$")
+var _ChatRoomCreateRequest_BizId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_.-]{0,64}$")
 
 // Validate checks the field values on ChatRoomCreateResponse with the rules
 // defined in the proto definition for this message. If any rules are

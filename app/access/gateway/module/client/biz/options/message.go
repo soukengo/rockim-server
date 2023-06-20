@@ -7,7 +7,7 @@ import (
 
 type MessageSendOptions struct {
 	ProductId   string                    // 应用ID
-	Uid         string                    // 发送者用户ID
+	Uid         string                    // 发送者用户ID（如果是发给某个私聊的系统消息，这里为私聊的用户ID）
 	Target      *types.TargetID           // 目标ID
 	ClientMsgId string                    // 客户端的消息ID
 	MessageType enums.Message_MessageType // 消息类型
