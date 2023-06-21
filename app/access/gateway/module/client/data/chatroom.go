@@ -28,10 +28,10 @@ func (r *chatRoomRepo) FindById(ctx context.Context, productId string, groupId s
 	return ret.Group, nil
 }
 
-func (r *chatRoomRepo) FindGroupId(ctx context.Context, productId string, bizId string) (out string, err error) {
+func (r *chatRoomRepo) FindGroupId(ctx context.Context, productId string, customGroupId string) (out string, err error) {
 	ret, err := r.groupAc.FindGroupId(ctx, &v1.GroupIdFindRequest{
-		Base:  service.GenRequest(productId),
-		BizId: bizId,
+		Base:          service.GenRequest(productId),
+		CustomGroupId: customGroupId,
 	})
 	if err != nil {
 		return

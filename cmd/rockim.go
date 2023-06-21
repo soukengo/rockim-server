@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/soukengo/gopkg/log"
+	"rockimserver/app/access/admin"
 	"rockimserver/app/access/comet"
 	"rockimserver/app/access/gateway"
 	"rockimserver/app/logic/group"
@@ -23,7 +24,7 @@ type Runnable func(version string) (app *kratos.App, logger log.Logger, err erro
 
 var (
 	runnable = []Runnable{
-		//admin.New,
+		admin.New,
 		gateway.New,
 		comet.New,
 		platform.New,

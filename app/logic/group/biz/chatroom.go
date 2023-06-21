@@ -25,8 +25,8 @@ func NewChatRoomUseCase(repo GroupRepo, memberRepo ChatRoomMemberRepo, idgen idg
 	return &ChatRoomUseCase{repo: repo, memberRepo: memberRepo, idgen: idgen, lockBdr: lockBdr, memberMgr: memberMgr}
 }
 
-func (uc *ChatRoomUseCase) FindByBizId(ctx context.Context, productId string, bizId string) (out string, err error) {
-	return uc.repo.FindGroupId(ctx, productId, bizId)
+func (uc *ChatRoomUseCase) FindByCustomGroupId(ctx context.Context, productId string, customGroupId string) (out string, err error) {
+	return uc.repo.FindGroupId(ctx, productId, customGroupId)
 }
 
 func (uc *ChatRoomUseCase) FindById(ctx context.Context, productId string, groupId string) (out *types.Group, err error) {
@@ -35,26 +35,26 @@ func (uc *ChatRoomUseCase) FindById(ctx context.Context, productId string, group
 
 func (uc *ChatRoomUseCase) Create(ctx context.Context, opts *options.ChatRoomCreateOptions) (out *types.Group, err error) {
 	productId := opts.ProductId
-	bizId := opts.BizId
-	distributedLock := uc.lockBdr.Build(consts.LockKeyChatRoomCreate, productId, bizId)
+	customGroupId := opts.CustomGroupId
+	distributedLock := uc.lockBdr.Build(consts.LockKeyChatRoomCreate, productId, customGroupId)
 	locked := distributedLock.TryLock(ctx)
 	defer distributedLock.UnLock()
 	if !locked {
 		return
 	}
-	if len(bizId) > 0 {
-		if strings.HasPrefix(bizId, consts.GroupBizIdPrefix) {
-			err = ErrGroupBizIdInvalid
+	if len(customGroupId) > 0 {
+		if strings.HasPrefix(customGroupId, consts.GroupCustomGroupIdPrefix) {
+			err = ErrGroupCustomGroupIdInvalid
 			return
 		}
 	} else {
-		bizId, err = uc.idgen.GenID()
+		customGroupId, err = uc.idgen.GenID()
 		if err != nil {
 			return
 		}
-		bizId = consts.GroupBizIdPrefix + bizId
+		customGroupId = consts.GroupCustomGroupIdPrefix + customGroupId
 	}
-	oldGroupId, err := uc.repo.FindGroupId(ctx, opts.ProductId, bizId)
+	oldGroupId, err := uc.repo.FindGroupId(ctx, opts.ProductId, customGroupId)
 	// 不是资源不存在的错误
 	if err != nil && !errors.IsNotFound(err) {
 		return
@@ -68,16 +68,16 @@ func (uc *ChatRoomUseCase) Create(ctx context.Context, opts *options.ChatRoomCre
 		return
 	}
 	group := &types.Group{
-		Id:         groupId,
-		CreateTime: time.Now().UnixMilli(),
-		UpdateTime: time.Now().UnixMilli(),
-		Category:   enums.Group_CHATROOM,
-		ProductId:  productId,
-		BizId:      bizId,
-		Name:       opts.Name,
-		IconUrl:    opts.IconUrl,
-		Fields:     opts.Fields,
-		Owner:      opts.Owner,
+		Id:            groupId,
+		CreateTime:    time.Now().UnixMilli(),
+		UpdateTime:    time.Now().UnixMilli(),
+		Category:      enums.Group_CHATROOM,
+		ProductId:     productId,
+		CustomGroupId: customGroupId,
+		Name:          opts.Name,
+		IconUrl:       opts.IconUrl,
+		Fields:        opts.Fields,
+		Owner:         opts.Owner,
 	}
 	err = uc.repo.Create(ctx, group)
 	if err != nil {

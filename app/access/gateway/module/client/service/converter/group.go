@@ -7,12 +7,12 @@ import (
 
 func ToClientGroup(source *types.Group) *clienttypes.Group {
 	return &clienttypes.Group{
-		Category:  source.Category,
-		ProductId: source.ProductId,
-		BizId:     source.BizId,
-		Name:      source.Name,
-		IconUrl:   source.IconUrl,
-		Fields:    source.Fields,
-		Status:    source.Status,
+		Category:      source.Category,
+		ProductId:     source.ProductId,
+		CustomGroupId: source.CustomGroupId,
+		Name:          source.Name,
+		IconUrl:       source.IconUrl,
+		Fields:        source.Fields,
+		Status:        source.Status,
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/soukengo/gopkg/util/copier"
 	v1 "rockimserver/apis/rockim/service/platform/v1"
+	"rockimserver/apis/rockim/shared"
 	"rockimserver/app/logic/platform/biz"
 	"rockimserver/app/logic/platform/biz/options"
 )
@@ -50,6 +51,9 @@ func (s *TenantService) Paging(ctx context.Context, in *v1.TenantPagingRequest) 
 	err = copier.Copy(req, in)
 	if err != nil {
 		return
+	}
+	if req.Paginate == nil {
+		req.Paginate = &shared.Paginating{}
 	}
 	list, paginate, err := s.uc.Paging(ctx, req)
 	if err != nil {

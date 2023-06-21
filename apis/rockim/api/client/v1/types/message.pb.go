@@ -30,7 +30,7 @@ type TargetID struct {
 
 	// 目标类型
 	Category enums.MessageTarget_Category `protobuf:"varint,1,opt,name=category,proto3,enum=rockim.shared.enums.MessageTarget_Category" json:"category,omitempty"`
-	// 值（群聊为bizId，私聊为用户account）
+	// 值（群聊为customGroupId，私聊为用户account）
 	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 

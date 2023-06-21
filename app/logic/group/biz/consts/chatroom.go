@@ -1,5 +1,5 @@
 package consts
 
 const (
-	GroupBizIdPrefix = "IMG#"
+	GroupCustomGroupIdPrefix = "IMG#"
 )

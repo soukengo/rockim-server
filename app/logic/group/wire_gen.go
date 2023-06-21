@@ -33,6 +33,8 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	cacheManager := infra.NewCacheManager(config, logger)
 	cacheGroupData := cache2.NewGroupData(cacheManager, cacheConfig)
 	groupRepo := data.NewGroupRepo(groupData, cacheGroupData)
+	groupUseCase := biz.NewGroupUseCase(groupRepo)
+	groupService := service.NewGroupService(groupUseCase)
 	chatRoomMemberData := cache2.NewChatRoomMemberData(cacheManager, cacheConfig)
 	chatRoomMemberRepo := data.NewChatRoomMemberRepo(chatRoomMemberData)
 	generator := idgen.NewMongoGenerator()
@@ -42,7 +44,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	chatRoomService := service.NewChatRoomService(chatRoomUseCase)
 	chatRoomMemberUseCase := biz.NewChatRoomMemberUseCase(groupRepo, chatRoomMemberRepo, builder, generator, chatRoomMemberManager)
 	chatRoomMemberService := service.NewChatRoomMemberService(chatRoomMemberUseCase)
-	serviceGroup := server2.NewServiceGroup(chatRoomService, chatRoomMemberService)
+	serviceGroup := server2.NewServiceGroup(groupService, chatRoomService, chatRoomMemberService)
 	grpcServer := server2.NewGRPCServer(serverConfig, serviceGroup)
 	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {

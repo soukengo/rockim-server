@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"github.com/soukengo/gopkg/component/config"
 	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/trace"
 	"github.com/soukengo/gopkg/infra/storage"
+	"github.com/soukengo/gopkg/log"
 	"github.com/soukengo/gopkg/util/ip"
 	"os"
 	"time"
@@ -29,6 +31,7 @@ type Global struct {
 	Config    *config.Config
 	Discovery *discovery.Config
 	Storage   *storage.Config
+	Trace     *trace.Config
 }
 
 func Load(appId string) (cfg *Global, err error) {
@@ -46,9 +49,22 @@ func Load(appId string) (cfg *Global, err error) {
 	if len(env) > 0 {
 		cfg.Env = env
 	}
+	// 链路追踪配置
+	cfg.Trace = &trace.Config{ServiceId: appId, Env: env}
+	trace.Configure(cfg.Trace)
+	// 服务发现配置
 	if cfg.Discovery != nil {
 		cfg.Discovery.AppId = appId
 	}
 	cfg.Config.Env = cfg.Env
+
+	cfg.configure()
 	return
+}
+
+func (c *Global) configure() {
+	err := trace.Configure(c.Trace)
+	if err != nil {
+		log.Error("trace configure error: %v", err)
+	}
 }

@@ -25,11 +25,12 @@ func (s *AuthService) CreateAuthCode(ctx context.Context, in *v1.AuthCodeRequest
 }
 
 func (s *AuthService) Login(ctx context.Context, in *v1.LoginRequest) (out *v1.LoginResponse, err error) {
-	token, err := s.uc.Login(ctx, &options.LoginOptions{ProductId: in.Base.ProductId, AuthCode: in.AuthCode})
+	token, user, err := s.uc.Login(ctx, &options.LoginOptions{ProductId: in.Base.ProductId, AuthCode: in.AuthCode})
 	if err != nil {
 		return
 	}
-	return &v1.LoginResponse{Token: token.Token, ExpireTime: token.ExpireTime}, nil
+
+	return &v1.LoginResponse{Token: token.Token, ExpireTime: token.ExpireTime, User: user}, nil
 }
 
 func (s *AuthService) CheckToken(ctx context.Context, in *v1.TokenCheckRequest) (out *v1.TokenCheckResponse, err error) {

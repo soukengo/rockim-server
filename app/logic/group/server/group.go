@@ -7,15 +7,17 @@ import (
 )
 
 type ServiceGroup struct {
+	groupSrv          *service.GroupService
 	chatRoomSrv       *service.ChatRoomService
 	chatRoomMemberSrv *service.ChatRoomMemberService
 }
 
-func NewServiceGroup(chatRoomSrv *service.ChatRoomService, chatRoomMemberSrv *service.ChatRoomMemberService) *ServiceGroup {
-	return &ServiceGroup{chatRoomSrv: chatRoomSrv, chatRoomMemberSrv: chatRoomMemberSrv}
+func NewServiceGroup(groupSrv *service.GroupService, chatRoomSrv *service.ChatRoomService, chatRoomMemberSrv *service.ChatRoomMemberService) *ServiceGroup {
+	return &ServiceGroup{groupSrv: groupSrv, chatRoomSrv: chatRoomSrv, chatRoomMemberSrv: chatRoomMemberSrv}
 }
 
 func (g *ServiceGroup) Register(srv *grpc.Server) {
+	v1.RegisterGroupAPIServer(srv, g.groupSrv)
 	v1.RegisterChatRoomAPIServer(srv, g.chatRoomSrv)
 	v1.RegisterChatRoomMemberAPIServer(srv, g.chatRoomMemberSrv)
 }

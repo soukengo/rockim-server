@@ -61,7 +61,7 @@ type IMMessageSender struct {
 type MessageTargetID struct {
 	// 目标类型
 	Category enums.MessageTarget_Category `bson:"category"`
-	// 值（群聊为bizId，私聊为用户account）
+	// 值（群聊为customGroupId，私聊为用户account）
 	Value string `bson:"value"`
 }
 

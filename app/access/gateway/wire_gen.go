@@ -8,6 +8,9 @@ package gateway
 
 import (
 	"github.com/go-kratos/kratos/v2"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/access/gateway/conf"
 	"rockimserver/app/access/gateway/infra/grpc"
 	"rockimserver/app/access/gateway/module/client/biz"
@@ -17,9 +20,6 @@ import (
 	data2 "rockimserver/app/access/gateway/module/openapi/data"
 	service2 "rockimserver/app/access/gateway/module/openapi/service"
 	server2 "rockimserver/app/access/gateway/server"
-	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/server"
-	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:

@@ -97,9 +97,9 @@ func (m *ChatRoomJoinRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetBizId()) < 1 {
+	if utf8.RuneCountInString(m.GetCustomGroupId()) < 1 {
 		err := ChatRoomJoinRequestValidationError{
-			field:  "BizId",
+			field:  "CustomGroupId",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -352,9 +352,9 @@ func (m *ChatRoomQuitRequest) validate(all bool) error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetBizId()) < 1 {
+	if utf8.RuneCountInString(m.GetCustomGroupId()) < 1 {
 		err := ChatRoomQuitRequestValidationError{
-			field:  "BizId",
+			field:  "CustomGroupId",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {

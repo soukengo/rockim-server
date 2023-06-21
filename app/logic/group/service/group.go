@@ -16,7 +16,7 @@ func NewGroupService(uc *biz.GroupUseCase) *GroupService {
 }
 
 func (s *GroupService) FindGroupId(ctx context.Context, in *v1.GroupIdFindRequest) (out *v1.GroupIdFindResponse, err error) {
-	groupId, err := s.uc.FindGroupId(ctx, in.Base.ProductId, in.BizId)
+	groupId, err := s.uc.FindGroupId(ctx, in.Base.ProductId, in.CustomGroupId)
 	if err != nil {
 		return
 	}
@@ -25,7 +25,7 @@ func (s *GroupService) FindGroupId(ctx context.Context, in *v1.GroupIdFindReques
 }
 
 func (s *GroupService) Find(ctx context.Context, in *v1.GroupFindRequest) (out *v1.GroupFindResponse, err error) {
-	groupId, err := s.uc.FindGroupId(ctx, in.Base.ProductId, in.BizId)
+	groupId, err := s.uc.FindGroupId(ctx, in.Base.ProductId, in.CustomGroupId)
 	if err != nil {
 		return
 	}

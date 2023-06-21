@@ -4,6 +4,7 @@ import (
 	"context"
 	"rockimserver/apis/rockim/service"
 	v1 "rockimserver/apis/rockim/service/user/v1"
+	usertypes "rockimserver/apis/rockim/service/user/v1/types"
 	"rockimserver/app/access/gateway/module/client/biz"
 	"rockimserver/app/access/gateway/module/client/biz/options"
 	"rockimserver/app/access/gateway/module/client/biz/types"
@@ -25,12 +26,12 @@ func (r *authRepo) CreateAuthCode(ctx context.Context, in *options.AuthCodeCreat
 	return &types.AuthCode{Code: ret.AuthCode, ExpireTime: ret.ExpireTime}, nil
 }
 
-func (r *authRepo) Login(ctx context.Context, in *options.LoginOptions) (out *types.AccessToken, err error) {
+func (r *authRepo) Login(ctx context.Context, in *options.LoginOptions) (out *types.AccessToken, user *usertypes.User, err error) {
 	ret, err := r.ac.Login(ctx, &v1.LoginRequest{Base: service.GenRequest(in.ProductId), AuthCode: in.AuthCode})
 	if err != nil {
 		return
 	}
-	return &types.AccessToken{Token: ret.Token, ExpireTime: ret.ExpireTime}, nil
+	return &types.AccessToken{Token: ret.Token, ExpireTime: ret.ExpireTime}, ret.User, nil
 }
 func (r *authRepo) CheckToken(ctx context.Context, in *options.TokenCheckOptions) (out string, err error) {
 	ret, err := r.ac.CheckToken(ctx, &v1.TokenCheckRequest{Base: service.GenRequest(in.ProductId), Token: in.Token})

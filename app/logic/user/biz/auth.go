@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/soukengo/gopkg/errors"
+	v1types "rockimserver/apis/rockim/service/user/v1/types"
 	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/logic/user/biz/options"
 	"rockimserver/app/logic/user/biz/types"
@@ -59,7 +60,7 @@ func (uc *AuthUseCase) CreateAuthCode(ctx context.Context, in *options.AuthCodeC
 	return
 }
 
-func (uc *AuthUseCase) Login(ctx context.Context, in *options.LoginOptions) (out *types.AccessToken, err error) {
+func (uc *AuthUseCase) Login(ctx context.Context, in *options.LoginOptions) (out *types.AccessToken, user *v1types.User, err error) {
 	pars := strings.Split(in.AuthCode, authSeparator)
 	// eg: uuid.timestamp
 	if len(pars) != 2 {
@@ -73,6 +74,10 @@ func (uc *AuthUseCase) Login(ctx context.Context, in *options.LoginOptions) (out
 		return
 	}
 	uid, err := uc.repo.FindByAuthCode(ctx, in.ProductId, in.AuthCode)
+	if err != nil {
+		return
+	}
+	user, err = uc.userRepo.FindByID(ctx, in.ProductId, uid)
 	if err != nil {
 		return
 	}

@@ -8,6 +8,9 @@ package comet
 
 import (
 	"github.com/go-kratos/kratos/v2"
+	"github.com/soukengo/gopkg/component/discovery"
+	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/access/comet/conf"
 	"rockimserver/app/access/comet/infra/grpc"
 	"rockimserver/app/access/comet/module/client/biz"
@@ -19,9 +22,6 @@ import (
 	service2 "rockimserver/app/access/comet/module/server/service"
 	grpc2 "rockimserver/app/access/comet/server/grpc"
 	"rockimserver/app/access/comet/server/socket"
-	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/server"
-	"github.com/soukengo/gopkg/log"
 )
 
 // Injectors from wire.go:

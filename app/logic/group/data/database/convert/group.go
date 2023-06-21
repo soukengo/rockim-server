@@ -8,31 +8,31 @@ import (
 
 func GroupProto(source *entity.ImGroup) *types.Group {
 	return &types.Group{
-		Id:         source.Id,
-		CreateTime: source.CreateTime,
-		UpdateTime: source.UpdateTime,
-		Category:   enums.Group_Category(source.Category),
-		ProductId:  source.ProductId,
-		BizId:      source.BizId,
-		Name:       source.Name,
-		IconUrl:    source.IconUrl,
-		Fields:     source.Fields,
-		Status:     enums.Group_Status(source.Status),
-		Owner:      source.Owner,
+		Id:            source.Id,
+		CreateTime:    source.CreateTime,
+		UpdateTime:    source.UpdateTime,
+		Category:      enums.Group_Category(source.Category),
+		ProductId:     source.ProductId,
+		CustomGroupId: source.CustomGroupId,
+		Name:          source.Name,
+		IconUrl:       source.IconUrl,
+		Fields:        source.Fields,
+		Status:        enums.Group_Status(source.Status),
+		Owner:         source.Owner,
 	}
 }
 func GroupEntity(source *types.Group) *entity.ImGroup {
 	return &entity.ImGroup{
-		Id:         source.Id,
-		CreateTime: source.CreateTime,
-		UpdateTime: source.UpdateTime,
-		Category:   int32(source.Category),
-		ProductId:  source.ProductId,
-		BizId:      source.BizId,
-		Name:       source.Name,
-		IconUrl:    source.IconUrl,
-		Fields:     source.Fields,
-		Status:     int32(source.Status),
-		Owner:      source.Owner,
+		Id:            source.Id,
+		CreateTime:    source.CreateTime,
+		UpdateTime:    source.UpdateTime,
+		Category:      int32(source.Category),
+		ProductId:     source.ProductId,
+		CustomGroupId: source.CustomGroupId,
+		Name:          source.Name,
+		IconUrl:       source.IconUrl,
+		Fields:        source.Fields,
+		Status:        int32(source.Status),
+		Owner:         source.Owner,
 	}
 }

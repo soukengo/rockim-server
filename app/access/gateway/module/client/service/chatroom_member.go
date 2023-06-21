@@ -21,7 +21,7 @@ func (s *ChatRoomMemberService) Join(ctx context.Context, in *v1.ChatRoomJoinReq
 	if err != nil {
 		return
 	}
-	groupId, err := s.chatRoomUc.FindGroupId(ctx, in.Base.ProductId, in.BizId)
+	groupId, err := s.chatRoomUc.FindGroupId(ctx, in.Base.ProductId, in.CustomGroupId)
 	if err != nil {
 		return
 	}
@@ -42,7 +42,7 @@ func (s *ChatRoomMemberService) Quit(ctx context.Context, in *v1.ChatRoomQuitReq
 	if err != nil {
 		return
 	}
-	groupId, err := s.chatRoomUc.FindGroupId(ctx, in.Base.ProductId, in.BizId)
+	groupId, err := s.chatRoomUc.FindGroupId(ctx, in.Base.ProductId, in.CustomGroupId)
 	if err != nil {
 		return
 	}

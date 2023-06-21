@@ -3,6 +3,7 @@ package biz
 import (
 	"context"
 	"github.com/soukengo/gopkg/errors"
+	usertypes "rockimserver/apis/rockim/service/user/v1/types"
 	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/access/gateway/module/client/biz/options"
 	"rockimserver/app/access/gateway/module/client/biz/types"
@@ -18,7 +19,7 @@ var (
 )
 
 type AuthRepo interface {
-	Login(ctx context.Context, opts *options.LoginOptions) (*types.AccessToken, error)
+	Login(ctx context.Context, opts *options.LoginOptions) (*types.AccessToken, *usertypes.User, error)
 	CheckToken(ctx context.Context, opts *options.TokenCheckOptions) (string, error)
 }
 
@@ -30,7 +31,7 @@ func NewAuthUseCase(repo AuthRepo) *AuthUseCase {
 	return &AuthUseCase{repo: repo}
 }
 
-func (uc *AuthUseCase) Login(ctx context.Context, opts *options.LoginOptions) (*types.AccessToken, error) {
+func (uc *AuthUseCase) Login(ctx context.Context, opts *options.LoginOptions) (*types.AccessToken, *usertypes.User, error) {
 	return uc.repo.Login(ctx, opts)
 }
 

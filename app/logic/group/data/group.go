@@ -19,17 +19,17 @@ func NewGroupRepo(db *database.GroupData, cache *cache.GroupData) biz.GroupRepo 
 	return &groupRepo{db: db, cache: cache}
 }
 
-func (r *groupRepo) FindGroupId(ctx context.Context, productId string, bizId string) (groupId string, err error) {
+func (r *groupRepo) FindGroupId(ctx context.Context, productId string, customGroupId string) (groupId string, err error) {
 	// 链式调用，先查缓存，再查数据库，最后回写缓存
 	groupId, err = chain.CallWithResult[string](func() (ret string, cont bool, err error) {
-		ret, err = r.cache.FindGroupId(ctx, productId, bizId)
+		ret, err = r.cache.FindGroupId(ctx, productId, customGroupId)
 		// 正常查下到结果|没有缓存,不再查询数据库
 		cont = cache.IsErrNoCache(err)
 		return
 	}, func() (ret string, cont bool, err error) {
-		ret, err = r.db.FindGroupId(ctx, productId, bizId)
+		ret, err = r.db.FindGroupId(ctx, productId, customGroupId)
 		if err == nil || errors.IsNotFound(err) {
-			_ = r.cache.SaveBizId(ctx, productId, bizId, ret)
+			_ = r.cache.SaveCustomGroupId(ctx, productId, customGroupId, ret)
 		}
 		return
 	})
@@ -65,7 +65,7 @@ func (r *groupRepo) Create(ctx context.Context, group *types.Group) (err error) 
 		return
 	}
 	_ = r.cache.DeleteGroup(ctx, group.ProductId, group.Id)
-	_ = r.cache.DeleteBizId(ctx, group.ProductId, group.BizId)
+	_ = r.cache.DeleteCustomGroupId(ctx, group.ProductId, group.CustomGroupId)
 	return
 }
 
@@ -75,6 +75,6 @@ func (r *groupRepo) Delete(ctx context.Context, group *types.Group) (err error) 
 		return
 	}
 	_ = r.cache.DeleteGroup(ctx, group.ProductId, group.Id)
-	_ = r.cache.DeleteBizId(ctx, group.ProductId, group.BizId)
+	_ = r.cache.DeleteCustomGroupId(ctx, group.ProductId, group.CustomGroupId)
 	return
 }

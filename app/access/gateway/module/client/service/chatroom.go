@@ -16,7 +16,7 @@ func NewChatRoomService(uc *biz.ChatRoomUseCase) *ChatRoomService {
 }
 
 func (s *ChatRoomService) Find(ctx context.Context, in *v1.ChatRoomFindRequest) (out *v1.ChatRoomFindResponse, err error) {
-	group, err := s.uc.Find(ctx, in.Base.ProductId, in.BizId)
+	group, err := s.uc.Find(ctx, in.Base.ProductId, in.CustomGroupId)
 	if err != nil {
 		return nil, err
 	}
