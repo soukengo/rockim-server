@@ -4,4 +4,4 @@ import (
 	"github.com/google/wire"
 )
 
-var ProviderSet = wire.NewSet(NewOnlineRepo)
+var ProviderSet = wire.NewSet(NewOnlineRepo, NewRoomRepo)

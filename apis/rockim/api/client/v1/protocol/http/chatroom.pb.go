@@ -198,11 +198,11 @@ var file_rockim_api_client_v1_protocol_http_chatroom_proto_goTypes = []interface
 	(*ChatRoomFindRequest)(nil),  // 0: rockim.api.client.v1.protocol.http.ChatRoomFindRequest
 	(*ChatRoomFindResponse)(nil), // 1: rockim.api.client.v1.protocol.http.ChatRoomFindResponse
 	(*APIRequest)(nil),           // 2: rockim.api.client.v1.protocol.http.APIRequest
-	(*types.Group)(nil),          // 3: rockim.api.client.v1.types.Group
+	(*types.Group)(nil),          // 3: rockim.api.client.v1.types.Room
 }
 var file_rockim_api_client_v1_protocol_http_chatroom_proto_depIdxs = []int32{
 	2, // 0: rockim.api.client.v1.protocol.http.ChatRoomFindRequest.base:type_name -> rockim.api.client.v1.protocol.http.APIRequest
-	3, // 1: rockim.api.client.v1.protocol.http.ChatRoomFindResponse.group:type_name -> rockim.api.client.v1.types.Group
+	3, // 1: rockim.api.client.v1.protocol.http.ChatRoomFindResponse.group:type_name -> rockim.api.client.v1.types.Room
 	0, // 2: rockim.api.client.v1.protocol.http.ChatRoomAPI.Find:input_type -> rockim.api.client.v1.protocol.http.ChatRoomFindRequest
 	1, // 3: rockim.api.client.v1.protocol.http.ChatRoomAPI.Find:output_type -> rockim.api.client.v1.protocol.http.ChatRoomFindResponse
 	3, // [3:4] is the sub-list for method output_type

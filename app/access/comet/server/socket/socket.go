@@ -6,7 +6,7 @@ import (
 	"github.com/soukengo/gopkg/component/server/socket/options"
 	"rockimserver/app/access/comet/conf"
 	"rockimserver/app/access/comet/module/client/service"
-	"rockimserver/app/access/comet/protocol"
+	"rockimserver/app/access/comet/module/protocol"
 )
 
 func NewSocketServer(c *server.Config, pc *conf.Protocol, channelSrv *service.ChannelService) socket.Server {

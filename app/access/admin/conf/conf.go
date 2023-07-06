@@ -35,7 +35,7 @@ func Load() (cfg *Config, err error) {
 
 func defaultConfig() *Config {
 	return &Config{
-		Log: log.Default,
+		Log: log.Default(),
 		Database: &database.Config{
 			Mongodb: &mongo.Reference{Key: storage.DefaultKey},
 		},

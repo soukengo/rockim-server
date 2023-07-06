@@ -34,8 +34,8 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	pushRepo := data.NewPushRepo(pushManager)
 	messagePushUseCase := biz.NewMessagePushUseCase(pushRepo)
 	messageTask := task.NewMessageTask(messagePushUseCase)
-	serviceGroup := server2.NewServiceGroup(messageTask)
-	jobServer, err := server2.NewJobServer(serverConfig, serviceGroup, logger)
+	serviceRoom := server2.NewServiceRoom(messageTask)
+	jobServer, err := server2.NewJobServer(serverConfig, serviceRoom, logger)
 	if err != nil {
 		return nil, err
 	}

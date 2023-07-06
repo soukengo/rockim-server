@@ -20,7 +20,7 @@ func Load() (cfg *Config, err error) {
 		return
 	}
 	cfg = &Config{
-		Log: log.Default,
+		Log: log.Default(),
 		Protocol: &Protocol{
 			HandshakeTimeout:           time.Second * 10,
 			MinServerHeartbeatInterval: time.Minute * 2,

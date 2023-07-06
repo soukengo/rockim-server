@@ -854,3 +854,156 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = OnlineRefreshResponseValidationError{}
+
+// Validate checks the field values on OnlineRoomListRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *OnlineRoomListRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on OnlineRoomListRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// OnlineRoomListRequestMultiError, or nil if none found.
+func (m *OnlineRoomListRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *OnlineRoomListRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.GetBase() == nil {
+		err := OnlineRoomListRequestValidationError{
+			field:  "Base",
+			reason: "value is required",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if all {
+		switch v := interface{}(m.GetBase()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, OnlineRoomListRequestValidationError{
+					field:  "Base",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, OnlineRoomListRequestValidationError{
+					field:  "Base",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetBase()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return OnlineRoomListRequestValidationError{
+				field:  "Base",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if utf8.RuneCountInString(m.GetUid()) < 1 {
+		err := OnlineRoomListRequestValidationError{
+			field:  "Uid",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return OnlineRoomListRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// OnlineRoomListRequestMultiError is an error wrapping multiple validation
+// errors returned by OnlineRoomListRequest.ValidateAll() if the designated
+// constraints aren't met.
+type OnlineRoomListRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m OnlineRoomListRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m OnlineRoomListRequestMultiError) AllErrors() []error { return m }
+
+// OnlineRoomListRequestValidationError is the validation error returned by
+// OnlineRoomListRequest.Validate if the designated constraints aren't met.
+type OnlineRoomListRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e OnlineRoomListRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e OnlineRoomListRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e OnlineRoomListRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e OnlineRoomListRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e OnlineRoomListRequestValidationError) ErrorName() string {
+	return "OnlineRoomListRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e OnlineRoomListRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sOnlineRoomListRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = OnlineRoomListRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = OnlineRoomListRequestValidationError{}

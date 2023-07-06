@@ -16,4 +16,8 @@ cache:
     key: default
 
 
+log:
+  level: info
+  appender:
+    fileName: ./log/rockim/group/app.log
 

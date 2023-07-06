@@ -24,8 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type ChannelAPIClient interface {
 	// Push 推送数据
 	Push(ctx context.Context, in *PushRequest, opts ...grpc.CallOption) (*PushResponse, error)
-	// PushGroup 推送数据到一个组
-	PushGroup(ctx context.Context, in *PushGroupRequest, opts ...grpc.CallOption) (*PushGroupResponse, error)
+	// PushRoom 推送数据到一个房间
+	PushRoom(ctx context.Context, in *PushRoomRequest, opts ...grpc.CallOption) (*PushRoomResponse, error)
 }
 
 type channelAPIClient struct {
@@ -45,9 +45,9 @@ func (c *channelAPIClient) Push(ctx context.Context, in *PushRequest, opts ...gr
 	return out, nil
 }
 
-func (c *channelAPIClient) PushGroup(ctx context.Context, in *PushGroupRequest, opts ...grpc.CallOption) (*PushGroupResponse, error) {
-	out := new(PushGroupResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.comet.v1.ChannelAPI/PushGroup", in, out, opts...)
+func (c *channelAPIClient) PushRoom(ctx context.Context, in *PushRoomRequest, opts ...grpc.CallOption) (*PushRoomResponse, error) {
+	out := new(PushRoomResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.comet.v1.ChannelAPI/PushRoom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -60,8 +60,8 @@ func (c *channelAPIClient) PushGroup(ctx context.Context, in *PushGroupRequest, 
 type ChannelAPIServer interface {
 	// Push 推送数据
 	Push(context.Context, *PushRequest) (*PushResponse, error)
-	// PushGroup 推送数据到一个组
-	PushGroup(context.Context, *PushGroupRequest) (*PushGroupResponse, error)
+	// PushRoom 推送数据到一个房间
+	PushRoom(context.Context, *PushRoomRequest) (*PushRoomResponse, error)
 	mustEmbedUnimplementedChannelAPIServer()
 }
 
@@ -72,8 +72,8 @@ type UnimplementedChannelAPIServer struct {
 func (UnimplementedChannelAPIServer) Push(context.Context, *PushRequest) (*PushResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Push not implemented")
 }
-func (UnimplementedChannelAPIServer) PushGroup(context.Context, *PushGroupRequest) (*PushGroupResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PushGroup not implemented")
+func (UnimplementedChannelAPIServer) PushRoom(context.Context, *PushRoomRequest) (*PushRoomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PushRoom not implemented")
 }
 func (UnimplementedChannelAPIServer) mustEmbedUnimplementedChannelAPIServer() {}
 
@@ -106,20 +106,20 @@ func _ChannelAPI_Push_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChannelAPI_PushGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PushGroupRequest)
+func _ChannelAPI_PushRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PushRoomRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChannelAPIServer).PushGroup(ctx, in)
+		return srv.(ChannelAPIServer).PushRoom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.service.comet.v1.ChannelAPI/PushGroup",
+		FullMethod: "/rockim.service.comet.v1.ChannelAPI/PushRoom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChannelAPIServer).PushGroup(ctx, req.(*PushGroupRequest))
+		return srv.(ChannelAPIServer).PushRoom(ctx, req.(*PushRoomRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -136,8 +136,8 @@ var ChannelAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ChannelAPI_Push_Handler,
 		},
 		{
-			MethodName: "PushGroup",
-			Handler:    _ChannelAPI_PushGroup_Handler,
+			MethodName: "PushRoom",
+			Handler:    _ChannelAPI_PushRoom_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

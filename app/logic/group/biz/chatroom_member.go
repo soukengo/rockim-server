@@ -21,6 +21,7 @@ type ChatRoomMemberRepo interface {
 	Find(ctx context.Context, productId string, groupId string, uid string) (*types.GroupMember, error)
 	List(ctx context.Context, productId string, groupId string, uids []string) ([]*types.GroupMember, error)
 	PaginateUid(ctx context.Context, productId string, groupId string, paginate *shared.Paginating) ([]string, *shared.Paginated, error)
+	ListGroupIdByUid(ctx context.Context, productId string, uid string) ([]string, error)
 }
 
 type ChatRoomMemberUseCase struct {
@@ -82,19 +83,6 @@ func (uc *ChatRoomMemberUseCase) Quit(ctx context.Context, opts *options.ChatRoo
 	}
 	// todo send notification
 	return
-}
-func (uc *ChatRoomMemberUseCase) IsMember(ctx context.Context, opts *options.ChatRoomMemberCheckOptions) (isMember bool, err error) {
-	return uc.repo.Exists(ctx, opts.ProductId, opts.GroupId, opts.Uid)
-}
-func (uc *ChatRoomMemberUseCase) Find(ctx context.Context, opts *options.ChatRoomMemberFindOptions) (member *types.GroupMember, err error) {
-	return uc.repo.Find(ctx, opts.ProductId, opts.GroupId, opts.Uid)
-}
-
-func (uc *ChatRoomMemberUseCase) List(ctx context.Context, opts *options.ChatRoomMemberListOptions) (members []*types.GroupMember, err error) {
-	return uc.repo.List(ctx, opts.ProductId, opts.GroupId, opts.Uids)
-}
-func (uc *ChatRoomMemberUseCase) PaginateUid(ctx context.Context, opts *options.ChatRoomMemberIdPaginateOptions) (members []string, paginated *shared.Paginated, err error) {
-	return uc.repo.PaginateUid(ctx, opts.ProductId, opts.GroupId, opts.Paginate)
 }
 
 type ChatRoomMemberManager struct {

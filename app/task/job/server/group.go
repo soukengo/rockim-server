@@ -7,14 +7,14 @@ import (
 	"rockimserver/app/task/job/task"
 )
 
-type ServiceGroup struct {
+type ServiceRoom struct {
 	messageTask *task.MessageTask
 }
 
-func NewServiceGroup(messageTask *task.MessageTask) *ServiceGroup {
-	return &ServiceGroup{messageTask: messageTask}
+func NewServiceRoom(messageTask *task.MessageTask) *ServiceRoom {
+	return &ServiceRoom{messageTask: messageTask}
 }
 
-func (g *ServiceGroup) Register(srv job.Server) {
+func (g *ServiceRoom) Register(srv job.Server) {
 	srv.Register(service.MQ_MESSAGE_PUSH.String(), wrapAction[v1.MessagePushRequest](g.messageTask.Push))
 }

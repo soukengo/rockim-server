@@ -19,6 +19,6 @@ func (r *channelRepo) Push(ctx context.Context, opts *options.PushOptions) error
 	return r.socket.Push(ctx, opts)
 }
 
-func (r *channelRepo) PushGroup(ctx context.Context, opts *options.PushGroupOptions) error {
-	return r.socket.PushGroup(ctx, opts)
+func (r *channelRepo) PushRoom(ctx context.Context, opts *options.PushRoomOptions) error {
+	return r.socket.PushRoom(ctx, opts)
 }

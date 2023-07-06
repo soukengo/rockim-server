@@ -29,15 +29,15 @@ func (s *ChannelService) Push(ctx context.Context, in *v1.PushRequest) (out *v1.
 	return
 }
 
-func (s *ChannelService) PushGroup(ctx context.Context, in *v1.PushGroupRequest) (out *v1.PushGroupResponse, err error) {
-	err = s.uc.PushGroup(ctx, &options.PushGroupOptions{
-		GroupId:   in.GroupId,
+func (s *ChannelService) PushRoom(ctx context.Context, in *v1.PushRoomRequest) (out *v1.PushRoomResponse, err error) {
+	err = s.uc.PushRoom(ctx, &options.PushRoomOptions{
+		Room:      in.Room,
 		Operation: in.Operation,
 		Body:      in.Body,
 	})
 	if err != nil {
 		return
 	}
-	out = &v1.PushGroupResponse{}
+	out = &v1.PushRoomResponse{}
 	return
 }

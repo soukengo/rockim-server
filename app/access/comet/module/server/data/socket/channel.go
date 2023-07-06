@@ -8,8 +8,8 @@ import (
 	"github.com/soukengo/gopkg/log"
 	v1 "rockimserver/apis/rockim/api/client/v1/protocol/socket"
 	"rockimserver/apis/rockim/shared/enums"
+	"rockimserver/app/access/comet/module/protocol"
 	"rockimserver/app/access/comet/module/server/biz/options"
-	"rockimserver/app/access/comet/protocol"
 )
 
 type ChannelManager struct {
@@ -33,9 +33,9 @@ func (m *ChannelManager) Push(ctx context.Context, opts *options.PushOptions) er
 	return nil
 }
 
-func (m *ChannelManager) PushGroup(ctx context.Context, opts *options.PushGroupOptions) (err error) {
+func (m *ChannelManager) PushRoom(ctx context.Context, opts *options.PushRoomOptions) (err error) {
 	p := newPushPacket(opts.Operation, opts.Body)
-	m.server.PushGroup(opts.GroupId, p)
+	m.server.PushRoom(protocol.EncodeRoomId(opts.Room), p)
 	return
 }
 

@@ -7,7 +7,7 @@ import (
 
 type ChannelRepo interface {
 	Push(ctx context.Context, opts *options.PushOptions) error
-	PushGroup(ctx context.Context, opts *options.PushGroupOptions) error
+	PushRoom(ctx context.Context, opts *options.PushRoomOptions) error
 }
 
 type ChannelUseCase struct {
@@ -22,6 +22,6 @@ func (uc *ChannelUseCase) Push(ctx context.Context, opts *options.PushOptions) e
 	return uc.repo.Push(ctx, opts)
 }
 
-func (uc *ChannelUseCase) PushGroup(ctx context.Context, opts *options.PushGroupOptions) error {
-	return uc.repo.PushGroup(ctx, opts)
+func (uc *ChannelUseCase) PushRoom(ctx context.Context, opts *options.PushRoomOptions) error {
+	return uc.repo.PushRoom(ctx, opts)
 }

@@ -38,7 +38,7 @@ func Load() (cfg *Config, err error) {
 
 func defaultConfig() *Config {
 	return &Config{
-		Log:   log.Default,
+		Log:   log.Default(),
 		Comet: &Comet{RoutineSize: 32, RoutineChan: 1024},
 		Server: &server.Config{
 			Job: &job.Config{
@@ -70,10 +70,10 @@ type Config struct {
 type Comet struct {
 	RoutineChan int
 	RoutineSize int
-	Group       *Group
+	Room        *Room
 }
 
-type Group struct {
+type Room struct {
 	Batch  int
 	Signal time.Duration
 	Idle   time.Duration

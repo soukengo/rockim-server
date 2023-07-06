@@ -21,12 +21,6 @@ type GroupRepo interface {
 	Delete(ctx context.Context, group *types.Group) error
 }
 
-type GroupMemberRepo interface {
-	Add(ctx context.Context, member *types.GroupMember) error
-	Delete(ctx context.Context, productId string, groupId string, uid string) error
-	Exists(ctx context.Context, productId string, groupId string, uid string) (bool, error)
-}
-
 type GroupUseCase struct {
 	repo GroupRepo
 }

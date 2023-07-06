@@ -31,3 +31,8 @@ queue:
 lock:
   redis:
     key: default
+
+log:
+  level: info
+  appender:
+    fileName: ./log/rockim/message/app.log

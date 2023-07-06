@@ -44,7 +44,7 @@ type Config struct {
 
 func defaultConfig() *Config {
 	return &Config{
-		Log:    log.Default,
+		Log:    log.Default(),
 		Server: &server.Config{},
 		Database: &database.Config{
 			Mongodb: &mongo.Reference{Key: storage.DefaultKey},

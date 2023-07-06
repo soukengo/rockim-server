@@ -26,14 +26,6 @@ type ChatRoomMemberAPIClient interface {
 	Join(ctx context.Context, in *ChatRoomJoinRequest, opts ...grpc.CallOption) (*ChatRoomJoinResponse, error)
 	// Quit 退出聊天室
 	Quit(ctx context.Context, in *ChatRoomQuitRequest, opts ...grpc.CallOption) (*ChatRoomQuitResponse, error)
-	// IsMember 判断是否为聊天室成员
-	IsMember(ctx context.Context, in *ChatRoomMemberCheckRequest, opts ...grpc.CallOption) (*ChatRoomMemberCheckResponse, error)
-	// Find 获取成员信息
-	Find(ctx context.Context, in *ChatRoomMemberFindRequest, opts ...grpc.CallOption) (*ChatRoomMemberFindResponse, error)
-	// List 批量获取成员信息
-	List(ctx context.Context, in *ChatRoomMemberListRequest, opts ...grpc.CallOption) (*ChatRoomMemberListResponse, error)
-	// PaginateUid 获取成员ID列表
-	PaginateUid(ctx context.Context, in *ChatRoomMemberIdPaginateRequest, opts ...grpc.CallOption) (*ChatRoomMemberIdPaginateResponse, error)
 }
 
 type chatRoomMemberAPIClient struct {
@@ -62,42 +54,6 @@ func (c *chatRoomMemberAPIClient) Quit(ctx context.Context, in *ChatRoomQuitRequ
 	return out, nil
 }
 
-func (c *chatRoomMemberAPIClient) IsMember(ctx context.Context, in *ChatRoomMemberCheckRequest, opts ...grpc.CallOption) (*ChatRoomMemberCheckResponse, error) {
-	out := new(ChatRoomMemberCheckResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.group.v1.ChatRoomMemberAPI/IsMember", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *chatRoomMemberAPIClient) Find(ctx context.Context, in *ChatRoomMemberFindRequest, opts ...grpc.CallOption) (*ChatRoomMemberFindResponse, error) {
-	out := new(ChatRoomMemberFindResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.group.v1.ChatRoomMemberAPI/Find", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *chatRoomMemberAPIClient) List(ctx context.Context, in *ChatRoomMemberListRequest, opts ...grpc.CallOption) (*ChatRoomMemberListResponse, error) {
-	out := new(ChatRoomMemberListResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.group.v1.ChatRoomMemberAPI/List", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *chatRoomMemberAPIClient) PaginateUid(ctx context.Context, in *ChatRoomMemberIdPaginateRequest, opts ...grpc.CallOption) (*ChatRoomMemberIdPaginateResponse, error) {
-	out := new(ChatRoomMemberIdPaginateResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.group.v1.ChatRoomMemberAPI/PaginateUid", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ChatRoomMemberAPIServer is the server API for ChatRoomMemberAPI service.
 // All implementations must embed UnimplementedChatRoomMemberAPIServer
 // for forward compatibility
@@ -106,14 +62,6 @@ type ChatRoomMemberAPIServer interface {
 	Join(context.Context, *ChatRoomJoinRequest) (*ChatRoomJoinResponse, error)
 	// Quit 退出聊天室
 	Quit(context.Context, *ChatRoomQuitRequest) (*ChatRoomQuitResponse, error)
-	// IsMember 判断是否为聊天室成员
-	IsMember(context.Context, *ChatRoomMemberCheckRequest) (*ChatRoomMemberCheckResponse, error)
-	// Find 获取成员信息
-	Find(context.Context, *ChatRoomMemberFindRequest) (*ChatRoomMemberFindResponse, error)
-	// List 批量获取成员信息
-	List(context.Context, *ChatRoomMemberListRequest) (*ChatRoomMemberListResponse, error)
-	// PaginateUid 获取成员ID列表
-	PaginateUid(context.Context, *ChatRoomMemberIdPaginateRequest) (*ChatRoomMemberIdPaginateResponse, error)
 	mustEmbedUnimplementedChatRoomMemberAPIServer()
 }
 
@@ -126,18 +74,6 @@ func (UnimplementedChatRoomMemberAPIServer) Join(context.Context, *ChatRoomJoinR
 }
 func (UnimplementedChatRoomMemberAPIServer) Quit(context.Context, *ChatRoomQuitRequest) (*ChatRoomQuitResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Quit not implemented")
-}
-func (UnimplementedChatRoomMemberAPIServer) IsMember(context.Context, *ChatRoomMemberCheckRequest) (*ChatRoomMemberCheckResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IsMember not implemented")
-}
-func (UnimplementedChatRoomMemberAPIServer) Find(context.Context, *ChatRoomMemberFindRequest) (*ChatRoomMemberFindResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
-}
-func (UnimplementedChatRoomMemberAPIServer) List(context.Context, *ChatRoomMemberListRequest) (*ChatRoomMemberListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
-}
-func (UnimplementedChatRoomMemberAPIServer) PaginateUid(context.Context, *ChatRoomMemberIdPaginateRequest) (*ChatRoomMemberIdPaginateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PaginateUid not implemented")
 }
 func (UnimplementedChatRoomMemberAPIServer) mustEmbedUnimplementedChatRoomMemberAPIServer() {}
 
@@ -188,78 +124,6 @@ func _ChatRoomMemberAPI_Quit_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatRoomMemberAPI_IsMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatRoomMemberCheckRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatRoomMemberAPIServer).IsMember(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/rockim.service.group.v1.ChatRoomMemberAPI/IsMember",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatRoomMemberAPIServer).IsMember(ctx, req.(*ChatRoomMemberCheckRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ChatRoomMemberAPI_Find_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatRoomMemberFindRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatRoomMemberAPIServer).Find(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/rockim.service.group.v1.ChatRoomMemberAPI/Find",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatRoomMemberAPIServer).Find(ctx, req.(*ChatRoomMemberFindRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ChatRoomMemberAPI_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatRoomMemberListRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatRoomMemberAPIServer).List(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/rockim.service.group.v1.ChatRoomMemberAPI/List",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatRoomMemberAPIServer).List(ctx, req.(*ChatRoomMemberListRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ChatRoomMemberAPI_PaginateUid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatRoomMemberIdPaginateRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatRoomMemberAPIServer).PaginateUid(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/rockim.service.group.v1.ChatRoomMemberAPI/PaginateUid",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatRoomMemberAPIServer).PaginateUid(ctx, req.(*ChatRoomMemberIdPaginateRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // ChatRoomMemberAPI_ServiceDesc is the grpc.ServiceDesc for ChatRoomMemberAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -274,22 +138,6 @@ var ChatRoomMemberAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Quit",
 			Handler:    _ChatRoomMemberAPI_Quit_Handler,
-		},
-		{
-			MethodName: "IsMember",
-			Handler:    _ChatRoomMemberAPI_IsMember_Handler,
-		},
-		{
-			MethodName: "Find",
-			Handler:    _ChatRoomMemberAPI_Find_Handler,
-		},
-		{
-			MethodName: "List",
-			Handler:    _ChatRoomMemberAPI_List_Handler,
-		},
-		{
-			MethodName: "PaginateUid",
-			Handler:    _ChatRoomMemberAPI_PaginateUid_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -177,7 +177,7 @@ func (m *GroupMember) validate(all bool) error {
 
 	// no validation rules for ProductId
 
-	// no validation rules for GroupId
+	// no validation rules for RoomId
 
 	// no validation rules for Account
 

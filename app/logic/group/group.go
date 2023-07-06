@@ -9,7 +9,7 @@ import (
 	"rockimserver/app/logic/group/conf"
 )
 
-// New new a new User Application
+// New new a new Room Application
 func New(version string) (app *kratos.App, logger log.Logger, err error) {
 	cfg, err := conf.Load()
 	if err != nil {

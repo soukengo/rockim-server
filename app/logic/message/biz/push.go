@@ -61,9 +61,10 @@ func (m *pushManager) PushUsers(ctx context.Context, operation enums.Network_Pus
 func (m *pushManager) PushGroup(ctx context.Context, operation enums.Network_PushOperation, productId string, groupId string, body []byte) (err error) {
 	messages := []*types.Message{
 		{
-			Target:    types.Message_GROUP,
+			ProductId: productId,
+			Target:    types.Message_ROOM,
 			Operation: operation,
-			GroupId:   groupId,
+			Room:      &types.Room{RoomType: enums.Comet_Group, BizId: groupId},
 			Body:      body,
 		},
 	}

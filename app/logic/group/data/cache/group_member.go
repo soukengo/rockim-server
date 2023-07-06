@@ -13,7 +13,7 @@ type GroupMemberData struct {
 
 func NewGroupMemberData(mgr *cache.Manager, cfg *cache.Config) *GroupMemberData {
 	return &GroupMemberData{
-		cache:    cache.NewValueCache[types.GroupMember](mgr, cfg.Category(keyGroupMemberInfo)),
+		cache:    cache.NewValueCache[types.GroupMember](mgr, cfg.Category(keyGroupMember)),
 		setCache: cache.NewSortedSetCache[string](mgr, cfg.Category(keyGroupMemberSet)),
 	}
 }

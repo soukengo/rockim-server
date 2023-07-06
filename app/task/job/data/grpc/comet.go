@@ -7,6 +7,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/soukengo/gopkg/log"
+	"github.com/soukengo/gopkg/util/runtimes"
 	ggrpc "google.golang.org/grpc"
 	"rockimserver/apis/rockim/service/comet/v1"
 	"rockimserver/app/task/job/conf"
@@ -40,13 +41,13 @@ func newCometClient(addr string) (v1.ChannelAPIClient, error) {
 
 // Comet is a comet.
 type Comet struct {
-	serverID     string
-	client       v1.ChannelAPIClient
-	pushChan     []chan *v1.PushRequest
-	groupChan    []chan *v1.PushGroupRequest
-	pushChanNum  uint64
-	groupChanNum uint64
-	routineSize  uint64
+	serverID    string
+	client      v1.ChannelAPIClient
+	pushChan    []chan *v1.PushRequest
+	roomChan    []chan *v1.PushRoomRequest
+	pushChanNum uint64
+	roomChanNum uint64
+	routineSize uint64
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -57,7 +58,7 @@ func newComet(hostname string, grpcAddr string, c *conf.Comet) (*Comet, error) {
 	cmt := &Comet{
 		serverID:    hostname,
 		pushChan:    make([]chan *v1.PushRequest, c.RoutineSize),
-		groupChan:   make([]chan *v1.PushGroupRequest, c.RoutineSize),
+		roomChan:    make([]chan *v1.PushRoomRequest, c.RoutineSize),
 		routineSize: uint64(c.RoutineSize),
 	}
 	var err error
@@ -68,8 +69,8 @@ func newComet(hostname string, grpcAddr string, c *conf.Comet) (*Comet, error) {
 
 	for i := 0; i < c.RoutineSize; i++ {
 		cmt.pushChan[i] = make(chan *v1.PushRequest, c.RoutineChan)
-		cmt.groupChan[i] = make(chan *v1.PushGroupRequest, c.RoutineChan)
-		go cmt.process(cmt.pushChan[i], cmt.groupChan[i])
+		cmt.roomChan[i] = make(chan *v1.PushRoomRequest, c.RoutineChan)
+		go cmt.process(cmt.pushChan[i], cmt.roomChan[i])
 	}
 	return cmt, nil
 }
@@ -81,24 +82,24 @@ func (c *Comet) Push(arg *v1.PushRequest) (err error) {
 	return
 }
 
-// PushGroup broadcast a group message.
-func (c *Comet) PushGroup(arg *v1.PushGroupRequest) (err error) {
-	idx := atomic.AddUint64(&c.groupChanNum, 1) % c.routineSize
-	c.groupChan[idx] <- arg
+// PushRoom broadcast a room message.
+func (c *Comet) PushRoom(arg *v1.PushRoomRequest) (err error) {
+	idx := atomic.AddUint64(&c.roomChanNum, 1) % c.routineSize
+	c.roomChan[idx] <- arg
 	return
 }
 
-func (c *Comet) process(pushChan chan *v1.PushRequest, groupChan chan *v1.PushGroupRequest) {
+func (c *Comet) process(pushChan chan *v1.PushRequest, roomChan chan *v1.PushRoomRequest) {
 	for {
 		select {
-		case args := <-groupChan:
-			_, err := c.client.PushGroup(context.Background(), &v1.PushGroupRequest{
-				Base:    args.Base,
-				GroupId: args.GroupId,
-				Body:    args.Body,
+		case args := <-roomChan:
+			_, err := c.client.PushRoom(context.Background(), &v1.PushRoomRequest{
+				Base: args.Base,
+				Room: args.Room,
+				Body: args.Body,
 			})
 			if err != nil {
-				log.Errorf("cfg.client.PushGroup(%s, reply) serverId:%s error(%v)", args, c.serverID, err)
+				log.Errorf("cfg.client.PushRoom(%s, reply) serverId:%s error(%v)", args, c.serverID, err)
 			}
 		case pushArg := <-pushChan:
 			_, err := c.client.Push(context.Background(), &v1.PushRequest{
@@ -116,16 +117,16 @@ func (c *Comet) process(pushChan chan *v1.PushRequest, groupChan chan *v1.PushGr
 	}
 }
 
-// Close close the resouces.
+// Close close the resources.
 func (c *Comet) Close() (err error) {
 	finish := make(chan bool)
-	go func() {
+	runtimes.Async(func() {
 		for {
 			n := 0
 			for _, ch := range c.pushChan {
 				n += len(ch)
 			}
-			for _, ch := range c.groupChan {
+			for _, ch := range c.roomChan {
 				n += len(ch)
 			}
 			if n == 0 {
@@ -134,12 +135,12 @@ func (c *Comet) Close() (err error) {
 			}
 			time.Sleep(time.Second)
 		}
-	}()
+	})
 	select {
 	case <-finish:
 		log.Infof("close comet finish")
 	case <-time.After(5 * time.Second):
-		err = fmt.Errorf("close comet(server:%s push:%d group:%d) timeout", c.serverID, len(c.pushChan), len(c.groupChan))
+		err = fmt.Errorf("close comet(server:%s push:%d room:%d) timeout", c.serverID, len(c.pushChan), len(c.roomChan))
 	}
 	c.cancel()
 	return

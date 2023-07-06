@@ -70,7 +70,7 @@ func (x *Group) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Group.ProtoReflect.Descriptor instead.
+// Deprecated: Use Room.ProtoReflect.Descriptor instead.
 func (*Group) Descriptor() ([]byte, []int) {
 	return file_rockim_api_client_v1_types_group_proto_rawDescGZIP(), []int{0}
 }
@@ -294,19 +294,19 @@ func file_rockim_api_client_v1_types_group_proto_rawDescGZIP() []byte {
 
 var file_rockim_api_client_v1_types_group_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_rockim_api_client_v1_types_group_proto_goTypes = []interface{}{
-	(*Group)(nil),               // 0: rockim.api.client.v1.types.Group
+	(*Group)(nil),               // 0: rockim.api.client.v1.types.Room
 	(*GroupMember)(nil),         // 1: rockim.api.client.v1.types.GroupMember
-	nil,                         // 2: rockim.api.client.v1.types.Group.FieldsEntry
+	nil,                         // 2: rockim.api.client.v1.types.Room.FieldsEntry
 	nil,                         // 3: rockim.api.client.v1.types.GroupMember.FieldsEntry
-	(enums.Group_Category)(0),   // 4: rockim.shared.enums.Group.Category
-	(enums.Group_Status)(0),     // 5: rockim.shared.enums.Group.Status
-	(enums.Group_MemberRole)(0), // 6: rockim.shared.enums.Group.MemberRole
+	(enums.Group_Category)(0),   // 4: rockim.shared.enums.Room.Category
+	(enums.Group_Status)(0),     // 5: rockim.shared.enums.Room.Status
+	(enums.Group_MemberRole)(0), // 6: rockim.shared.enums.Room.MemberRole
 }
 var file_rockim_api_client_v1_types_group_proto_depIdxs = []int32{
-	4, // 0: rockim.api.client.v1.types.Group.category:type_name -> rockim.shared.enums.Group.Category
-	2, // 1: rockim.api.client.v1.types.Group.fields:type_name -> rockim.api.client.v1.types.Group.FieldsEntry
-	5, // 2: rockim.api.client.v1.types.Group.status:type_name -> rockim.shared.enums.Group.Status
-	6, // 3: rockim.api.client.v1.types.GroupMember.role:type_name -> rockim.shared.enums.Group.MemberRole
+	4, // 0: rockim.api.client.v1.types.Room.category:type_name -> rockim.shared.enums.Room.Category
+	2, // 1: rockim.api.client.v1.types.Room.fields:type_name -> rockim.api.client.v1.types.Room.FieldsEntry
+	5, // 2: rockim.api.client.v1.types.Room.status:type_name -> rockim.shared.enums.Room.Status
+	6, // 3: rockim.api.client.v1.types.GroupMember.role:type_name -> rockim.shared.enums.Room.MemberRole
 	3, // 4: rockim.api.client.v1.types.GroupMember.fields:type_name -> rockim.api.client.v1.types.GroupMember.FieldsEntry
 	5, // [5:5] is the sub-list for method output_type
 	5, // [5:5] is the sub-list for method input_type

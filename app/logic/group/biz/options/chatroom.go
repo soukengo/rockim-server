@@ -1,7 +1,6 @@
 package options
 
 import (
-	"rockimserver/apis/rockim/shared"
 	"rockimserver/apis/rockim/shared/enums"
 )
 
@@ -38,28 +37,6 @@ type ChatRoomMemberRemoveOptions struct {
 	TargetUid string
 }
 
-type ChatRoomMemberCheckOptions struct {
-	ProductId string
-	GroupId   string
-	Uid       string
-}
-
-type ChatRoomMemberFindOptions struct {
-	ProductId string
-	GroupId   string
-	Uid       string
-}
-type ChatRoomMemberListOptions struct {
-	ProductId string
-	GroupId   string
-	Uids      []string
-}
-
-type ChatRoomMemberIdPaginateOptions struct {
-	ProductId string
-	GroupId   string
-	Paginate  *shared.Paginating
-}
 type ChatRoomMemberAddItem struct {
 	Uid    string
 	Role   enums.Group_MemberRole

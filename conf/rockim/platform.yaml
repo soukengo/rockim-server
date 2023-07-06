@@ -13,3 +13,8 @@ cache:
 database:
   mongodb:
     key: default
+
+log:
+  level: info
+  appender:
+    fileName: ./log/rockim/platform/app.log

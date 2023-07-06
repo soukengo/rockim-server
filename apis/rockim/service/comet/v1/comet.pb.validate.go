@@ -301,22 +301,22 @@ var _ interface {
 	ErrorName() string
 } = PushResponseValidationError{}
 
-// Validate checks the field values on PushGroupRequest with the rules defined
+// Validate checks the field values on PushRoomRequest with the rules defined
 // in the proto definition for this message. If any rules are violated, the
 // first error encountered is returned, or nil if there are no violations.
-func (m *PushGroupRequest) Validate() error {
+func (m *PushRoomRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on PushGroupRequest with the rules
+// ValidateAll checks the field values on PushRoomRequest with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// PushGroupRequestMultiError, or nil if none found.
-func (m *PushGroupRequest) ValidateAll() error {
+// PushRoomRequestMultiError, or nil if none found.
+func (m *PushRoomRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *PushGroupRequest) validate(all bool) error {
+func (m *PushRoomRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -324,7 +324,7 @@ func (m *PushGroupRequest) validate(all bool) error {
 	var errors []error
 
 	if m.GetBase() == nil {
-		err := PushGroupRequestValidationError{
+		err := PushRoomRequestValidationError{
 			field:  "Base",
 			reason: "value is required",
 		}
@@ -338,7 +338,7 @@ func (m *PushGroupRequest) validate(all bool) error {
 		switch v := interface{}(m.GetBase()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, PushGroupRequestValidationError{
+				errors = append(errors, PushRoomRequestValidationError{
 					field:  "Base",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -346,7 +346,7 @@ func (m *PushGroupRequest) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, PushGroupRequestValidationError{
+				errors = append(errors, PushRoomRequestValidationError{
 					field:  "Base",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -355,7 +355,7 @@ func (m *PushGroupRequest) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetBase()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return PushGroupRequestValidationError{
+			return PushRoomRequestValidationError{
 				field:  "Base",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -364,7 +364,7 @@ func (m *PushGroupRequest) validate(all bool) error {
 	}
 
 	if _, ok := enums.Network_PushOperation_name[int32(m.GetOperation())]; !ok {
-		err := PushGroupRequestValidationError{
+		err := PushRoomRequestValidationError{
 			field:  "Operation",
 			reason: "value must be one of the defined enum values",
 		}
@@ -374,10 +374,10 @@ func (m *PushGroupRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if utf8.RuneCountInString(m.GetGroupId()) < 1 {
-		err := PushGroupRequestValidationError{
-			field:  "GroupId",
-			reason: "value length must be at least 1 runes",
+	if m.GetRoom() == nil {
+		err := PushRoomRequestValidationError{
+			field:  "Room",
+			reason: "value is required",
 		}
 		if !all {
 			return err
@@ -385,22 +385,51 @@ func (m *PushGroupRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
+	if all {
+		switch v := interface{}(m.GetRoom()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, PushRoomRequestValidationError{
+					field:  "Room",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, PushRoomRequestValidationError{
+					field:  "Room",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetRoom()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return PushRoomRequestValidationError{
+				field:  "Room",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	// no validation rules for Body
 
 	if len(errors) > 0 {
-		return PushGroupRequestMultiError(errors)
+		return PushRoomRequestMultiError(errors)
 	}
 
 	return nil
 }
 
-// PushGroupRequestMultiError is an error wrapping multiple validation errors
-// returned by PushGroupRequest.ValidateAll() if the designated constraints
+// PushRoomRequestMultiError is an error wrapping multiple validation errors
+// returned by PushRoomRequest.ValidateAll() if the designated constraints
 // aren't met.
-type PushGroupRequestMultiError []error
+type PushRoomRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m PushGroupRequestMultiError) Error() string {
+func (m PushRoomRequestMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -409,11 +438,11 @@ func (m PushGroupRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m PushGroupRequestMultiError) AllErrors() []error { return m }
+func (m PushRoomRequestMultiError) AllErrors() []error { return m }
 
-// PushGroupRequestValidationError is the validation error returned by
-// PushGroupRequest.Validate if the designated constraints aren't met.
-type PushGroupRequestValidationError struct {
+// PushRoomRequestValidationError is the validation error returned by
+// PushRoomRequest.Validate if the designated constraints aren't met.
+type PushRoomRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -421,22 +450,22 @@ type PushGroupRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e PushGroupRequestValidationError) Field() string { return e.field }
+func (e PushRoomRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e PushGroupRequestValidationError) Reason() string { return e.reason }
+func (e PushRoomRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e PushGroupRequestValidationError) Cause() error { return e.cause }
+func (e PushRoomRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e PushGroupRequestValidationError) Key() bool { return e.key }
+func (e PushRoomRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e PushGroupRequestValidationError) ErrorName() string { return "PushGroupRequestValidationError" }
+func (e PushRoomRequestValidationError) ErrorName() string { return "PushRoomRequestValidationError" }
 
 // Error satisfies the builtin error interface
-func (e PushGroupRequestValidationError) Error() string {
+func (e PushRoomRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -448,14 +477,14 @@ func (e PushGroupRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sPushGroupRequest.%s: %s%s",
+		"invalid %sPushRoomRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = PushGroupRequestValidationError{}
+var _ error = PushRoomRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -463,24 +492,24 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = PushGroupRequestValidationError{}
+} = PushRoomRequestValidationError{}
 
-// Validate checks the field values on PushGroupResponse with the rules defined
+// Validate checks the field values on PushRoomResponse with the rules defined
 // in the proto definition for this message. If any rules are violated, the
 // first error encountered is returned, or nil if there are no violations.
-func (m *PushGroupResponse) Validate() error {
+func (m *PushRoomResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on PushGroupResponse with the rules
+// ValidateAll checks the field values on PushRoomResponse with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// PushGroupResponseMultiError, or nil if none found.
-func (m *PushGroupResponse) ValidateAll() error {
+// PushRoomResponseMultiError, or nil if none found.
+func (m *PushRoomResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *PushGroupResponse) validate(all bool) error {
+func (m *PushRoomResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -488,19 +517,19 @@ func (m *PushGroupResponse) validate(all bool) error {
 	var errors []error
 
 	if len(errors) > 0 {
-		return PushGroupResponseMultiError(errors)
+		return PushRoomResponseMultiError(errors)
 	}
 
 	return nil
 }
 
-// PushGroupResponseMultiError is an error wrapping multiple validation errors
-// returned by PushGroupResponse.ValidateAll() if the designated constraints
+// PushRoomResponseMultiError is an error wrapping multiple validation errors
+// returned by PushRoomResponse.ValidateAll() if the designated constraints
 // aren't met.
-type PushGroupResponseMultiError []error
+type PushRoomResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m PushGroupResponseMultiError) Error() string {
+func (m PushRoomResponseMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -509,11 +538,11 @@ func (m PushGroupResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m PushGroupResponseMultiError) AllErrors() []error { return m }
+func (m PushRoomResponseMultiError) AllErrors() []error { return m }
 
-// PushGroupResponseValidationError is the validation error returned by
-// PushGroupResponse.Validate if the designated constraints aren't met.
-type PushGroupResponseValidationError struct {
+// PushRoomResponseValidationError is the validation error returned by
+// PushRoomResponse.Validate if the designated constraints aren't met.
+type PushRoomResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -521,24 +550,22 @@ type PushGroupResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e PushGroupResponseValidationError) Field() string { return e.field }
+func (e PushRoomResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e PushGroupResponseValidationError) Reason() string { return e.reason }
+func (e PushRoomResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e PushGroupResponseValidationError) Cause() error { return e.cause }
+func (e PushRoomResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e PushGroupResponseValidationError) Key() bool { return e.key }
+func (e PushRoomResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e PushGroupResponseValidationError) ErrorName() string {
-	return "PushGroupResponseValidationError"
-}
+func (e PushRoomResponseValidationError) ErrorName() string { return "PushRoomResponseValidationError" }
 
 // Error satisfies the builtin error interface
-func (e PushGroupResponseValidationError) Error() string {
+func (e PushRoomResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -550,14 +577,14 @@ func (e PushGroupResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sPushGroupResponse.%s: %s%s",
+		"invalid %sPushRoomResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = PushGroupResponseValidationError{}
+var _ error = PushRoomResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -565,4 +592,4 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = PushGroupResponseValidationError{}
+} = PushRoomResponseValidationError{}

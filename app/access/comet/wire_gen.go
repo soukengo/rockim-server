@@ -37,7 +37,12 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 		return nil, err
 	}
 	onlineRepo := data.NewOnlineRepo(onlineAPIClient)
-	channelUseCase := biz.NewChannelUseCase(config, onlineRepo)
+	groupMemberAPIClient, err := grpc.NewGroupMemberAPIClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	roomRepo := data.NewRoomRepo(groupMemberAPIClient)
+	channelUseCase := biz.NewChannelUseCase(config, onlineRepo, roomRepo)
 	channelService := service.NewClientService(channelUseCase)
 	socketServer := socket.NewSocketServer(serverConfig, protocol, channelService)
 	channelManager := socket2.NewChannelManager(logger, socketServer)

@@ -26,3 +26,8 @@ type OnlineDeleteOptions struct {
 	ServerId  string
 	ChannelId string
 }
+
+type ListRoomOptions struct {
+	ProductId string
+	Uid       string
+}

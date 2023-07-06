@@ -51,7 +51,6 @@ func Load(appId string) (cfg *Global, err error) {
 	}
 	// 链路追踪配置
 	cfg.Trace = &trace.Config{ServiceId: appId, Env: env}
-	trace.Configure(cfg.Trace)
 	// 服务发现配置
 	if cfg.Discovery != nil {
 		cfg.Discovery.AppId = appId

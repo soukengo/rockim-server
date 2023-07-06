@@ -2,21 +2,19 @@ package socket
 
 import (
 	"context"
-	"github.com/antlabs/timer"
 	"github.com/golang/protobuf/proto"
 	"github.com/soukengo/gopkg/component/server/socket"
 	"github.com/soukengo/gopkg/component/server/socket/packet"
 	"github.com/soukengo/gopkg/component/trace"
 	"github.com/soukengo/gopkg/errors"
 	"github.com/soukengo/gopkg/log"
-	"github.com/soukengo/gopkg/util/runtimes"
 	v1 "rockimserver/apis/rockim/api/client/v1/protocol/socket"
 	"rockimserver/apis/rockim/shared"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/access/comet/conf"
 	"rockimserver/app/access/comet/module/client/service"
-	"rockimserver/app/access/comet/protocol"
+	"rockimserver/app/access/comet/module/protocol"
 )
 
 var (
@@ -29,18 +27,14 @@ type HandleFunc func(context.Context, socket.Channel, []byte) (any, error)
 type ClientHandler struct {
 	server  socket.Server
 	actions map[v1.Operation]HandleFunc
-	timer   timer.Timer
 
 	cfg        *conf.Protocol
 	channelSrv *service.ChannelService
 }
 
 func NewClientHandler(cfg *conf.Protocol, channelSrv *service.ChannelService) *ClientHandler {
-	tm := timer.NewTimer()
-	go tm.Run()
 	ins := &ClientHandler{
 		actions:    map[v1.Operation]HandleFunc{},
-		timer:      tm,
 		cfg:        cfg,
 		channelSrv: channelSrv,
 	}
@@ -88,9 +82,7 @@ func (h *ClientHandler) OnReceived(ctx *socket.Context, p packet.IPacket) {
 		log.Errorf("OnReceived packet body not invalid: %v", p)
 		return
 	}
-	runtimes.TryCatch(func() {
-		h.handle(ctx, ch, header, body)
-	})
+	h.handle(ctx, ch, header, body)
 }
 
 func (h *ClientHandler) handle(ctx context.Context, channel socket.Channel, header *v1.RequestPacketHeader, body *v1.RequestPacketBody) {

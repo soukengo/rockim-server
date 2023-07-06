@@ -14,3 +14,9 @@ protocol:
   minServerHeartbeatInterval: 2m
   maxServerHeartbeatInterval: 4m
   maxClientHeartbeatInterval: 3m
+
+
+log:
+  level: info
+  appender:
+    fileName: ./log/rockim/comet/app.log

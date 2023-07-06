@@ -6,10 +6,13 @@ import (
 	"github.com/soukengo/gopkg/component/server/socket"
 	"github.com/soukengo/gopkg/errors"
 	"github.com/soukengo/gopkg/log"
+	"github.com/soukengo/gopkg/util/runtimes"
+	"rockimserver/apis/rockim/service/comet/v1/types"
 	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/access/comet/conf"
 	"rockimserver/app/access/comet/module/client/biz/consts"
 	"rockimserver/app/access/comet/module/client/biz/options"
+	"rockimserver/app/access/comet/module/protocol"
 	"time"
 )
 
@@ -19,38 +22,45 @@ type OnlineRepo interface {
 	Delete(ctx context.Context, opts *options.OnlineDeleteOptions) error
 }
 
+type RoomRepo interface {
+	List(ctx context.Context, opts *options.ListRoomOptions) ([]*types.Room, error)
+}
+
 var (
 	ErrUnSpecified = errors.BadRequest(reasons.ErrorReason_UN_SPECIFIED.String(), "未知错误")
 )
 
 type ChannelUseCase struct {
-	cfg   *conf.Config
-	timer timer.Timer
-	repo  OnlineRepo
+	cfg      *conf.Config
+	timer    timer.Timer
+	repo     OnlineRepo
+	roomRepo RoomRepo
 }
 
-func NewChannelUseCase(cfg *conf.Config, repo OnlineRepo) *ChannelUseCase {
+func NewChannelUseCase(cfg *conf.Config, repo OnlineRepo, roomRepo RoomRepo) *ChannelUseCase {
 	tm := timer.NewTimer()
-	go tm.Run()
-	return &ChannelUseCase{cfg: cfg, repo: repo, timer: tm}
+	runtimes.Async(tm.Run)
+	return &ChannelUseCase{cfg: cfg, timer: tm, repo: repo, roomRepo: roomRepo}
 }
 
 func (uc *ChannelUseCase) Connect(ctx context.Context) (err error) {
-	ch, ok := socket.FromContext(ctx)
+	chCtx, ok := socket.FromContext(ctx)
 	if !ok {
 		err = ErrUnSpecified
 		return
 	}
+	ch := chCtx.Channel()
 	uc.setAuthCheckTimer(ch)
 	return
 }
 
 func (uc *ChannelUseCase) DisConnect(ctx context.Context) (err error) {
-	ch, ok := socket.FromContext(ctx)
+	chCtx, ok := socket.FromContext(ctx)
 	if !ok {
 		err = ErrUnSpecified
 		return
 	}
+	ch := chCtx.Channel()
 	opts := &options.OnlineDeleteOptions{
 		ProductId: ch.StringAttr(consts.ChannelAttrProductId),
 		Uid:       ch.StringAttr(consts.ChannelAttrUid),
@@ -62,11 +72,12 @@ func (uc *ChannelUseCase) DisConnect(ctx context.Context) (err error) {
 }
 
 func (uc *ChannelUseCase) Auth(ctx context.Context, in *options.ChannelAuthOptions) (err error) {
-	ch, ok := socket.FromContext(ctx)
+	chCtx, ok := socket.FromContext(ctx)
 	if !ok {
 		err = ErrUnSpecified
 		return
 	}
+	ch := chCtx.Channel()
 	opts := &options.OnlineAddOptions{
 		ProductId: in.ProductId,
 		ServerId:  uc.cfg.Global.ID,
@@ -84,15 +95,20 @@ func (uc *ChannelUseCase) Auth(ctx context.Context, in *options.ChannelAuthOptio
 	ch.MarkAuthenticated()
 	// 产生随机的心跳间隔
 	ch.SetAttr(consts.ChannelAttrServerHeartBeatInterval, uc.cfg.Protocol.RandomServerHeartbeatInterval().Milliseconds())
+	// 异步加载房间列表
+	runtimes.Async(func() {
+		uc.loadRoom(chCtx.Server(), ch)
+	})
 	return
 }
 
 func (uc *ChannelUseCase) HeartBeat(ctx context.Context) (err error) {
-	ch, ok := socket.FromContext(ctx)
+	chCtx, ok := socket.FromContext(ctx)
 	if !ok {
 		err = ErrUnSpecified
 		return
 	}
+	ch := chCtx.Channel()
 	// 更新客户端心跳时间
 	nowts := time.Now().UnixMilli()
 	ch.SetAttr(consts.ChannelAttrLastHeartBeatTime, nowts)
@@ -165,4 +181,21 @@ func (uc *ChannelUseCase) setHeartBeatCheckTimer(ch socket.Channel) {
 		}
 	})
 	ch.SetAttr(consts.ChannelAttrTimerHeartBeatCheck, node)
+}
+
+// loadRoom 加载房间列表
+func (uc *ChannelUseCase) loadRoom(srv socket.Server, ch socket.Channel) {
+	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*10)
+	defer cancel()
+	rooms, err := uc.roomRepo.List(ctx, &options.ListRoomOptions{
+		ProductId: ch.StringAttr(consts.ChannelAttrProductId),
+		Uid:       ch.StringAttr(consts.ChannelAttrUid),
+	})
+	if err != nil {
+		log.Errorf("ListRoom error: %v", err)
+		return
+	}
+	for _, room := range rooms {
+		_ = srv.JoinRoom(protocol.EncodeRoomId(room), ch)
+	}
 }

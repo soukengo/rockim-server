@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"github.com/go-kratos/kratos/v2/registry"
+	"rockimserver/apis/rockim/service/job/v1/types"
 	"rockimserver/app/task/job/conf"
 	"sync"
 )
@@ -9,8 +10,8 @@ import (
 type PushManager struct {
 	config       *conf.Config
 	cometServers map[string]*Comet
-	groups       map[string]*Group
-	groupsMutex  sync.RWMutex
+	rooms        map[string]*Room
+	roomsMutex   sync.RWMutex
 	watcher      *Watcher
 }
 
@@ -18,7 +19,7 @@ func NewPushManager(config *conf.Config, discovery registry.Discovery) (*PushMan
 	m := &PushManager{
 		config:       config,
 		cometServers: make(map[string]*Comet),
-		groups:       make(map[string]*Group),
+		rooms:        make(map[string]*Room),
 	}
 	w, err := newWatcher(m, discovery)
 	if err != nil {
@@ -28,23 +29,24 @@ func NewPushManager(config *conf.Config, discovery registry.Discovery) (*PushMan
 	return m, nil
 }
 
-func (c *PushManager) delGroup(groupID string) {
-	c.groupsMutex.Lock()
-	delete(c.groups, groupID)
-	c.groupsMutex.Unlock()
+func (c *PushManager) delRoom(roomId string) {
+	c.roomsMutex.Lock()
+	delete(c.rooms, roomId)
+	c.roomsMutex.Unlock()
 }
 
-func (c *PushManager) getGroup(groupID string) *Group {
-	c.groupsMutex.RLock()
-	group, ok := c.groups[groupID]
-	c.groupsMutex.RUnlock()
+func (c *PushManager) getRoom(r *types.Room) *Room {
+	roomId := encodeRoomId(r)
+	c.roomsMutex.RLock()
+	room, ok := c.rooms[roomId]
+	c.roomsMutex.RUnlock()
 	if !ok {
-		c.groupsMutex.Lock()
-		if group, ok = c.groups[groupID]; !ok {
-			group = newGroup(c, groupID, c.config.Comet.Group)
-			c.groups[groupID] = group
+		c.roomsMutex.Lock()
+		if room, ok = c.rooms[roomId]; !ok {
+			room = newRoom(c, roomId, r, c.config.Comet.Room)
+			c.rooms[roomId] = room
 		}
-		c.groupsMutex.Unlock()
+		c.roomsMutex.Unlock()
 	}
-	return group
+	return room
 }

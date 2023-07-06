@@ -32,13 +32,13 @@ func Load() (cfg *Config, err error) {
 		return
 	}
 	cfg.Global = global
-	cfg.Log.Split = true
+	cfg.Log.Split = false
 	return
 }
 
 func defaultConfig() *Config {
 	return &Config{
-		Log:    log.Default,
+		Log:    log.Default(),
 		Server: &server.Config{},
 		Database: &database.Config{
 			Mongodb: &mongo.Reference{Key: storage.DefaultKey},

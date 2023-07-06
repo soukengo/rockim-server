@@ -26,3 +26,13 @@ func (r *groupMemberRepo) Delete(ctx context.Context, productId string, groupId 
 func (r *groupMemberRepo) Exists(ctx context.Context, productId string, groupId string, uid string) (exists bool, err error) {
 	return r.cache.Exists(ctx, productId, groupId, uid)
 }
+
+func (r *groupMemberRepo) Find(ctx context.Context, productId string, groupId string, uid string) (*types.GroupMember, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *groupMemberRepo) List(ctx context.Context, productId string, groupId string, uids []string) ([]*types.GroupMember, error) {
+	//TODO implement me
+	panic("implement me")
+}

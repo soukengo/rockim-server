@@ -1,6 +1,9 @@
 package options
 
-import "rockimserver/apis/rockim/shared/enums"
+import (
+	"rockimserver/apis/rockim/service/comet/v1/types"
+	"rockimserver/apis/rockim/shared/enums"
+)
 
 type PushOptions struct {
 	// 推送类型
@@ -11,11 +14,11 @@ type PushOptions struct {
 	Body []byte
 }
 
-type PushGroupOptions struct {
+type PushRoomOptions struct {
 	// 推送类型
 	Operation enums.Network_PushOperation
-	// 组ID
-	GroupId string
+	// 房间ID
+	Room *types.Room
 	// 推送内容
 	Body []byte
 }

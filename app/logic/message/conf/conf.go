@@ -53,7 +53,7 @@ func Load() (cfg *Config, err error) {
 
 func defaultConfig() *Config {
 	return &Config{
-		Log: log.Default,
+		Log: log.Default(),
 		Server: &server.Config{
 			Job: &job.Config{
 				Queue: &queue.Config{
