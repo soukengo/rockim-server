@@ -5,9 +5,9 @@ server:
 
 comet:
   tcp:
-    addr: 10.22.2.122:6003
+    addr: 192.168.31.38:6003
   websocket:
-    addr: ws://10.22.2.122:6004/
+    addr: ws://192.168.31.38:6004/
 
 log:
   level: info

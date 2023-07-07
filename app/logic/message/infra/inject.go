@@ -41,6 +41,11 @@ func NewGeneralQueueProducer(cfg *queue.Config, logger log.Logger) (queue.Produc
 	return queue.NewProducer(cfg.General, logger)
 }
 
-func NewDelayedQueueProducer(cfg *queue.Config, logger log.Logger) (queue.DelayedProducer, error) {
-	return queue.NewDelayProducer(cfg.Delayed, logger)
+func NewDelayedQueueProducer(cfg *queue.Config, logger log.Logger) (producer queue.DelayedProducer, err error) {
+	producer, err = queue.NewDelayProducer(cfg.Delayed, logger)
+	if err != nil {
+		return
+	}
+	_ = producer.Start()
+	return
 }

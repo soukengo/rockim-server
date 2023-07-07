@@ -63,6 +63,12 @@ func (r *chatRoomMemberRepo) PaginateUid(ctx context.Context, productId string, 
 	return
 }
 
-func (r *chatRoomMemberRepo) ListGroupIdByUid(ctx context.Context, productId string, uid string) ([]string, error) {
-	return r.cache.ListGroupIdByUid(ctx, productId, uid)
+func (r *chatRoomMemberRepo) ListGroupIdByUid(ctx context.Context, productId string, uid string) (out []string, err error) {
+	out, err = r.cache.ListGroupIdByUid(ctx, productId, uid)
+	if err != nil {
+		if cache.IsErrNoCache(err) {
+			err = nil
+		}
+	}
+	return
 }

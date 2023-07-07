@@ -88,7 +88,7 @@ func (d *ChatRoomMemberData) ListGroupIdByUid(ctx context.Context, productId str
 	// 排除已解散的群
 	for _, item := range list {
 		groupId := *item
-		exists, err1 := d.setCache.ExistsMember(ctx, cache.Parts(productId, groupId), item)
+		exists, err1 := d.setCache.ExistsMember(ctx, cache.Parts(productId, groupId), &uid)
 		if err1 != nil && !cache.IsErrNoCache(err1) {
 			err = err1
 			return

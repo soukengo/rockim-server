@@ -38,8 +38,12 @@ func Load() (cfg *Config, err error) {
 
 func defaultConfig() *Config {
 	return &Config{
-		Log:   log.Default(),
-		Comet: &Comet{RoutineSize: 32, RoutineChan: 1024},
+		Log: log.Default(),
+		Comet: &Comet{RoutineSize: 32, RoutineChan: 1024, Room: &Room{
+			Batch:  20,
+			Signal: time.Second,
+			Idle:   time.Minute * 15,
+		}},
 		Server: &server.Config{
 			Job: &job.Config{
 				Queue: &queue.Config{

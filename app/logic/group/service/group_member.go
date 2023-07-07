@@ -12,6 +12,10 @@ type GroupMemberService struct {
 	v1.UnimplementedGroupMemberAPIServer
 }
 
+func NewGroupMemberService(uc *biz.GroupMemberUseCase) *GroupMemberService {
+	return &GroupMemberService{uc: uc}
+}
+
 func (s *GroupMemberService) IsMember(ctx context.Context, in *v1.GroupMemberCheckRequest) (out *v1.GroupMemberCheckResponse, err error) {
 	isMember, err := s.uc.IsMember(ctx, &options.GroupMemberCheckOptions{
 		ProductId: in.Base.ProductId,

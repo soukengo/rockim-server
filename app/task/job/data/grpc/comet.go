@@ -94,9 +94,10 @@ func (c *Comet) process(pushChan chan *v1.PushRequest, roomChan chan *v1.PushRoo
 		select {
 		case args := <-roomChan:
 			_, err := c.client.PushRoom(context.Background(), &v1.PushRoomRequest{
-				Base: args.Base,
-				Room: args.Room,
-				Body: args.Body,
+				Base:      args.Base,
+				Operation: args.Operation,
+				Room:      args.Room,
+				Body:      args.Body,
 			})
 			if err != nil {
 				log.Errorf("cfg.client.PushRoom(%s, reply) serverId:%s error(%v)", args, c.serverID, err)
