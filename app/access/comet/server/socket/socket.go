@@ -11,7 +11,7 @@ import (
 
 func NewSocketServer(c *server.Config, pc *conf.Protocol, channelSrv *service.ChannelService) socket.Server {
 	handler := NewClientHandler(pc, channelSrv)
-	srv := socket.NewServer(handler, options.WithPacketFactory(protocol.NewPacketFactory()))
+	srv := socket.NewServer(handler, options.WithPacketParser(protocol.NewPacketParser()))
 	srv.RegisterTCPServer(c.Socket.TCP)
 	srv.RegisterWSServer(c.Socket.WS)
 	handler.server = srv

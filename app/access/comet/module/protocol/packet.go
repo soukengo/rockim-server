@@ -8,18 +8,20 @@ import (
 	"io"
 )
 
-type PacketFactory struct {
-	newFunc func() packet.IPacket
+type PacketParser struct {
 }
 
-func (factory *PacketFactory) Offer(connId string) (p packet.IPacket) {
-	return factory.newFunc()
+func NewPacketParser() *PacketParser {
+	return &PacketParser{}
 }
 
-func NewPacketFactory() packet.IFactory {
-	return &PacketFactory{newFunc: func() packet.IPacket {
-		return &Packet{}
-	}}
+func (p *PacketParser) Parse(connId string, reader io.Reader) (packet packet.IPacket, err error) {
+	packet = NewPacket(0, nil, nil)
+	err = packet.UnPackFrom(reader)
+	if err != nil {
+		return
+	}
+	return
 }
 
 const (

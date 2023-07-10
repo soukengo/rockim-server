@@ -49,7 +49,7 @@ func (r *accessTokenRepo) FindByAccessToken(ctx context.Context, productId strin
 	uid, err = r.cache.FindUidByAccessToken(ctx, productId, token)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			err = biz.ErrAuthCodeInvalid
+			err = biz.ErrAccessTokenInvalid
 		}
 		return
 	}
