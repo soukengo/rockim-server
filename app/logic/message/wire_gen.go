@@ -54,7 +54,11 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	if err != nil {
 		return nil, err
 	}
-	groupRepo := data.NewGroupRepo(groupAPIClient)
+	groupMemberAPIClient, err := grpc.NewGroupMemberAPIClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	groupRepo := data.NewGroupRepo(groupAPIClient, groupMemberAPIClient)
 	generator := idgen.NewMongoGenerator()
 	delayedProducer, err := infra.NewDelayedQueueProducer(queueConfig, logger)
 	if err != nil {

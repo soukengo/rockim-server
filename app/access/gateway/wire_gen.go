@@ -89,7 +89,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	bizChatRoomUseCase := biz2.NewChatRoomUseCase(bizChatRoomRepo)
 	serviceChatRoomService := service2.NewChatRoomService(bizChatRoomUseCase, bizUserUseCase)
 	openApiServiceGroup := server2.NewOpenApiServiceGroup(bizProductUseCase, serviceUserService, serviceAuthService, serviceChatRoomService)
-	httpServer := server2.NewHTTPServer(serverConfig, clientServiceGroup, openApiServiceGroup)
+	httpServer := server2.NewHTTPServer(serverConfig, clientServiceGroup, openApiServiceGroup, logger)
 	app := newApp(logger, config, httpServer)
 	return app, nil
 }

@@ -14,3 +14,10 @@ func NewGroupAPIClient(r registry.Discovery) (v1.GroupAPIClient, error) {
 	}
 	return v1.NewGroupAPIClient(conn), nil
 }
+func NewGroupMemberAPIClient(r registry.Discovery) (v1.GroupMemberAPIClient, error) {
+	conn, err := discovery.NewGrpcClient(service.AppGroup, r)
+	if err != nil {
+		return nil, err
+	}
+	return v1.NewGroupMemberAPIClient(conn), nil
+}

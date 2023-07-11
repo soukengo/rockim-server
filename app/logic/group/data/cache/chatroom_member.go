@@ -57,7 +57,7 @@ func (d *ChatRoomMemberData) DeleteAll(ctx context.Context, productId string, gr
 }
 
 func (d *ChatRoomMemberData) Exists(ctx context.Context, productId string, groupId string, uid string) (exists bool, err error) {
-	return d.cache.Exists(ctx, cache.Parts(productId, groupId, uid))
+	return d.cache.ExistsField(ctx, cache.Parts(productId, groupId), uid)
 }
 
 func (d *ChatRoomMemberData) Find(ctx context.Context, productId string, groupId string, uid string) (member *types.GroupMember, err error) {

@@ -75,7 +75,17 @@ func (uc *MessageUseCase) completeGroupMessage(ctx context.Context, opts *option
 	if err != nil {
 		return
 	}
-	// todo: check
+	if !opts.IsSystem {
+		var isMember bool
+		isMember, err = uc.groupRepo.IsMember(ctx, opts.ProductId, group.Category, group.Id, sender.Id)
+		if err != nil {
+			return
+		}
+		if !isMember {
+			err = ErrNotGroupMember
+			return
+		}
+	}
 	body, err := uc.completeMessageBody(opts)
 	if err != nil {
 		return

@@ -9,4 +9,5 @@ var ProviderSet = wire.NewSet(
 	NewUserAPIClient,
 	NewOnlineQueryAPIClient,
 	NewGroupAPIClient,
+	NewGroupMemberAPIClient,
 )
