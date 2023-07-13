@@ -7,11 +7,11 @@ import (
 )
 
 // NewJobServer new a job server.
-func NewJobServer(c *server.Config, room *ServiceRoom, logger log.Logger) (s job.Server, err error) {
+func NewJobServer(c *server.Config, room *ServiceGroup, logger log.Logger) (s job.Server, err error) {
 	srv, err := job.NewServer(c.Job, logger)
 	if err != nil {
 		return
 	}
-	room.Register(srv)
+	room.RegisterJob(srv)
 	return srv, nil
 }

@@ -15,7 +15,7 @@ func NewServiceGroup(tenantSrv *service.TenantService, productSrv *service.Produ
 	return &ServiceGroup{tenantSrv: tenantSrv, productSrv: productSrv}
 }
 
-func (g *ServiceGroup) Register(srv *grpc.Server) {
+func (g *ServiceGroup) RegisterGrpc(srv *grpc.Server) {
 	v1.RegisterTenantAPIServer(srv, g.tenantSrv)
 	v1.RegisterProductAPIServer(srv, g.productSrv)
 }

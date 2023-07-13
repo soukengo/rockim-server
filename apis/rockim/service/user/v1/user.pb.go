@@ -618,11 +618,11 @@ var file_rockim_service_user_v1_user_proto_depIdxs = []int32{
 	9,  // 5: rockim.service.user.v1.UserFindByAccountRequest.base:type_name -> rockim.service.ServiceRequest
 	10, // 6: rockim.service.user.v1.UserFindByAccountResponse.user:type_name -> rockim.service.user.v1.types.User
 	9,  // 7: rockim.service.user.v1.UserIdFindRequest.base:type_name -> rockim.service.ServiceRequest
-	0,  // 8: rockim.service.user.v1.UserAPI.Register:input_type -> rockim.service.user.v1.UserRegisterRequest
+	0,  // 8: rockim.service.user.v1.UserAPI.RegisterGrpc:input_type -> rockim.service.user.v1.UserRegisterRequest
 	2,  // 9: rockim.service.user.v1.UserAPI.Find:input_type -> rockim.service.user.v1.UserFindRequest
 	4,  // 10: rockim.service.user.v1.UserAPI.FindByAccount:input_type -> rockim.service.user.v1.UserFindByAccountRequest
 	6,  // 11: rockim.service.user.v1.UserAPI.FindUid:input_type -> rockim.service.user.v1.UserIdFindRequest
-	1,  // 12: rockim.service.user.v1.UserAPI.Register:output_type -> rockim.service.user.v1.UserRegisterResponse
+	1,  // 12: rockim.service.user.v1.UserAPI.RegisterGrpc:output_type -> rockim.service.user.v1.UserRegisterResponse
 	3,  // 13: rockim.service.user.v1.UserAPI.Find:output_type -> rockim.service.user.v1.UserFindResponse
 	5,  // 14: rockim.service.user.v1.UserAPI.FindByAccount:output_type -> rockim.service.user.v1.UserFindByAccountResponse
 	7,  // 15: rockim.service.user.v1.UserAPI.FindUid:output_type -> rockim.service.user.v1.UserIdFindResponse

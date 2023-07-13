@@ -34,7 +34,7 @@ func NewHTTPServer(c *server.Config, managerGroup *ManagerServiceGroup, tenantGr
 	}
 	srv := http.NewServer(opts...)
 	srv.Use("")
-	managerGroup.Register(srv)
-	tenantGroup.Register(srv)
+	managerGroup.RegisterHttp(srv)
+	tenantGroup.RegisterHttp(srv)
 	return srv
 }

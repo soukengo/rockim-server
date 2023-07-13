@@ -24,7 +24,7 @@ func NewTenantServiceGroup(authCfg *auth.Config, authSrv *service.AuthService, s
 	return &TenantServiceGroup{authCfg: authCfg, authSrv: authSrv, sessionSrv: sessionSrv, productSrv: productSrv}
 }
 
-func (g *TenantServiceGroup) Register(srv *http.Server) {
+func (g *TenantServiceGroup) RegisterHttp(srv *http.Server) {
 	srv.Use("/rockim.api.admin.tenant.v1.*", g.checkAuth())
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	v1.RegisterSessionAPIHTTPServer(srv, g.sessionSrv)

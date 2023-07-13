@@ -14,6 +14,6 @@ func NewServiceGroup(message *service.MessageService) *ServiceGroup {
 	return &ServiceGroup{message: message}
 }
 
-func (g *ServiceGroup) Register(srv *grpc.Server) {
+func (g *ServiceGroup) RegisterGrpc(srv *grpc.Server) {
 	v1.RegisterMessageAPIServer(srv, g.message)
 }

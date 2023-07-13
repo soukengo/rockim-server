@@ -52,7 +52,7 @@ func (uc *MessageDeliveryUseCase) Delivery(ctx context.Context, productId string
 	if err != nil {
 		return
 	}
-	operation := enums.Network_MESSAGES
+	operation := enums.Comet_MESSAGES
 	switch conversationId.Category {
 	case enums.MessageTarget_GROUP:
 		err = uc.pushMgr.PushGroup(ctx, operation, productId, conversationId.Value, body)

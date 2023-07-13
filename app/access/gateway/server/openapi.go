@@ -30,7 +30,7 @@ func NewOpenApiServiceGroup(productUc *biz.ProductUseCase, userSrv *service.User
 	return &OpenApiServiceGroup{productUc: productUc, userSrv: userSrv, authSrv: authSrv, chatRoomSrv: chatRoomSrv}
 }
 
-func (g *OpenApiServiceGroup) Register(srv *http.Server) {
+func (g *OpenApiServiceGroup) RegisterHttp(srv *http.Server) {
 	srv.Use("/rockim.api.openapi.v1.*", g.checkSign(), g.setAPIRequest(), validate.Validator())
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	v1.RegisterUserAPIHTTPServer(srv, g.userSrv)

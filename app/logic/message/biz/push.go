@@ -3,18 +3,19 @@ package biz
 import (
 	"context"
 	"github.com/samber/lo"
+	comettypes "rockimserver/apis/rockim/service/comet/v1/types"
 	"rockimserver/apis/rockim/service/job/v1/types"
 	usertypes "rockimserver/apis/rockim/service/user/v1/types"
 	"rockimserver/apis/rockim/shared/enums"
 )
 
 type PushManager interface {
-	PushUsers(ctx context.Context, operation enums.Network_PushOperation, productId string, uids []string, body []byte) error
-	PushGroup(ctx context.Context, operation enums.Network_PushOperation, productId string, groupId string, body []byte) error
+	PushUsers(ctx context.Context, operation enums.Comet_PushOperation, productId string, uids []string, body []byte) error
+	PushGroup(ctx context.Context, operation enums.Comet_PushOperation, productId string, groupId string, body []byte) error
 }
 
 type PushMessageRepo interface {
-	SavePushMessage(ctx context.Context, messages []*types.Message) error
+	SavePushMessage(ctx context.Context, messages []*types.CometMessage) error
 }
 
 type pushManager struct {
@@ -26,7 +27,7 @@ func NewPushManager(repo PushMessageRepo, onlineRepo OnlineRepo) PushManager {
 	return &pushManager{repo: repo, onlineRepo: onlineRepo}
 }
 
-func (m *pushManager) PushUsers(ctx context.Context, operation enums.Network_PushOperation, productId string, uids []string, body []byte) (err error) {
+func (m *pushManager) PushUsers(ctx context.Context, operation enums.Comet_PushOperation, productId string, uids []string, body []byte) (err error) {
 	users, err := m.onlineRepo.ListUser(ctx, productId, uids)
 	if err != nil {
 		return
@@ -37,18 +38,24 @@ func (m *pushManager) PushUsers(ctx context.Context, operation enums.Network_Pus
 	channelsMap := lo.GroupBy(channels, func(item *usertypes.OnlineChannel) string {
 		return item.ServerId
 	})
-	var messages []*types.Message
+	var messages []*types.CometMessage
 	for serverId, chs := range channelsMap {
 		channelIds := lo.Map(chs, func(item *usertypes.OnlineChannel, index int) string {
 			return item.ChannelId
 		})
-		messages = append(messages, &types.Message{
+		messages = append(messages, &types.CometMessage{
 			ProductId: productId,
-			Target:    types.Message_CHANNEL,
-			Operation: operation,
-			ServerId:  serverId,
-			Channels:  channelIds,
-			Body:      body,
+			Target: &types.CometMessage_Target{
+				TargetType: types.CometMessage_Target_CHANNEL,
+				ServerId:   serverId,
+				Channels:   channelIds,
+			},
+			Message: &comettypes.Message{
+				Push: &comettypes.PushMessage{
+					Operation: operation,
+					Body:      body,
+				},
+			},
 		})
 	}
 	if len(messages) == 0 {
@@ -58,14 +65,20 @@ func (m *pushManager) PushUsers(ctx context.Context, operation enums.Network_Pus
 	return
 }
 
-func (m *pushManager) PushGroup(ctx context.Context, operation enums.Network_PushOperation, productId string, groupId string, body []byte) (err error) {
-	messages := []*types.Message{
+func (m *pushManager) PushGroup(ctx context.Context, operation enums.Comet_PushOperation, productId string, groupId string, body []byte) (err error) {
+	messages := []*types.CometMessage{
 		{
 			ProductId: productId,
-			Target:    types.Message_ROOM,
-			Operation: operation,
-			Room:      &types.Room{RoomType: enums.Comet_Group, BizId: groupId},
-			Body:      body,
+			Target: &types.CometMessage_Target{
+				TargetType: types.CometMessage_Target_ROOM,
+				Room:       &comettypes.Room{RoomType: enums.Comet_Group, BizId: groupId},
+			},
+			Message: &comettypes.Message{
+				Push: &comettypes.PushMessage{
+					Operation: operation,
+					Body:      body,
+				},
+			},
 		},
 	}
 	err = m.repo.SavePushMessage(ctx, messages)

@@ -8,7 +8,7 @@ database:
     key: default
 cache:
   default:
-    expires: "24h"
+    expire: "24h"
   categories:
     - category: "product"
       expire: "24h"

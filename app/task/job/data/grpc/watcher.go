@@ -11,10 +11,10 @@ import (
 
 type Watcher struct {
 	serviceId string
-	manager   *PushManager
+	manager   *CometManager
 }
 
-func newWatcher(manager *PushManager, dis registry.Discovery) (res *Watcher, err error) {
+func newWatcher(manager *CometManager, dis registry.Discovery) (res *Watcher, err error) {
 	serviceId := service.AppComet
 	w := &Watcher{manager: manager, serviceId: serviceId}
 	w.watch(dis)

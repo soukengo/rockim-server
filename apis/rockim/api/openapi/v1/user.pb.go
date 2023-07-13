@@ -230,8 +230,8 @@ var file_rockim_api_openapi_v1_user_proto_goTypes = []interface{}{
 var file_rockim_api_openapi_v1_user_proto_depIdxs = []int32{
 	3, // 0: rockim.api.openapi.v1.UserRegisterRequest.base:type_name -> rockim.api.openapi.v1.APIRequest
 	2, // 1: rockim.api.openapi.v1.UserRegisterRequest.fields:type_name -> rockim.api.openapi.v1.UserRegisterRequest.FieldsEntry
-	0, // 2: rockim.api.openapi.v1.UserAPI.Register:input_type -> rockim.api.openapi.v1.UserRegisterRequest
-	1, // 3: rockim.api.openapi.v1.UserAPI.Register:output_type -> rockim.api.openapi.v1.UserRegisterResponse
+	0, // 2: rockim.api.openapi.v1.UserAPI.RegisterGrpc:input_type -> rockim.api.openapi.v1.UserRegisterRequest
+	1, // 3: rockim.api.openapi.v1.UserAPI.RegisterGrpc:output_type -> rockim.api.openapi.v1.UserRegisterResponse
 	3, // [3:4] is the sub-list for method output_type
 	2, // [2:3] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

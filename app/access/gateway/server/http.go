@@ -30,7 +30,7 @@ func NewHTTPServer(c *server.Config, clientGroup *ClientServiceGroup, openapiGro
 		opts = append(opts, http.Timeout(c.Http.Timeout))
 	}
 	srv := http.NewServer(opts...)
-	clientGroup.Register(srv)
-	openapiGroup.Register(srv)
+	clientGroup.RegisterHttp(srv)
+	openapiGroup.RegisterHttp(srv)
 	return srv
 }

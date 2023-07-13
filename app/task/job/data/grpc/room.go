@@ -3,11 +3,11 @@ package grpc
 import (
 	"errors"
 	"github.com/soukengo/gopkg/log"
+	"github.com/soukengo/gopkg/util/runtimes"
 	"rockimserver/apis/rockim/service"
 	v1 "rockimserver/apis/rockim/service/comet/v1"
 	comettypes "rockimserver/apis/rockim/service/comet/v1/types"
 	"rockimserver/apis/rockim/service/job/v1/types"
-	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/task/job/conf"
 	"time"
 )
@@ -20,38 +20,37 @@ var (
 	// ErrRoomFull room chan full.
 	ErrRoomFull = errors.New("room proto chan full")
 
-	roomFinishedProto = new(v1.PushRoomRequest)
+	roomFinishedProto = new(v1.DispatchRoomRequest)
 )
 
 // Room room.
 type Room struct {
 	c         *conf.Room
-	container *PushManager
+	container *CometManager
 	id        string
-	room      *types.Room
-	proto     chan *v1.PushRoomRequest
+	room      *comettypes.Room
+	proto     chan *v1.DispatchRoomRequest
 }
 
 // newRoom new a room struct, store channel room info.
-func newRoom(job *PushManager, id string, room *types.Room, c *conf.Room) (r *Room) {
+func newRoom(job *CometManager, id string, room *comettypes.Room, c *conf.Room) (r *Room) {
 	r = &Room{
 		c:         c,
 		id:        id,
 		room:      room,
 		container: job,
-		proto:     make(chan *v1.PushRoomRequest, c.Batch*2),
+		proto:     make(chan *v1.DispatchRoomRequest, c.Batch*2),
 	}
-	go r.pushproc()
+	runtimes.Async(r.pushproc)
 	return
 }
 
-// Push push msg to the room, if chan full discard it.
-func (r *Room) Push(operation enums.Network_PushOperation, productId string, msg []byte) (err error) {
-	var p = &v1.PushRoomRequest{
-		Base:      service.GenRequest(productId),
-		Room:      &comettypes.Room{RoomType: r.room.RoomType, BizId: r.room.BizId},
-		Operation: operation,
-		Body:      msg,
+// Dispatch push msg to the room, if chan full discard it.
+func (r *Room) Dispatch(message *types.CometMessage) (err error) {
+	var p = &v1.DispatchRoomRequest{
+		Base: service.GenRequest(message.ProductId),
+		Room: &comettypes.Room{RoomType: r.room.RoomType, BizId: r.room.BizId},
+		Push: message.Message.Push,
 	}
 	select {
 	case r.proto <- p:
@@ -64,7 +63,7 @@ func (r *Room) Push(operation enums.Network_PushOperation, productId string, msg
 // pushproc merge proto and push msgs in batch.
 func (r *Room) pushproc() {
 	var (
-		p *v1.PushRoomRequest
+		p *v1.DispatchRoomRequest
 	)
 	td := time.AfterFunc(r.c.Idle, func() {
 		select {
@@ -77,7 +76,7 @@ func (r *Room) pushproc() {
 		if p = <-r.proto; p == nil {
 			break // exit
 		} else if p != roomFinishedProto {
-			_ = r.container.pushRoom(p)
+			_ = r.container.dispatchRoom(p)
 			if r.c.Idle != 0 {
 				td.Reset(r.c.Idle)
 			} else {

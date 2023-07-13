@@ -17,7 +17,7 @@ func NewServiceGroup(groupSrv *service.GroupService, groupMemberSrv *service.Gro
 	return &ServiceGroup{groupSrv: groupSrv, groupMemberSrv: groupMemberSrv, chatRoomSrv: chatRoomSrv, chatRoomMemberSrv: chatRoomMemberSrv}
 }
 
-func (g *ServiceGroup) Register(srv *grpc.Server) {
+func (g *ServiceGroup) RegisterGrpc(srv *grpc.Server) {
 	v1.RegisterGroupAPIServer(srv, g.groupSrv)
 	v1.RegisterGroupMemberAPIServer(srv, g.groupMemberSrv)
 	v1.RegisterChatRoomAPIServer(srv, g.chatRoomSrv)

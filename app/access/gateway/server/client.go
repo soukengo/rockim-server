@@ -37,7 +37,7 @@ func NewClientServiceGroup(productUc *biz.ProductUseCase, authUc *biz.AuthUseCas
 	return &ClientServiceGroup{productUc: productUc, authUc: authUc, productSrv: productSrv, userSrv: userSrv, authSrv: authSrv, chatRoomSrv: chatRoomSrv, chatRoomMemberSrv: chatRoomMemberSrv, messageSrv: messageSrv}
 }
 
-func (g *ClientServiceGroup) Register(srv *http.Server) {
+func (g *ClientServiceGroup) RegisterHttp(srv *http.Server) {
 	srv.Use("/rockim.api.client.v1.protocol.http.*", g.checkSign(), g.checkAuth(), g.setAPIRequest(), validate.Validator())
 	v1.RegisterProductAPIHTTPServer(srv, g.productSrv)
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)

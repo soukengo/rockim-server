@@ -42,7 +42,7 @@ func NewUserAPIClient(cc grpc.ClientConnInterface) UserAPIClient {
 
 func (c *userAPIClient) Register(ctx context.Context, in *UserRegisterRequest, opts ...grpc.CallOption) (*UserRegisterResponse, error) {
 	out := new(UserRegisterResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.user.v1.UserAPI/Register", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rockim.service.user.v1.UserAPI/RegisterGrpc", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ type UnimplementedUserAPIServer struct {
 }
 
 func (UnimplementedUserAPIServer) Register(context.Context, *UserRegisterRequest) (*UserRegisterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterGrpc not implemented")
 }
 func (UnimplementedUserAPIServer) Find(context.Context, *UserFindRequest) (*UserFindResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
@@ -130,7 +130,7 @@ func _UserAPI_Register_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.service.user.v1.UserAPI/Register",
+		FullMethod: "/rockim.service.user.v1.UserAPI/RegisterGrpc",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserAPIServer).Register(ctx, req.(*UserRegisterRequest))
@@ -200,7 +200,7 @@ var UserAPI_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Register",
+			MethodName: "RegisterGrpc",
 			Handler:    _UserAPI_Register_Handler,
 		},
 		{

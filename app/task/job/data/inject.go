@@ -8,5 +8,5 @@ import (
 // ProviderSet is data providers.
 var ProviderSet = wire.NewSet(
 	grpc.ProviderSet,
-	NewPushRepo,
+	NewCometRepo,
 )

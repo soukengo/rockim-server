@@ -16,10 +16,10 @@ import (
 	"rockimserver/app/task/job/data"
 	"rockimserver/app/task/job/infra"
 	"rockimserver/app/task/job/server"
-	"rockimserver/app/task/job/task"
+	"rockimserver/app/task/job/service"
 )
 
 // wireApp init kratos application.
 func wireApp(log.Logger, *conf.Config, *discovery.Config, *servercomponent.Config) (*kratos.App, error) {
-	panic(wire.Build(server.ProviderSet, infra.ProviderSet, data.ProviderSet, biz.ProviderSet, task.ProviderSet, newApp))
+	panic(wire.Build(server.ProviderSet, infra.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
 }

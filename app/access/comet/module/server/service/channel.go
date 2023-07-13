@@ -16,28 +16,28 @@ func NewChannelService(uc *biz.ChannelUseCase) *ChannelService {
 	return &ChannelService{uc: uc}
 }
 
-func (s *ChannelService) Push(ctx context.Context, in *v1.PushRequest) (out *v1.PushResponse, err error) {
+func (s *ChannelService) Dispatch(ctx context.Context, in *v1.DispatchRequest) (out *v1.DispatchResponse, err error) {
 	err = s.uc.Push(ctx, &options.PushOptions{
 		ChannelIds: in.ChannelIds,
-		Operation:  in.Operation,
-		Body:       in.Body,
+		Operation:  in.Push.Operation,
+		Body:       in.Push.Body,
 	})
 	if err != nil {
 		return
 	}
-	out = &v1.PushResponse{}
+	out = &v1.DispatchResponse{}
 	return
 }
 
-func (s *ChannelService) PushRoom(ctx context.Context, in *v1.PushRoomRequest) (out *v1.PushRoomResponse, err error) {
+func (s *ChannelService) DispatchRoom(ctx context.Context, in *v1.DispatchRoomRequest) (out *v1.DispatchRoomResponse, err error) {
 	err = s.uc.PushRoom(ctx, &options.PushRoomOptions{
 		Room:      in.Room,
-		Operation: in.Operation,
-		Body:      in.Body,
+		Operation: in.Push.Operation,
+		Body:      in.Push.Body,
 	})
 	if err != nil {
 		return
 	}
-	out = &v1.PushRoomResponse{}
+	out = &v1.DispatchRoomResponse{}
 	return
 }

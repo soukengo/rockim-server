@@ -15,6 +15,6 @@ func NewPushMessageRepo(mq *mq.PushMessageData) biz.PushMessageRepo {
 	return &pushMessageRepo{mq: mq}
 }
 
-func (r *pushMessageRepo) SavePushMessage(ctx context.Context, messages []*types.Message) error {
+func (r *pushMessageRepo) SavePushMessage(ctx context.Context, messages []*types.CometMessage) error {
 	return r.mq.SavePushMessage(ctx, messages)
 }

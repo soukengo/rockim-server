@@ -16,7 +16,7 @@ import (
 	"rockimserver/app/task/job/data"
 	"rockimserver/app/task/job/data/grpc"
 	server2 "rockimserver/app/task/job/server"
-	"rockimserver/app/task/job/task"
+	"rockimserver/app/task/job/service"
 )
 
 // Injectors from wire.go:
@@ -27,15 +27,15 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	if err != nil {
 		return nil, err
 	}
-	pushManager, err := grpc.NewPushManager(config, registryDiscovery)
+	cometManager, err := grpc.NewCometManager(config, registryDiscovery)
 	if err != nil {
 		return nil, err
 	}
-	pushRepo := data.NewPushRepo(pushManager)
-	messagePushUseCase := biz.NewMessagePushUseCase(pushRepo)
-	messageTask := task.NewMessageTask(messagePushUseCase)
-	serviceRoom := server2.NewServiceRoom(messageTask)
-	jobServer, err := server2.NewJobServer(serverConfig, serviceRoom, logger)
+	cometRepo := data.NewCometRepo(cometManager)
+	cometUseCase := biz.NewMessagePushUseCase(cometRepo)
+	cometService := service.NewCometService(cometUseCase)
+	serviceGroup := server2.NewServiceGroup(cometService)
+	jobServer, err := server2.NewJobServer(serverConfig, serviceGroup, logger)
 	if err != nil {
 		return nil, err
 	}

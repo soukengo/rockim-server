@@ -14,6 +14,6 @@ func NewServiceGroup(channelSrv *service.ChannelService) *ServiceGroup {
 	return &ServiceGroup{channelSrv: channelSrv}
 }
 
-func (g *ServiceGroup) Register(srv *grpc.Server) {
+func (g *ServiceGroup) RegisterGrpc(srv *grpc.Server) {
 	v1.RegisterChannelAPIServer(srv, g.channelSrv)
 }

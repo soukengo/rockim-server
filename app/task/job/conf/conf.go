@@ -10,6 +10,7 @@ import (
 	"github.com/soukengo/gopkg/infra/storage/kafka"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service"
+	v1 "rockimserver/apis/rockim/service/job/v1"
 	"rockimserver/conf"
 	"time"
 )
@@ -52,7 +53,7 @@ func defaultConfig() *Config {
 							Reference: kafka.Reference{Key: storage.DefaultKey},
 							Consumer: &kafkaqueue.ConsumerConfig{
 								GroupId: service.AppJob,
-								Topics:  []queue.Topic{queue.Topic(service.MQ_MESSAGE_PUSH.String())},
+								Topics:  []queue.Topic{queue.Topic(v1.TaskType_COMET_DISPATCH.String())},
 								Workers: 10,
 							},
 						},

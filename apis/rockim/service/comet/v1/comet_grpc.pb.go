@@ -22,10 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChannelAPIClient interface {
-	// Push 推送数据
-	Push(ctx context.Context, in *PushRequest, opts ...grpc.CallOption) (*PushResponse, error)
-	// PushRoom 推送数据到一个房间
-	PushRoom(ctx context.Context, in *PushRoomRequest, opts ...grpc.CallOption) (*PushRoomResponse, error)
+	// Dispatch 分发数据
+	Dispatch(ctx context.Context, in *DispatchRequest, opts ...grpc.CallOption) (*DispatchResponse, error)
+	// DispatchRoom 分发房间数据
+	DispatchRoom(ctx context.Context, in *DispatchRoomRequest, opts ...grpc.CallOption) (*DispatchRoomResponse, error)
 }
 
 type channelAPIClient struct {
@@ -36,18 +36,18 @@ func NewChannelAPIClient(cc grpc.ClientConnInterface) ChannelAPIClient {
 	return &channelAPIClient{cc}
 }
 
-func (c *channelAPIClient) Push(ctx context.Context, in *PushRequest, opts ...grpc.CallOption) (*PushResponse, error) {
-	out := new(PushResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.comet.v1.ChannelAPI/Push", in, out, opts...)
+func (c *channelAPIClient) Dispatch(ctx context.Context, in *DispatchRequest, opts ...grpc.CallOption) (*DispatchResponse, error) {
+	out := new(DispatchResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.comet.v1.ChannelAPI/Dispatch", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *channelAPIClient) PushRoom(ctx context.Context, in *PushRoomRequest, opts ...grpc.CallOption) (*PushRoomResponse, error) {
-	out := new(PushRoomResponse)
-	err := c.cc.Invoke(ctx, "/rockim.service.comet.v1.ChannelAPI/PushRoom", in, out, opts...)
+func (c *channelAPIClient) DispatchRoom(ctx context.Context, in *DispatchRoomRequest, opts ...grpc.CallOption) (*DispatchRoomResponse, error) {
+	out := new(DispatchRoomResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.comet.v1.ChannelAPI/DispatchRoom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -58,10 +58,10 @@ func (c *channelAPIClient) PushRoom(ctx context.Context, in *PushRoomRequest, op
 // All implementations must embed UnimplementedChannelAPIServer
 // for forward compatibility
 type ChannelAPIServer interface {
-	// Push 推送数据
-	Push(context.Context, *PushRequest) (*PushResponse, error)
-	// PushRoom 推送数据到一个房间
-	PushRoom(context.Context, *PushRoomRequest) (*PushRoomResponse, error)
+	// Dispatch 分发数据
+	Dispatch(context.Context, *DispatchRequest) (*DispatchResponse, error)
+	// DispatchRoom 分发房间数据
+	DispatchRoom(context.Context, *DispatchRoomRequest) (*DispatchRoomResponse, error)
 	mustEmbedUnimplementedChannelAPIServer()
 }
 
@@ -69,11 +69,11 @@ type ChannelAPIServer interface {
 type UnimplementedChannelAPIServer struct {
 }
 
-func (UnimplementedChannelAPIServer) Push(context.Context, *PushRequest) (*PushResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Push not implemented")
+func (UnimplementedChannelAPIServer) Dispatch(context.Context, *DispatchRequest) (*DispatchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Dispatch not implemented")
 }
-func (UnimplementedChannelAPIServer) PushRoom(context.Context, *PushRoomRequest) (*PushRoomResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PushRoom not implemented")
+func (UnimplementedChannelAPIServer) DispatchRoom(context.Context, *DispatchRoomRequest) (*DispatchRoomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DispatchRoom not implemented")
 }
 func (UnimplementedChannelAPIServer) mustEmbedUnimplementedChannelAPIServer() {}
 
@@ -88,38 +88,38 @@ func RegisterChannelAPIServer(s grpc.ServiceRegistrar, srv ChannelAPIServer) {
 	s.RegisterService(&ChannelAPI_ServiceDesc, srv)
 }
 
-func _ChannelAPI_Push_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PushRequest)
+func _ChannelAPI_Dispatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DispatchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChannelAPIServer).Push(ctx, in)
+		return srv.(ChannelAPIServer).Dispatch(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.service.comet.v1.ChannelAPI/Push",
+		FullMethod: "/rockim.service.comet.v1.ChannelAPI/Dispatch",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChannelAPIServer).Push(ctx, req.(*PushRequest))
+		return srv.(ChannelAPIServer).Dispatch(ctx, req.(*DispatchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChannelAPI_PushRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PushRoomRequest)
+func _ChannelAPI_DispatchRoom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DispatchRoomRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChannelAPIServer).PushRoom(ctx, in)
+		return srv.(ChannelAPIServer).DispatchRoom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rockim.service.comet.v1.ChannelAPI/PushRoom",
+		FullMethod: "/rockim.service.comet.v1.ChannelAPI/DispatchRoom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChannelAPIServer).PushRoom(ctx, req.(*PushRoomRequest))
+		return srv.(ChannelAPIServer).DispatchRoom(ctx, req.(*DispatchRoomRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -132,12 +132,12 @@ var ChannelAPI_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ChannelAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Push",
-			Handler:    _ChannelAPI_Push_Handler,
+			MethodName: "Dispatch",
+			Handler:    _ChannelAPI_Dispatch_Handler,
 		},
 		{
-			MethodName: "PushRoom",
-			Handler:    _ChannelAPI_PushRoom_Handler,
+			MethodName: "DispatchRoom",
+			Handler:    _ChannelAPI_DispatchRoom_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -17,7 +17,7 @@ func NewServiceGroup(user *service.UserService, auth *service.AuthService, onlin
 	return &ServiceGroup{user: user, auth: auth, online: online, onlineQuery: onlineQuery}
 }
 
-func (g *ServiceGroup) Register(srv *grpc.Server) {
+func (g *ServiceGroup) RegisterGrpc(srv *grpc.Server) {
 	v1.RegisterUserAPIServer(srv, g.user)
 	v1.RegisterAuthAPIServer(srv, g.auth)
 	v1.RegisterOnlineAPIServer(srv, g.online)

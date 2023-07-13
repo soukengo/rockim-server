@@ -43,8 +43,8 @@ func newCometClient(addr string) (v1.ChannelAPIClient, error) {
 type Comet struct {
 	serverID    string
 	client      v1.ChannelAPIClient
-	pushChan    []chan *v1.PushRequest
-	roomChan    []chan *v1.PushRoomRequest
+	pushChan    []chan *v1.DispatchRequest
+	roomChan    []chan *v1.DispatchRoomRequest
 	pushChanNum uint64
 	roomChanNum uint64
 	routineSize uint64
@@ -57,8 +57,8 @@ type Comet struct {
 func newComet(hostname string, grpcAddr string, c *conf.Comet) (*Comet, error) {
 	cmt := &Comet{
 		serverID:    hostname,
-		pushChan:    make([]chan *v1.PushRequest, c.RoutineSize),
-		roomChan:    make([]chan *v1.PushRoomRequest, c.RoutineSize),
+		pushChan:    make([]chan *v1.DispatchRequest, c.RoutineSize),
+		roomChan:    make([]chan *v1.DispatchRoomRequest, c.RoutineSize),
 		routineSize: uint64(c.RoutineSize),
 	}
 	var err error
@@ -68,46 +68,45 @@ func newComet(hostname string, grpcAddr string, c *conf.Comet) (*Comet, error) {
 	cmt.ctx, cmt.cancel = context.WithCancel(context.Background())
 
 	for i := 0; i < c.RoutineSize; i++ {
-		cmt.pushChan[i] = make(chan *v1.PushRequest, c.RoutineChan)
-		cmt.roomChan[i] = make(chan *v1.PushRoomRequest, c.RoutineChan)
+		cmt.pushChan[i] = make(chan *v1.DispatchRequest, c.RoutineChan)
+		cmt.roomChan[i] = make(chan *v1.DispatchRoomRequest, c.RoutineChan)
 		go cmt.process(cmt.pushChan[i], cmt.roomChan[i])
 	}
 	return cmt, nil
 }
 
-// Push push a channel message.
-func (c *Comet) Push(arg *v1.PushRequest) (err error) {
+// Dispatch push a channel message.
+func (c *Comet) Dispatch(arg *v1.DispatchRequest) (err error) {
 	idx := atomic.AddUint64(&c.pushChanNum, 1) % c.routineSize
 	c.pushChan[idx] <- arg
 	return
 }
 
-// PushRoom broadcast a room message.
-func (c *Comet) PushRoom(arg *v1.PushRoomRequest) (err error) {
+// DispatchRoom broadcast a room message.
+func (c *Comet) DispatchRoom(arg *v1.DispatchRoomRequest) (err error) {
 	idx := atomic.AddUint64(&c.roomChanNum, 1) % c.routineSize
 	c.roomChan[idx] <- arg
 	return
 }
 
-func (c *Comet) process(pushChan chan *v1.PushRequest, roomChan chan *v1.PushRoomRequest) {
+func (c *Comet) process(pushChan chan *v1.DispatchRequest, roomChan chan *v1.DispatchRoomRequest) {
 	for {
 		select {
 		case args := <-roomChan:
-			_, err := c.client.PushRoom(context.Background(), &v1.PushRoomRequest{
-				Base:      args.Base,
-				Operation: args.Operation,
-				Room:      args.Room,
-				Body:      args.Body,
+			_, err := c.client.DispatchRoom(context.Background(), &v1.DispatchRoomRequest{
+				Base: args.Base,
+				Room: args.Room,
+				Push: args.Push,
 			})
 			if err != nil {
-				log.Errorf("cfg.client.PushRoom(%s, reply) serverId:%s error(%v)", args, c.serverID, err)
+				log.Errorf("cfg.client.DispatchRoom(%s, reply) serverId:%s error(%v)", args, c.serverID, err)
 			}
 		case pushArg := <-pushChan:
-			_, err := c.client.Push(context.Background(), &v1.PushRequest{
+			_, err := c.client.Dispatch(context.Background(), &v1.DispatchRequest{
 				Base:       pushArg.Base,
-				Operation:  pushArg.Operation,
 				ChannelIds: pushArg.ChannelIds,
-				Body:       pushArg.Body,
+				Push:       pushArg.Push,
+				Control:    pushArg.Control,
 			})
 			if err != nil {
 				log.Errorf("cfg.client.PushMsg(%s, reply) serverId:%s error(%v)", pushArg, c.serverID, err)

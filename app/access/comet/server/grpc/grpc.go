@@ -27,6 +27,6 @@ func NewGRPCServer(c *server.Config, group *ServiceGroup) *grpc.Server {
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout))
 	}
 	srv := grpc.NewServer(opts...)
-	group.Register(srv)
+	group.RegisterGrpc(srv)
 	return srv
 }

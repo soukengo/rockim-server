@@ -2,12 +2,12 @@ package grpc
 
 import (
 	"github.com/go-kratos/kratos/v2/registry"
-	"rockimserver/apis/rockim/service/job/v1/types"
+	comettypes "rockimserver/apis/rockim/service/comet/v1/types"
 	"rockimserver/app/task/job/conf"
 	"sync"
 )
 
-type PushManager struct {
+type CometManager struct {
 	config       *conf.Config
 	cometServers map[string]*Comet
 	rooms        map[string]*Room
@@ -15,8 +15,8 @@ type PushManager struct {
 	watcher      *Watcher
 }
 
-func NewPushManager(config *conf.Config, discovery registry.Discovery) (*PushManager, error) {
-	m := &PushManager{
+func NewCometManager(config *conf.Config, discovery registry.Discovery) (*CometManager, error) {
+	m := &CometManager{
 		config:       config,
 		cometServers: make(map[string]*Comet),
 		rooms:        make(map[string]*Room),
@@ -29,13 +29,13 @@ func NewPushManager(config *conf.Config, discovery registry.Discovery) (*PushMan
 	return m, nil
 }
 
-func (c *PushManager) delRoom(roomId string) {
+func (c *CometManager) delRoom(roomId string) {
 	c.roomsMutex.Lock()
 	delete(c.rooms, roomId)
 	c.roomsMutex.Unlock()
 }
 
-func (c *PushManager) getRoom(r *types.Room) *Room {
+func (c *CometManager) getRoom(r *comettypes.Room) *Room {
 	roomId := encodeRoomId(r)
 	c.roomsMutex.RLock()
 	room, ok := c.rooms[roomId]

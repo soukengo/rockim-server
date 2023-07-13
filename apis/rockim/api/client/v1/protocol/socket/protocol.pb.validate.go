@@ -36,7 +36,7 @@ var (
 	_ = anypb.Any{}
 	_ = sort.Sort
 
-	_ = enums.Network_PushOperation(0)
+	_ = enums.Comet_PushOperation(0)
 )
 
 // Validate checks the field values on RequestPacketHeader with the rules

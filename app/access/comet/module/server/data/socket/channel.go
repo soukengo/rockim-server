@@ -39,7 +39,7 @@ func (m *ChannelManager) PushRoom(ctx context.Context, opts *options.PushRoomOpt
 	return
 }
 
-func newPushPacket(operation enums.Network_PushOperation, data []byte) packet.IPacket {
+func newPushPacket(operation enums.Comet_PushOperation, data []byte) packet.IPacket {
 	header := &v1.PushPacketHeader{
 		Operation: operation,
 	}

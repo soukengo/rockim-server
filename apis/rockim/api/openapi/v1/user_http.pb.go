@@ -19,7 +19,7 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationUserAPIRegister = "/rockim.api.openapi.v1.UserAPI/Register"
+const OperationUserAPIRegister = "/rockim.api.openapi.v1.UserAPI/RegisterGrpc"
 
 type UserAPIHTTPServer interface {
 	// Register Register 注册用户

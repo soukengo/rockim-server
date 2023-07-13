@@ -17,8 +17,6 @@ import (
 	"unicode/utf8"
 
 	"google.golang.org/protobuf/types/known/anypb"
-
-	enums "rockimserver/apis/rockim/shared/enums"
 )
 
 // ensure the imports are used
@@ -35,26 +33,24 @@ var (
 	_ = (*mail.Address)(nil)
 	_ = anypb.Any{}
 	_ = sort.Sort
-
-	_ = enums.Network_PushOperation(0)
 )
 
-// Validate checks the field values on PushRequest with the rules defined in
-// the proto definition for this message. If any rules are violated, the first
-// error encountered is returned, or nil if there are no violations.
-func (m *PushRequest) Validate() error {
+// Validate checks the field values on DispatchRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *DispatchRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on PushRequest with the rules defined in
-// the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in PushRequestMultiError, or
-// nil if none found.
-func (m *PushRequest) ValidateAll() error {
+// ValidateAll checks the field values on DispatchRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DispatchRequestMultiError, or nil if none found.
+func (m *DispatchRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *PushRequest) validate(all bool) error {
+func (m *DispatchRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -62,7 +58,7 @@ func (m *PushRequest) validate(all bool) error {
 	var errors []error
 
 	if m.GetBase() == nil {
-		err := PushRequestValidationError{
+		err := DispatchRequestValidationError{
 			field:  "Base",
 			reason: "value is required",
 		}
@@ -76,7 +72,7 @@ func (m *PushRequest) validate(all bool) error {
 		switch v := interface{}(m.GetBase()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, PushRequestValidationError{
+				errors = append(errors, DispatchRequestValidationError{
 					field:  "Base",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -84,7 +80,7 @@ func (m *PushRequest) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, PushRequestValidationError{
+				errors = append(errors, DispatchRequestValidationError{
 					field:  "Base",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -93,7 +89,7 @@ func (m *PushRequest) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetBase()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return PushRequestValidationError{
+			return DispatchRequestValidationError{
 				field:  "Base",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -101,19 +97,8 @@ func (m *PushRequest) validate(all bool) error {
 		}
 	}
 
-	if _, ok := enums.Network_PushOperation_name[int32(m.GetOperation())]; !ok {
-		err := PushRequestValidationError{
-			field:  "Operation",
-			reason: "value must be one of the defined enum values",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
 	if len(m.GetChannelIds()) < 1 {
-		err := PushRequestValidationError{
+		err := DispatchRequestValidationError{
 			field:  "ChannelIds",
 			reason: "value must contain at least 1 item(s)",
 		}
@@ -123,21 +108,78 @@ func (m *PushRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	// no validation rules for Body
+	if all {
+		switch v := interface{}(m.GetPush()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, DispatchRequestValidationError{
+					field:  "Dispatch",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, DispatchRequestValidationError{
+					field:  "Dispatch",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetPush()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return DispatchRequestValidationError{
+				field:  "Dispatch",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetControl()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, DispatchRequestValidationError{
+					field:  "Control",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, DispatchRequestValidationError{
+					field:  "Control",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetControl()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return DispatchRequestValidationError{
+				field:  "Control",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if len(errors) > 0 {
-		return PushRequestMultiError(errors)
+		return DispatchRequestMultiError(errors)
 	}
 
 	return nil
 }
 
-// PushRequestMultiError is an error wrapping multiple validation errors
-// returned by PushRequest.ValidateAll() if the designated constraints aren't met.
-type PushRequestMultiError []error
+// DispatchRequestMultiError is an error wrapping multiple validation errors
+// returned by DispatchRequest.ValidateAll() if the designated constraints
+// aren't met.
+type DispatchRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m PushRequestMultiError) Error() string {
+func (m DispatchRequestMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -146,11 +188,11 @@ func (m PushRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m PushRequestMultiError) AllErrors() []error { return m }
+func (m DispatchRequestMultiError) AllErrors() []error { return m }
 
-// PushRequestValidationError is the validation error returned by
-// PushRequest.Validate if the designated constraints aren't met.
-type PushRequestValidationError struct {
+// DispatchRequestValidationError is the validation error returned by
+// DispatchRequest.Validate if the designated constraints aren't met.
+type DispatchRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -158,22 +200,22 @@ type PushRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e PushRequestValidationError) Field() string { return e.field }
+func (e DispatchRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e PushRequestValidationError) Reason() string { return e.reason }
+func (e DispatchRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e PushRequestValidationError) Cause() error { return e.cause }
+func (e DispatchRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e PushRequestValidationError) Key() bool { return e.key }
+func (e DispatchRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e PushRequestValidationError) ErrorName() string { return "PushRequestValidationError" }
+func (e DispatchRequestValidationError) ErrorName() string { return "DispatchRequestValidationError" }
 
 // Error satisfies the builtin error interface
-func (e PushRequestValidationError) Error() string {
+func (e DispatchRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -185,14 +227,14 @@ func (e PushRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sPushRequest.%s: %s%s",
+		"invalid %sDispatchRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = PushRequestValidationError{}
+var _ error = DispatchRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -200,24 +242,24 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = PushRequestValidationError{}
+} = DispatchRequestValidationError{}
 
-// Validate checks the field values on PushResponse with the rules defined in
-// the proto definition for this message. If any rules are violated, the first
-// error encountered is returned, or nil if there are no violations.
-func (m *PushResponse) Validate() error {
+// Validate checks the field values on DispatchResponse with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *DispatchResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on PushResponse with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in PushResponseMultiError, or
-// nil if none found.
-func (m *PushResponse) ValidateAll() error {
+// ValidateAll checks the field values on DispatchResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DispatchResponseMultiError, or nil if none found.
+func (m *DispatchResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *PushResponse) validate(all bool) error {
+func (m *DispatchResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -225,18 +267,19 @@ func (m *PushResponse) validate(all bool) error {
 	var errors []error
 
 	if len(errors) > 0 {
-		return PushResponseMultiError(errors)
+		return DispatchResponseMultiError(errors)
 	}
 
 	return nil
 }
 
-// PushResponseMultiError is an error wrapping multiple validation errors
-// returned by PushResponse.ValidateAll() if the designated constraints aren't met.
-type PushResponseMultiError []error
+// DispatchResponseMultiError is an error wrapping multiple validation errors
+// returned by DispatchResponse.ValidateAll() if the designated constraints
+// aren't met.
+type DispatchResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m PushResponseMultiError) Error() string {
+func (m DispatchResponseMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -245,11 +288,11 @@ func (m PushResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m PushResponseMultiError) AllErrors() []error { return m }
+func (m DispatchResponseMultiError) AllErrors() []error { return m }
 
-// PushResponseValidationError is the validation error returned by
-// PushResponse.Validate if the designated constraints aren't met.
-type PushResponseValidationError struct {
+// DispatchResponseValidationError is the validation error returned by
+// DispatchResponse.Validate if the designated constraints aren't met.
+type DispatchResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -257,22 +300,22 @@ type PushResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e PushResponseValidationError) Field() string { return e.field }
+func (e DispatchResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e PushResponseValidationError) Reason() string { return e.reason }
+func (e DispatchResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e PushResponseValidationError) Cause() error { return e.cause }
+func (e DispatchResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e PushResponseValidationError) Key() bool { return e.key }
+func (e DispatchResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e PushResponseValidationError) ErrorName() string { return "PushResponseValidationError" }
+func (e DispatchResponseValidationError) ErrorName() string { return "DispatchResponseValidationError" }
 
 // Error satisfies the builtin error interface
-func (e PushResponseValidationError) Error() string {
+func (e DispatchResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -284,14 +327,14 @@ func (e PushResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sPushResponse.%s: %s%s",
+		"invalid %sDispatchResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = PushResponseValidationError{}
+var _ error = DispatchResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -299,24 +342,24 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = PushResponseValidationError{}
+} = DispatchResponseValidationError{}
 
-// Validate checks the field values on PushRoomRequest with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// first error encountered is returned, or nil if there are no violations.
-func (m *PushRoomRequest) Validate() error {
+// Validate checks the field values on DispatchRoomRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DispatchRoomRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on PushRoomRequest with the rules
+// ValidateAll checks the field values on DispatchRoomRequest with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// PushRoomRequestMultiError, or nil if none found.
-func (m *PushRoomRequest) ValidateAll() error {
+// DispatchRoomRequestMultiError, or nil if none found.
+func (m *DispatchRoomRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *PushRoomRequest) validate(all bool) error {
+func (m *DispatchRoomRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -324,7 +367,7 @@ func (m *PushRoomRequest) validate(all bool) error {
 	var errors []error
 
 	if m.GetBase() == nil {
-		err := PushRoomRequestValidationError{
+		err := DispatchRoomRequestValidationError{
 			field:  "Base",
 			reason: "value is required",
 		}
@@ -338,7 +381,7 @@ func (m *PushRoomRequest) validate(all bool) error {
 		switch v := interface{}(m.GetBase()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, PushRoomRequestValidationError{
+				errors = append(errors, DispatchRoomRequestValidationError{
 					field:  "Base",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -346,7 +389,7 @@ func (m *PushRoomRequest) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, PushRoomRequestValidationError{
+				errors = append(errors, DispatchRoomRequestValidationError{
 					field:  "Base",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -355,7 +398,7 @@ func (m *PushRoomRequest) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetBase()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return PushRoomRequestValidationError{
+			return DispatchRoomRequestValidationError{
 				field:  "Base",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -363,19 +406,8 @@ func (m *PushRoomRequest) validate(all bool) error {
 		}
 	}
 
-	if _, ok := enums.Network_PushOperation_name[int32(m.GetOperation())]; !ok {
-		err := PushRoomRequestValidationError{
-			field:  "Operation",
-			reason: "value must be one of the defined enum values",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
 	if m.GetRoom() == nil {
-		err := PushRoomRequestValidationError{
+		err := DispatchRoomRequestValidationError{
 			field:  "Room",
 			reason: "value is required",
 		}
@@ -389,7 +421,7 @@ func (m *PushRoomRequest) validate(all bool) error {
 		switch v := interface{}(m.GetRoom()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, PushRoomRequestValidationError{
+				errors = append(errors, DispatchRoomRequestValidationError{
 					field:  "Room",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -397,7 +429,7 @@ func (m *PushRoomRequest) validate(all bool) error {
 			}
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				errors = append(errors, PushRoomRequestValidationError{
+				errors = append(errors, DispatchRoomRequestValidationError{
 					field:  "Room",
 					reason: "embedded message failed validation",
 					cause:  err,
@@ -406,7 +438,7 @@ func (m *PushRoomRequest) validate(all bool) error {
 		}
 	} else if v, ok := interface{}(m.GetRoom()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return PushRoomRequestValidationError{
+			return DispatchRoomRequestValidationError{
 				field:  "Room",
 				reason: "embedded message failed validation",
 				cause:  err,
@@ -414,22 +446,60 @@ func (m *PushRoomRequest) validate(all bool) error {
 		}
 	}
 
-	// no validation rules for Body
+	if m.GetPush() == nil {
+		err := DispatchRoomRequestValidationError{
+			field:  "Dispatch",
+			reason: "value is required",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if all {
+		switch v := interface{}(m.GetPush()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, DispatchRoomRequestValidationError{
+					field:  "Dispatch",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, DispatchRoomRequestValidationError{
+					field:  "Dispatch",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetPush()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return DispatchRoomRequestValidationError{
+				field:  "Dispatch",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if len(errors) > 0 {
-		return PushRoomRequestMultiError(errors)
+		return DispatchRoomRequestMultiError(errors)
 	}
 
 	return nil
 }
 
-// PushRoomRequestMultiError is an error wrapping multiple validation errors
-// returned by PushRoomRequest.ValidateAll() if the designated constraints
-// aren't met.
-type PushRoomRequestMultiError []error
+// DispatchRoomRequestMultiError is an error wrapping multiple validation
+// errors returned by DispatchRoomRequest.ValidateAll() if the designated
+// constraints aren't met.
+type DispatchRoomRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m PushRoomRequestMultiError) Error() string {
+func (m DispatchRoomRequestMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -438,11 +508,11 @@ func (m PushRoomRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m PushRoomRequestMultiError) AllErrors() []error { return m }
+func (m DispatchRoomRequestMultiError) AllErrors() []error { return m }
 
-// PushRoomRequestValidationError is the validation error returned by
-// PushRoomRequest.Validate if the designated constraints aren't met.
-type PushRoomRequestValidationError struct {
+// DispatchRoomRequestValidationError is the validation error returned by
+// DispatchRoomRequest.Validate if the designated constraints aren't met.
+type DispatchRoomRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -450,22 +520,24 @@ type PushRoomRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e PushRoomRequestValidationError) Field() string { return e.field }
+func (e DispatchRoomRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e PushRoomRequestValidationError) Reason() string { return e.reason }
+func (e DispatchRoomRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e PushRoomRequestValidationError) Cause() error { return e.cause }
+func (e DispatchRoomRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e PushRoomRequestValidationError) Key() bool { return e.key }
+func (e DispatchRoomRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e PushRoomRequestValidationError) ErrorName() string { return "PushRoomRequestValidationError" }
+func (e DispatchRoomRequestValidationError) ErrorName() string {
+	return "DispatchRoomRequestValidationError"
+}
 
 // Error satisfies the builtin error interface
-func (e PushRoomRequestValidationError) Error() string {
+func (e DispatchRoomRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -477,14 +549,14 @@ func (e PushRoomRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sPushRoomRequest.%s: %s%s",
+		"invalid %sDispatchRoomRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = PushRoomRequestValidationError{}
+var _ error = DispatchRoomRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -492,24 +564,24 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = PushRoomRequestValidationError{}
+} = DispatchRoomRequestValidationError{}
 
-// Validate checks the field values on PushRoomResponse with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// first error encountered is returned, or nil if there are no violations.
-func (m *PushRoomResponse) Validate() error {
+// Validate checks the field values on DispatchRoomResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DispatchRoomResponse) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on PushRoomResponse with the rules
+// ValidateAll checks the field values on DispatchRoomResponse with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the result is a list of violation errors wrapped in
-// PushRoomResponseMultiError, or nil if none found.
-func (m *PushRoomResponse) ValidateAll() error {
+// DispatchRoomResponseMultiError, or nil if none found.
+func (m *DispatchRoomResponse) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *PushRoomResponse) validate(all bool) error {
+func (m *DispatchRoomResponse) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
@@ -517,19 +589,19 @@ func (m *PushRoomResponse) validate(all bool) error {
 	var errors []error
 
 	if len(errors) > 0 {
-		return PushRoomResponseMultiError(errors)
+		return DispatchRoomResponseMultiError(errors)
 	}
 
 	return nil
 }
 
-// PushRoomResponseMultiError is an error wrapping multiple validation errors
-// returned by PushRoomResponse.ValidateAll() if the designated constraints
-// aren't met.
-type PushRoomResponseMultiError []error
+// DispatchRoomResponseMultiError is an error wrapping multiple validation
+// errors returned by DispatchRoomResponse.ValidateAll() if the designated
+// constraints aren't met.
+type DispatchRoomResponseMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m PushRoomResponseMultiError) Error() string {
+func (m DispatchRoomResponseMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -538,11 +610,11 @@ func (m PushRoomResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m PushRoomResponseMultiError) AllErrors() []error { return m }
+func (m DispatchRoomResponseMultiError) AllErrors() []error { return m }
 
-// PushRoomResponseValidationError is the validation error returned by
-// PushRoomResponse.Validate if the designated constraints aren't met.
-type PushRoomResponseValidationError struct {
+// DispatchRoomResponseValidationError is the validation error returned by
+// DispatchRoomResponse.Validate if the designated constraints aren't met.
+type DispatchRoomResponseValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -550,22 +622,24 @@ type PushRoomResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e PushRoomResponseValidationError) Field() string { return e.field }
+func (e DispatchRoomResponseValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e PushRoomResponseValidationError) Reason() string { return e.reason }
+func (e DispatchRoomResponseValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e PushRoomResponseValidationError) Cause() error { return e.cause }
+func (e DispatchRoomResponseValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e PushRoomResponseValidationError) Key() bool { return e.key }
+func (e DispatchRoomResponseValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e PushRoomResponseValidationError) ErrorName() string { return "PushRoomResponseValidationError" }
+func (e DispatchRoomResponseValidationError) ErrorName() string {
+	return "DispatchRoomResponseValidationError"
+}
 
 // Error satisfies the builtin error interface
-func (e PushRoomResponseValidationError) Error() string {
+func (e DispatchRoomResponseValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -577,14 +651,14 @@ func (e PushRoomResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sPushRoomResponse.%s: %s%s",
+		"invalid %sDispatchRoomResponse.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = PushRoomResponseValidationError{}
+var _ error = DispatchRoomResponseValidationError{}
 
 var _ interface {
 	Field() string
@@ -592,4 +666,4 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = PushRoomResponseValidationError{}
+} = DispatchRoomResponseValidationError{}

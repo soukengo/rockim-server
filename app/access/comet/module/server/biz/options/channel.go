@@ -7,7 +7,7 @@ import (
 
 type PushOptions struct {
 	// 推送类型
-	Operation enums.Network_PushOperation
+	Operation enums.Comet_PushOperation
 	// 连接id
 	ChannelIds []string
 	// 推送内容
@@ -16,7 +16,7 @@ type PushOptions struct {
 
 type PushRoomOptions struct {
 	// 推送类型
-	Operation enums.Network_PushOperation
+	Operation enums.Comet_PushOperation
 	// 房间ID
 	Room *types.Room
 	// 推送内容

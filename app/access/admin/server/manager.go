@@ -28,7 +28,7 @@ func NewManagerServiceGroup(authCfg *auth.Config, authSrv *service.AuthService, 
 	return &ManagerServiceGroup{authCfg: authCfg, authSrv: authSrv, sessionSrv: sessionSrv, platUserSrv: platUserSrv, platRoleSrv: platRoleSrv, platResourceSrv: platResourceSrv, tenantSrv: tenantSrv, tenantResourceSrv: tenantResourceSrv}
 }
 
-func (g *ManagerServiceGroup) Register(srv *http.Server) {
+func (g *ManagerServiceGroup) RegisterHttp(srv *http.Server) {
 	srv.Use("/rockim.api.admin.manager.v1.*", g.checkAuth())
 	v1.RegisterAuthAPIHTTPServer(srv, g.authSrv)
 	v1.RegisterSessionAPIHTTPServer(srv, g.sessionSrv)
