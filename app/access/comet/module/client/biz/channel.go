@@ -10,7 +10,6 @@ import (
 	"rockimserver/apis/rockim/service/comet/v1/types"
 	"rockimserver/apis/rockim/shared/reasons"
 	"rockimserver/app/access/comet/conf"
-	"rockimserver/app/access/comet/module/client/biz/consts"
 	"rockimserver/app/access/comet/module/client/biz/options"
 	"rockimserver/app/access/comet/module/protocol"
 	"time"
@@ -55,7 +54,11 @@ func (uc *ChannelUseCase) Connect(ctx context.Context) (err error) {
 		return
 	}
 	ch := chCtx.Channel()
-	uc.setAuthCheckTimer(ch)
+	session, err := protocol.SessionFromChannel(ch)
+	if err != nil {
+		return
+	}
+	uc.setAuthCheckTimer(ch, session)
 	return
 }
 
@@ -66,13 +69,18 @@ func (uc *ChannelUseCase) DisConnect(ctx context.Context) (err error) {
 		return
 	}
 	ch := chCtx.Channel()
+	session, err := protocol.SessionFromChannel(ch)
+	if err != nil {
+		return
+	}
 	opts := &options.ChannelDeleteOptions{
-		ProductId: ch.StringAttr(consts.ChannelAttrProductId),
-		Uid:       ch.StringAttr(consts.ChannelAttrUid),
+		ProductId: session.ProductId,
+		Uid:       session.Uid,
 		ServerId:  uc.cfg.Global.ID,
 		ChannelId: ch.Id(),
 	}
-	uc.clearAuthCheckTimer(ch)
+	uc.clearAuthCheckTimer(ch, session)
+	uc.clearHeartBeatCheckTimer(ch, session)
 	return uc.repo.Delete(ctx, opts)
 }
 
@@ -98,17 +106,24 @@ func (uc *ChannelUseCase) Auth(ctx context.Context, in *options.ChannelAuthOptio
 	if err != nil {
 		return
 	}
-	//  设置自定义属性
-	ch.SetAttr(consts.ChannelAttrProductId, opts.ProductId)
-	ch.SetAttr(consts.ChannelAttrUid, uid)
+	session, err := protocol.SessionFromChannel(ch)
+	if err != nil {
+		return
+	}
+	session.ProductId = opts.ProductId
+	session.Uid = uid
 	// 标记为已验证
-	ch.MarkAuthenticated()
+	session.MarkAuthenticated()
 	// 产生随机的心跳间隔
-	ch.SetAttr(consts.ChannelAttrServerHeartBeatInterval, uc.cfg.Protocol.RandomServerHeartbeatInterval().Milliseconds())
+	session.ServerHeartBeatInterval = uc.cfg.Protocol.RandomServerHeartbeatInterval().Milliseconds()
+	// 开启心跳检测
+	uc.setHeartBeatCheckTimer(ch, session)
+
 	// 异步加载房间列表
 	runtimes.Async(func() {
-		uc.loadRoom(chCtx.Server(), ch)
+		uc.loadRoom(chCtx.Server(), ch, session)
 	})
+
 	return
 }
 
@@ -119,13 +134,17 @@ func (uc *ChannelUseCase) HeartBeat(ctx context.Context) (err error) {
 		return
 	}
 	ch := chCtx.Channel()
+	session, err := protocol.SessionFromChannel(ch)
+	if err != nil {
+		return
+	}
 	// 更新客户端心跳时间
 	nowts := time.Now().UnixMilli()
-	ch.SetAttr(consts.ChannelAttrLastHeartBeatTime, nowts)
+	session.LastHeartBeatTime = nowts
 	// 获取上一次向后端发起心跳的时间
-	lastTime := ch.Int64Attr(consts.ChannelAttrLastServerHeartBeatTime)
+	lastTime := session.LastServerHeartBeatTime
 	// 获取心跳间隔
-	heartBeatInterval := ch.Int64Attr(consts.ChannelAttrServerHeartBeatInterval)
+	heartBeatInterval := session.ServerHeartBeatInterval
 	if heartBeatInterval <= 0 {
 		heartBeatInterval = uc.cfg.Protocol.MinServerHeartbeatInterval.Milliseconds()
 	}
@@ -135,8 +154,8 @@ func (uc *ChannelUseCase) HeartBeat(ctx context.Context) (err error) {
 		return
 	}
 	opts := &options.ChannelRefreshOptions{
-		ProductId: ch.StringAttr(consts.ChannelAttrProductId),
-		Uid:       ch.StringAttr(consts.ChannelAttrUid),
+		ProductId: session.ProductId,
+		Uid:       session.Uid,
 		ServerId:  uc.cfg.Global.ID,
 		ChannelId: ch.Id(),
 	}
@@ -145,61 +164,56 @@ func (uc *ChannelUseCase) HeartBeat(ctx context.Context) (err error) {
 		return
 	}
 	// 更新向后端发起心跳的时间
-	ch.SetAttr(consts.ChannelAttrLastServerHeartBeatTime, nowts)
+	session.LastServerHeartBeatTime = nowts
 	return
 }
 
-func (uc *ChannelUseCase) setAuthCheckTimer(ch socket.Channel) {
+func (uc *ChannelUseCase) setAuthCheckTimer(ch socket.Channel, session *protocol.Session) {
 	// 设置定时器，超时未授权就断开连接
 	node := uc.timer.AfterFunc(uc.cfg.Protocol.HandshakeTimeout, func() {
-		if !ch.Authenticated() {
+		if !session.Authenticated() {
 			log.Warnf("channel handshake timed out: %v", ch.Id())
 			_ = ch.Close()
 		}
 	})
-	ch.SetAttr(consts.ChannelAttrTimerAuthCheck, node)
+	session.AuthCheckTimer = node
 }
-func (uc *ChannelUseCase) clearAuthCheckTimer(ch socket.Channel) {
-	value, ok := ch.Attr(consts.ChannelAttrTimerAuthCheck)
-	if !ok {
-		return
+func (uc *ChannelUseCase) clearAuthCheckTimer(ch socket.Channel, session *protocol.Session) {
+	if session.AuthCheckTimer != nil {
+		session.AuthCheckTimer.Stop()
+		session.AuthCheckTimer = nil
 	}
-	node, ok := value.(timer.TimeNoder)
-	if !ok {
-		return
-	}
-	node.Stop()
-	ch.DelAttr(consts.ChannelAttrTimerAuthCheck)
 }
-func (uc *ChannelUseCase) setHeartBeatCheckTimer(ch socket.Channel) {
-	var node timer.TimeNoder
+
+func (uc *ChannelUseCase) setHeartBeatCheckTimer(ch socket.Channel, session *protocol.Session) {
 	// 移除上一次的timer
-	value, ok := ch.Attr(consts.ChannelAttrTimerHeartBeatCheck)
-	if ok {
-		node, ok = value.(timer.TimeNoder)
-		if ok {
-			node.Stop()
-		}
-	}
+	uc.clearHeartBeatCheckTimer(ch, session)
 	// 设置定时器，超时未心跳就断开连接
-	node = uc.timer.AfterFunc(uc.cfg.Protocol.MaxClientHeartbeatInterval, func() {
-		lastTime := ch.Int64Attr(consts.ChannelAttrLastHeartBeatTime)
+	node := uc.timer.AfterFunc(uc.cfg.Protocol.MaxClientHeartbeatInterval, func() {
+		lastTime := session.LastHeartBeatTime
 		nowts := time.Now().UnixMilli()
 		if nowts-lastTime > uc.cfg.Protocol.MaxClientHeartbeatInterval.Milliseconds() {
 			log.Warnf("channel heartbeat timed out: %v", ch.Id())
 			_ = ch.Close()
 		}
 	})
-	ch.SetAttr(consts.ChannelAttrTimerHeartBeatCheck, node)
+	session.HeartBeatCheckTimer = node
+}
+
+func (uc *ChannelUseCase) clearHeartBeatCheckTimer(ch socket.Channel, session *protocol.Session) {
+	if session.HeartBeatCheckTimer != nil {
+		session.HeartBeatCheckTimer.Stop()
+		session.HeartBeatCheckTimer = nil
+	}
 }
 
 // loadRoom 加载房间列表
-func (uc *ChannelUseCase) loadRoom(srv socket.Server, ch socket.Channel) {
+func (uc *ChannelUseCase) loadRoom(srv socket.Server, ch socket.Channel, session *protocol.Session) {
 	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*10)
 	defer cancel()
 	rooms, err := uc.roomRepo.List(ctx, &options.ListRoomOptions{
-		ProductId: ch.StringAttr(consts.ChannelAttrProductId),
-		Uid:       ch.StringAttr(consts.ChannelAttrUid),
+		ProductId: session.ProductId,
+		Uid:       session.Uid,
 	})
 	if err != nil {
 		log.Errorf("ListRoom error: %v", err)

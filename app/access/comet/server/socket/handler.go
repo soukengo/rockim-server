@@ -51,6 +51,7 @@ func (h *ClientHandler) OnCreated(ctx *socket.Context) {
 	ch := ctx.Channel()
 	channelId := ch.Id()
 	log.WithContext(ctx).Debugf("channel created: %v", channelId)
+	ch.SetSession(&protocol.Session{})
 	_ = h.channelSrv.Connect(ctx)
 }
 
