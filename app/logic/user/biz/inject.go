@@ -8,6 +8,4 @@ import (
 var ProviderSet = wire.NewSet(
 	NewUserUseCase,
 	NewAuthUseCase,
-	NewOnlineUseCase,
-	NewOnlineQueryUseCase,
 )

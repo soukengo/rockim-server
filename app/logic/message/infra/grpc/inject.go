@@ -7,7 +7,6 @@ import (
 // ProviderSet is grpc providers.
 var ProviderSet = wire.NewSet(
 	NewUserAPIClient,
-	NewOnlineQueryAPIClient,
 	NewGroupAPIClient,
 	NewGroupMemberAPIClient,
 )

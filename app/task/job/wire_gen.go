@@ -15,6 +15,7 @@ import (
 	"rockimserver/app/task/job/conf"
 	"rockimserver/app/task/job/data"
 	"rockimserver/app/task/job/data/grpc"
+	"rockimserver/app/task/job/data/grpc/comet"
 	server2 "rockimserver/app/task/job/server"
 	"rockimserver/app/task/job/service"
 )
@@ -27,12 +28,17 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	if err != nil {
 		return nil, err
 	}
-	cometManager, err := grpc.NewCometManager(config, registryDiscovery)
+	manager, err := comet.NewCometManager(config, registryDiscovery)
 	if err != nil {
 		return nil, err
 	}
-	cometRepo := data.NewCometRepo(cometManager)
-	cometUseCase := biz.NewMessagePushUseCase(cometRepo)
+	cometRepo := data.NewCometRepo(manager)
+	channelQueryAPIClient, err := grpc.NewChannelQueryAPIClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	channelRepo := data.NewChannelRepo(channelQueryAPIClient)
+	cometUseCase := biz.NewCometUseCase(cometRepo, channelRepo)
 	cometService := service.NewCometService(cometUseCase)
 	serviceGroup := server2.NewServiceGroup(cometService)
 	jobServer, err := server2.NewJobServer(serverConfig, serviceGroup, logger)

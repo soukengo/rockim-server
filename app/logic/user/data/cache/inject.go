@@ -8,5 +8,4 @@ var ProviderSet = wire.NewSet(
 	NewUserData,
 	NewAuthCodeData,
 	NewAccessTokenData,
-	NewOnlineData,
 )

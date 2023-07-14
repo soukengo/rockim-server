@@ -14,7 +14,6 @@ var ProviderSet = wire.NewSet(
 	mq.ProviderSet,
 	NewMessageRepo,
 	NewUserRepo,
-	NewOnlineRepo,
 	NewGroupRepo,
 	NewPushMessageRepo,
 	NewMessageDeliveryRepo,

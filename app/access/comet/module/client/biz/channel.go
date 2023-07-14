@@ -16,10 +16,14 @@ import (
 	"time"
 )
 
-type OnlineRepo interface {
-	Add(ctx context.Context, opts *options.OnlineAddOptions) (string, error)
-	Refresh(ctx context.Context, opts *options.OnlineRefreshOptions) error
-	Delete(ctx context.Context, opts *options.OnlineDeleteOptions) error
+type ChannelRepo interface {
+	Add(ctx context.Context, opts *options.ChannelAddOptions) error
+	Refresh(ctx context.Context, opts *options.ChannelRefreshOptions) error
+	Delete(ctx context.Context, opts *options.ChannelDeleteOptions) error
+}
+
+type TokenRepo interface {
+	CheckAuth(ctx context.Context, opts *options.ChannelAuthOptions) (string, error)
 }
 
 type RoomRepo interface {
@@ -31,16 +35,17 @@ var (
 )
 
 type ChannelUseCase struct {
-	cfg      *conf.Config
-	timer    timer.Timer
-	repo     OnlineRepo
-	roomRepo RoomRepo
+	cfg       *conf.Config
+	timer     timer.Timer
+	tokenRepo TokenRepo
+	repo      ChannelRepo
+	roomRepo  RoomRepo
 }
 
-func NewChannelUseCase(cfg *conf.Config, repo OnlineRepo, roomRepo RoomRepo) *ChannelUseCase {
+func NewChannelUseCase(cfg *conf.Config, tokenRepo TokenRepo, repo ChannelRepo, roomRepo RoomRepo) *ChannelUseCase {
 	tm := timer.NewTimer()
 	runtimes.Async(tm.Run)
-	return &ChannelUseCase{cfg: cfg, timer: tm, repo: repo, roomRepo: roomRepo}
+	return &ChannelUseCase{cfg: cfg, timer: tm, tokenRepo: tokenRepo, repo: repo, roomRepo: roomRepo}
 }
 
 func (uc *ChannelUseCase) Connect(ctx context.Context) (err error) {
@@ -61,7 +66,7 @@ func (uc *ChannelUseCase) DisConnect(ctx context.Context) (err error) {
 		return
 	}
 	ch := chCtx.Channel()
-	opts := &options.OnlineDeleteOptions{
+	opts := &options.ChannelDeleteOptions{
 		ProductId: ch.StringAttr(consts.ChannelAttrProductId),
 		Uid:       ch.StringAttr(consts.ChannelAttrUid),
 		ServerId:  uc.cfg.Global.ID,
@@ -78,13 +83,18 @@ func (uc *ChannelUseCase) Auth(ctx context.Context, in *options.ChannelAuthOptio
 		return
 	}
 	ch := chCtx.Channel()
-	opts := &options.OnlineAddOptions{
+
+	uid, err := uc.tokenRepo.CheckAuth(ctx, in)
+	if err != nil {
+		return
+	}
+	opts := &options.ChannelAddOptions{
 		ProductId: in.ProductId,
 		ServerId:  uc.cfg.Global.ID,
 		ChannelId: ch.Id(),
-		Token:     in.Token,
+		Uid:       uid,
 	}
-	uid, err := uc.repo.Add(ctx, opts)
+	err = uc.repo.Add(ctx, opts)
 	if err != nil {
 		return
 	}
@@ -124,7 +134,7 @@ func (uc *ChannelUseCase) HeartBeat(ctx context.Context) (err error) {
 		log.WithContext(ctx).Debugf("Heartbeat reduce frequency,channelId: %v", ch.Id())
 		return
 	}
-	opts := &options.OnlineRefreshOptions{
+	opts := &options.ChannelRefreshOptions{
 		ProductId: ch.StringAttr(consts.ChannelAttrProductId),
 		Uid:       ch.StringAttr(consts.ChannelAttrUid),
 		ServerId:  uc.cfg.Global.ID,

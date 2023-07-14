@@ -17,10 +17,11 @@ func NewChannelService(uc *biz.ChannelUseCase) *ChannelService {
 }
 
 func (s *ChannelService) Dispatch(ctx context.Context, in *v1.DispatchRequest) (out *v1.DispatchResponse, err error) {
-	err = s.uc.Push(ctx, &options.PushOptions{
+	err = s.uc.Dispatch(ctx, &options.DispatchOptions{
 		ChannelIds: in.ChannelIds,
-		Operation:  in.Push.Operation,
-		Body:       in.Push.Body,
+		DataType:   in.DataType,
+		Push:       in.Push,
+		Control:    in.Control,
 	})
 	if err != nil {
 		return
@@ -30,10 +31,9 @@ func (s *ChannelService) Dispatch(ctx context.Context, in *v1.DispatchRequest) (
 }
 
 func (s *ChannelService) DispatchRoom(ctx context.Context, in *v1.DispatchRoomRequest) (out *v1.DispatchRoomResponse, err error) {
-	err = s.uc.PushRoom(ctx, &options.PushRoomOptions{
-		Room:      in.Room,
-		Operation: in.Push.Operation,
-		Body:      in.Push.Body,
+	err = s.uc.DispatchRoom(ctx, &options.DispatchRoomOptions{
+		Room: in.Room,
+		Push: in.Push,
 	})
 	if err != nil {
 		return

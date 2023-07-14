@@ -7,10 +7,10 @@ import (
 	v1 "rockimserver/apis/rockim/service/user/v1"
 )
 
-func NewOnlineAPIClient(r registry.Discovery) (v1.OnlineAPIClient, error) {
+func NewAuthAPIClient(r registry.Discovery) (v1.AuthAPIClient, error) {
 	conn, err := discovery.NewGrpcClient(service.AppUser, r)
 	if err != nil {
 		return nil, err
 	}
-	return v1.NewOnlineAPIClient(conn), nil
+	return v1.NewAuthAPIClient(conn), nil
 }

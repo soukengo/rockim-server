@@ -74,14 +74,8 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 		return nil, err
 	}
 	pushMessageData := mq.NewPushMessageData(producer)
-	pushMessageRepo := data.NewPushMessageRepo(pushMessageData)
-	onlineQueryAPIClient, err := grpc.NewOnlineQueryAPIClient(registryDiscovery)
-	if err != nil {
-		return nil, err
-	}
-	onlineRepo := data.NewOnlineRepo(onlineQueryAPIClient)
-	pushManager := biz.NewPushManager(pushMessageRepo, onlineRepo)
-	messageDeliveryUseCase := biz.NewMessageDeliveryUseCase(messageDeliveryRepo, messageQueryRepo, pushManager)
+	pushRepo := data.NewPushMessageRepo(pushMessageData)
+	messageDeliveryUseCase := biz.NewMessageDeliveryUseCase(messageDeliveryRepo, messageQueryRepo, pushRepo)
 	messageTask := task.NewMessageTask(messageDeliveryUseCase)
 	taskGroup := server2.NewTaskGroup(messageTask)
 	jobServer, err := server2.NewJobServer(serverConfig, taskGroup, logger)

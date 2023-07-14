@@ -28,7 +28,7 @@ func (r *roomRepo) List(ctx context.Context, opts *options.ListRoomOptions) (out
 		return
 	}
 	out = lo.Map(ret.GroupIds, func(item string, index int) *types.Room {
-		return &types.Room{RoomType: enums.Comet_Group, BizId: item}
+		return &types.Room{RoomType: enums.Comet_GROUP, BizId: item}
 	})
 	return
 }

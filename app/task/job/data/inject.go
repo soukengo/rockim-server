@@ -9,4 +9,5 @@ import (
 var ProviderSet = wire.NewSet(
 	grpc.ProviderSet,
 	NewCometRepo,
+	NewChannelRepo,
 )

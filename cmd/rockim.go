@@ -10,6 +10,7 @@ import (
 	"rockimserver/app/logic/group"
 	"rockimserver/app/logic/message"
 	"rockimserver/app/logic/platform"
+	"rockimserver/app/logic/session"
 	"rockimserver/app/logic/user"
 	"rockimserver/app/task/job"
 )
@@ -29,6 +30,7 @@ var (
 		comet.New,
 		platform.New,
 		user.New,
+		session.New,
 		group.New,
 		message.New,
 		job.New,

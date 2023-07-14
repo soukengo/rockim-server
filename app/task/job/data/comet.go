@@ -4,17 +4,17 @@ import (
 	"context"
 	"rockimserver/apis/rockim/service/job/v1/types"
 	"rockimserver/app/task/job/biz"
-	"rockimserver/app/task/job/data/grpc"
+	"rockimserver/app/task/job/data/grpc/comet"
 )
 
 type cometRepo struct {
-	grpc *grpc.CometManager
+	comet *comet.Manager
 }
 
-func NewCometRepo(grpc *grpc.CometManager) biz.CometRepo {
-	return &cometRepo{grpc: grpc}
+func NewCometRepo(grpc *comet.Manager) biz.CometRepo {
+	return &cometRepo{comet: grpc}
 }
 
 func (r *cometRepo) Dispatch(ctx context.Context, message *types.CometMessage) error {
-	return r.grpc.Dispatch(ctx, message)
+	return r.comet.Dispatch(ctx, message)
 }

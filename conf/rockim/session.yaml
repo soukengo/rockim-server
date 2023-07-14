@@ -1,0 +1,18 @@
+server:
+  grpc:
+    addr: :6107
+    timeout: "10s"
+
+cache:
+  default:
+    expire: "72h"
+  categories:
+    - key: "channel"
+      expire: "10m"
+  redis:
+    key: default
+
+log:
+  level: info
+  appender:
+    fileName: ./log/rockim/session/app.log

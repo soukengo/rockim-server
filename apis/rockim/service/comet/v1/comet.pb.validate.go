@@ -17,6 +17,8 @@ import (
 	"unicode/utf8"
 
 	"google.golang.org/protobuf/types/known/anypb"
+
+	enums "rockimserver/apis/rockim/shared/enums"
 )
 
 // ensure the imports are used
@@ -33,6 +35,8 @@ var (
 	_ = (*mail.Address)(nil)
 	_ = anypb.Any{}
 	_ = sort.Sort
+
+	_ = enums.Comet_DataType(0)
 )
 
 // Validate checks the field values on DispatchRequest with the rules defined
@@ -108,12 +112,14 @@ func (m *DispatchRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
+	// no validation rules for DataType
+
 	if all {
 		switch v := interface{}(m.GetPush()).(type) {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, DispatchRequestValidationError{
-					field:  "Dispatch",
+					field:  "Push",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -121,7 +127,7 @@ func (m *DispatchRequest) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, DispatchRequestValidationError{
-					field:  "Dispatch",
+					field:  "Push",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -130,7 +136,7 @@ func (m *DispatchRequest) validate(all bool) error {
 	} else if v, ok := interface{}(m.GetPush()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return DispatchRequestValidationError{
-				field:  "Dispatch",
+				field:  "Push",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}
@@ -448,7 +454,7 @@ func (m *DispatchRoomRequest) validate(all bool) error {
 
 	if m.GetPush() == nil {
 		err := DispatchRoomRequestValidationError{
-			field:  "Dispatch",
+			field:  "Push",
 			reason: "value is required",
 		}
 		if !all {
@@ -462,7 +468,7 @@ func (m *DispatchRoomRequest) validate(all bool) error {
 		case interface{ ValidateAll() error }:
 			if err := v.ValidateAll(); err != nil {
 				errors = append(errors, DispatchRoomRequestValidationError{
-					field:  "Dispatch",
+					field:  "Push",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -470,7 +476,7 @@ func (m *DispatchRoomRequest) validate(all bool) error {
 		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
 				errors = append(errors, DispatchRoomRequestValidationError{
-					field:  "Dispatch",
+					field:  "Push",
 					reason: "embedded message failed validation",
 					cause:  err,
 				})
@@ -479,7 +485,7 @@ func (m *DispatchRoomRequest) validate(all bool) error {
 	} else if v, ok := interface{}(m.GetPush()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return DispatchRoomRequestValidationError{
-				field:  "Dispatch",
+				field:  "Push",
 				reason: "embedded message failed validation",
 				cause:  err,
 			}

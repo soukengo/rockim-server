@@ -14,11 +14,3 @@ func NewUserAPIClient(r registry.Discovery) (v1.UserAPIClient, error) {
 	}
 	return v1.NewUserAPIClient(conn), nil
 }
-
-func NewOnlineQueryAPIClient(r registry.Discovery) (v1.OnlineQueryAPIClient, error) {
-	conn, err := discovery.NewGrpcClient(service.AppUser, r)
-	if err != nil {
-		return nil, err
-	}
-	return v1.NewOnlineQueryAPIClient(conn), nil
-}

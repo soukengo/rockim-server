@@ -2,7 +2,6 @@ package biz
 
 import (
 	"context"
-	"github.com/golang/protobuf/proto"
 	"github.com/samber/lo"
 	"github.com/soukengo/gopkg/log"
 	clienttypes "rockimserver/apis/rockim/api/client/v1/types"
@@ -14,11 +13,11 @@ import (
 type MessageDeliveryUseCase struct {
 	repo      MessageDeliveryRepo
 	queryRepo MessageQueryRepo
-	pushMgr   PushManager
+	pushRepo  PushRepo
 }
 
-func NewMessageDeliveryUseCase(repo MessageDeliveryRepo, queryRepo MessageQueryRepo, pushMgr PushManager) *MessageDeliveryUseCase {
-	return &MessageDeliveryUseCase{repo: repo, queryRepo: queryRepo, pushMgr: pushMgr}
+func NewMessageDeliveryUseCase(repo MessageDeliveryRepo, queryRepo MessageQueryRepo, pushRepo PushRepo) *MessageDeliveryUseCase {
+	return &MessageDeliveryUseCase{repo: repo, queryRepo: queryRepo, pushRepo: pushRepo}
 }
 
 func (uc *MessageDeliveryUseCase) Delivery(ctx context.Context, productId string, conversationId *types.ConversationID) (err error) {
@@ -48,21 +47,17 @@ func (uc *MessageDeliveryUseCase) Delivery(ctx context.Context, productId string
 		}
 		packet.List = append(packet.List, uc.toClientMessage(record, message))
 	}
-	body, err := proto.Marshal(packet)
-	if err != nil {
-		return
-	}
-	operation := enums.Comet_MESSAGES
+
 	switch conversationId.Category {
 	case enums.MessageTarget_GROUP:
-		err = uc.pushMgr.PushGroup(ctx, operation, productId, conversationId.Value, body)
+		err = uc.pushRepo.PushGroup(ctx, productId, conversationId.Value, packet)
 	case enums.MessageTarget_PERSON:
 		uids, valid := biztypes.PersonUids(conversationId)
 		if !valid {
 			log.WithContext(ctx).Errorf("conversationId is not valid: %v", conversationId)
 			return
 		}
-		err = uc.pushMgr.PushUsers(ctx, operation, productId, uids, body)
+		err = uc.pushRepo.PushUsers(ctx, productId, uids, packet)
 	}
 	return
 }

@@ -32,22 +32,27 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	if err != nil {
 		return nil, err
 	}
-	onlineAPIClient, err := grpc.NewOnlineAPIClient(registryDiscovery)
+	authAPIClient, err := grpc.NewAuthAPIClient(registryDiscovery)
 	if err != nil {
 		return nil, err
 	}
-	onlineRepo := data.NewOnlineRepo(onlineAPIClient)
+	tokenRepo := data.NewTokenRepo(authAPIClient)
+	channelAPIClient, err := grpc.NewChannelAPIClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	channelRepo := data.NewChannelRepo(channelAPIClient)
 	groupMemberAPIClient, err := grpc.NewGroupMemberAPIClient(registryDiscovery)
 	if err != nil {
 		return nil, err
 	}
 	roomRepo := data.NewRoomRepo(groupMemberAPIClient)
-	channelUseCase := biz.NewChannelUseCase(config, onlineRepo, roomRepo)
+	channelUseCase := biz.NewChannelUseCase(config, tokenRepo, channelRepo, roomRepo)
 	channelService := service.NewClientService(channelUseCase)
 	socketServer := socket.NewSocketServer(serverConfig, protocol, channelService)
 	channelManager := socket2.NewChannelManager(logger, socketServer)
-	channelRepo := data2.NewChannelRepo(channelManager)
-	bizChannelUseCase := biz2.NewChannelUseCase(channelRepo)
+	bizChannelRepo := data2.NewChannelRepo(channelManager)
+	bizChannelUseCase := biz2.NewChannelUseCase(bizChannelRepo)
 	serviceChannelService := service2.NewChannelService(bizChannelUseCase)
 	serviceGroup := grpc2.NewServiceGroup(serviceChannelService)
 	grpcServer := grpc2.NewGRPCServer(serverConfig, serviceGroup)

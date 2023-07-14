@@ -1,8 +1,12 @@
 package grpc
 
-import "github.com/google/wire"
+import (
+	"github.com/google/wire"
+	"rockimserver/app/task/job/data/grpc/comet"
+)
 
 // ProviderSet is biz providers.
 var ProviderSet = wire.NewSet(
-	NewCometManager,
+	comet.NewCometManager,
+	NewChannelQueryAPIClient,
 )

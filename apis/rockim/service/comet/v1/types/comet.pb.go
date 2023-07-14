@@ -124,7 +124,7 @@ func (x *Room) GetRoomType() enums.Comet_RoomType {
 	if x != nil {
 		return x.RoomType
 	}
-	return enums.Comet_Group
+	return enums.Comet_GROUP
 }
 
 func (x *Room) GetBizId() string {
@@ -314,6 +314,141 @@ func (x *ControlMessage) GetBody() []byte {
 	return nil
 }
 
+// RoomJoinControl 加入房间控制
+type RoomJoinControl struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Rooms []*Room `protobuf:"bytes,1,rep,name=rooms,proto3" json:"rooms,omitempty"`
+}
+
+func (x *RoomJoinControl) Reset() {
+	*x = RoomJoinControl{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_rockim_service_comet_v1_types_comet_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RoomJoinControl) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RoomJoinControl) ProtoMessage() {}
+
+func (x *RoomJoinControl) ProtoReflect() protoreflect.Message {
+	mi := &file_rockim_service_comet_v1_types_comet_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RoomJoinControl.ProtoReflect.Descriptor instead.
+func (*RoomJoinControl) Descriptor() ([]byte, []int) {
+	return file_rockim_service_comet_v1_types_comet_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *RoomJoinControl) GetRooms() []*Room {
+	if x != nil {
+		return x.Rooms
+	}
+	return nil
+}
+
+// RoomQuitControl 退出房间控制
+type RoomQuitControl struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Rooms []*Room `protobuf:"bytes,1,rep,name=rooms,proto3" json:"rooms,omitempty"`
+}
+
+func (x *RoomQuitControl) Reset() {
+	*x = RoomQuitControl{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_rockim_service_comet_v1_types_comet_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RoomQuitControl) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RoomQuitControl) ProtoMessage() {}
+
+func (x *RoomQuitControl) ProtoReflect() protoreflect.Message {
+	mi := &file_rockim_service_comet_v1_types_comet_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RoomQuitControl.ProtoReflect.Descriptor instead.
+func (*RoomQuitControl) Descriptor() ([]byte, []int) {
+	return file_rockim_service_comet_v1_types_comet_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *RoomQuitControl) GetRooms() []*Room {
+	if x != nil {
+		return x.Rooms
+	}
+	return nil
+}
+
+// KickOffControl 踢下线控制
+type KickOffControl struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *KickOffControl) Reset() {
+	*x = KickOffControl{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_rockim_service_comet_v1_types_comet_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *KickOffControl) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KickOffControl) ProtoMessage() {}
+
+func (x *KickOffControl) ProtoReflect() protoreflect.Message {
+	mi := &file_rockim_service_comet_v1_types_comet_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KickOffControl.ProtoReflect.Descriptor instead.
+func (*KickOffControl) Descriptor() ([]byte, []int) {
+	return file_rockim_service_comet_v1_types_comet_proto_rawDescGZIP(), []int{6}
+}
+
 var File_rockim_service_comet_v1_types_comet_proto protoreflect.FileDescriptor
 
 var file_rockim_service_comet_v1_types_comet_proto_rawDesc = []byte{
@@ -362,11 +497,22 @@ var file_rockim_service_comet_v1_types_comet_proto_rawDesc = []byte{
 	0x70, 0x65, 0x12, 0x0b, 0x0a, 0x07, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x00, 0x12,
 	0x0d, 0x0a, 0x09, 0x52, 0x4f, 0x4f, 0x4d, 0x5f, 0x4a, 0x4f, 0x49, 0x4e, 0x10, 0x01, 0x12, 0x0d,
 	0x0a, 0x09, 0x52, 0x4f, 0x4f, 0x4d, 0x5f, 0x51, 0x55, 0x49, 0x54, 0x10, 0x02, 0x12, 0x0c, 0x0a,
-	0x08, 0x4b, 0x49, 0x43, 0x4b, 0x5f, 0x4f, 0x46, 0x46, 0x10, 0x03, 0x42, 0x37, 0x5a, 0x35, 0x72,
-	0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x73,
-	0x2f, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f,
-	0x63, 0x6f, 0x6d, 0x65, 0x74, 0x2f, 0x76, 0x31, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x3b, 0x74,
-	0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x08, 0x4b, 0x49, 0x43, 0x4b, 0x5f, 0x4f, 0x46, 0x46, 0x10, 0x03, 0x22, 0x4c, 0x0a, 0x0f, 0x52,
+	0x6f, 0x6f, 0x6d, 0x4a, 0x6f, 0x69, 0x6e, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x12, 0x39,
+	0x0a, 0x05, 0x72, 0x6f, 0x6f, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x23, 0x2e,
+	0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x63,
+	0x6f, 0x6d, 0x65, 0x74, 0x2e, 0x76, 0x31, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x52, 0x6f,
+	0x6f, 0x6d, 0x52, 0x05, 0x72, 0x6f, 0x6f, 0x6d, 0x73, 0x22, 0x4c, 0x0a, 0x0f, 0x52, 0x6f, 0x6f,
+	0x6d, 0x51, 0x75, 0x69, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x12, 0x39, 0x0a, 0x05,
+	0x72, 0x6f, 0x6f, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x72, 0x6f,
+	0x63, 0x6b, 0x69, 0x6d, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x63, 0x6f, 0x6d,
+	0x65, 0x74, 0x2e, 0x76, 0x31, 0x2e, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x52, 0x6f, 0x6f, 0x6d,
+	0x52, 0x05, 0x72, 0x6f, 0x6f, 0x6d, 0x73, 0x22, 0x10, 0x0a, 0x0e, 0x4b, 0x69, 0x63, 0x6b, 0x4f,
+	0x66, 0x66, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x42, 0x37, 0x5a, 0x35, 0x72, 0x6f, 0x63,
+	0x6b, 0x69, 0x6d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x73, 0x2f, 0x72,
+	0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x63, 0x6f,
+	0x6d, 0x65, 0x74, 0x2f, 0x76, 0x31, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x3b, 0x74, 0x79, 0x70,
+	0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -382,29 +528,34 @@ func file_rockim_service_comet_v1_types_comet_proto_rawDescGZIP() []byte {
 }
 
 var file_rockim_service_comet_v1_types_comet_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_rockim_service_comet_v1_types_comet_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_rockim_service_comet_v1_types_comet_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_rockim_service_comet_v1_types_comet_proto_goTypes = []interface{}{
 	(ControlMessage_ControlType)(0), // 0: rockim.service.comet.v1.types.ControlMessage.ControlType
 	(*Room)(nil),                    // 1: rockim.service.comet.v1.types.Room
 	(*Message)(nil),                 // 2: rockim.service.comet.v1.types.Message
 	(*PushMessage)(nil),             // 3: rockim.service.comet.v1.types.PushMessage
 	(*ControlMessage)(nil),          // 4: rockim.service.comet.v1.types.ControlMessage
-	(enums.Comet_RoomType)(0),       // 5: rockim.shared.enums.Comet.RoomType
-	(enums.Comet_DataType)(0),       // 6: rockim.shared.enums.Comet.DataType
-	(enums.Comet_PushOperation)(0),  // 7: rockim.shared.enums.Comet.PushOperation
+	(*RoomJoinControl)(nil),         // 5: rockim.service.comet.v1.types.RoomJoinControl
+	(*RoomQuitControl)(nil),         // 6: rockim.service.comet.v1.types.RoomQuitControl
+	(*KickOffControl)(nil),          // 7: rockim.service.comet.v1.types.KickOffControl
+	(enums.Comet_RoomType)(0),       // 8: rockim.shared.enums.Comet.RoomType
+	(enums.Comet_DataType)(0),       // 9: rockim.shared.enums.Comet.DataType
+	(enums.Comet_PushOperation)(0),  // 10: rockim.shared.enums.Comet.PushOperation
 }
 var file_rockim_service_comet_v1_types_comet_proto_depIdxs = []int32{
-	5, // 0: rockim.service.comet.v1.types.Room.room_type:type_name -> rockim.shared.enums.Comet.RoomType
-	6, // 1: rockim.service.comet.v1.types.Message.data_type:type_name -> rockim.shared.enums.Comet.DataType
-	4, // 2: rockim.service.comet.v1.types.Message.control:type_name -> rockim.service.comet.v1.types.ControlMessage
-	3, // 3: rockim.service.comet.v1.types.Message.push:type_name -> rockim.service.comet.v1.types.PushMessage
-	7, // 4: rockim.service.comet.v1.types.PushMessage.operation:type_name -> rockim.shared.enums.Comet.PushOperation
-	0, // 5: rockim.service.comet.v1.types.ControlMessage.control_type:type_name -> rockim.service.comet.v1.types.ControlMessage.ControlType
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	8,  // 0: rockim.service.comet.v1.types.Room.room_type:type_name -> rockim.shared.enums.Comet.RoomType
+	9,  // 1: rockim.service.comet.v1.types.Message.data_type:type_name -> rockim.shared.enums.Comet.DataType
+	4,  // 2: rockim.service.comet.v1.types.Message.control:type_name -> rockim.service.comet.v1.types.ControlMessage
+	3,  // 3: rockim.service.comet.v1.types.Message.push:type_name -> rockim.service.comet.v1.types.PushMessage
+	10, // 4: rockim.service.comet.v1.types.PushMessage.operation:type_name -> rockim.shared.enums.Comet.PushOperation
+	0,  // 5: rockim.service.comet.v1.types.ControlMessage.control_type:type_name -> rockim.service.comet.v1.types.ControlMessage.ControlType
+	1,  // 6: rockim.service.comet.v1.types.RoomJoinControl.rooms:type_name -> rockim.service.comet.v1.types.Room
+	1,  // 7: rockim.service.comet.v1.types.RoomQuitControl.rooms:type_name -> rockim.service.comet.v1.types.Room
+	8,  // [8:8] is the sub-list for method output_type
+	8,  // [8:8] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_rockim_service_comet_v1_types_comet_proto_init() }
@@ -461,6 +612,42 @@ func file_rockim_service_comet_v1_types_comet_proto_init() {
 				return nil
 			}
 		}
+		file_rockim_service_comet_v1_types_comet_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RoomJoinControl); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_rockim_service_comet_v1_types_comet_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RoomQuitControl); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_rockim_service_comet_v1_types_comet_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*KickOffControl); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -468,7 +655,7 @@ func file_rockim_service_comet_v1_types_comet_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_rockim_service_comet_v1_types_comet_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   4,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
