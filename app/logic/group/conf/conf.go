@@ -6,6 +6,7 @@ import (
 	"github.com/soukengo/gopkg/component/database"
 	"github.com/soukengo/gopkg/component/lock"
 	"github.com/soukengo/gopkg/component/transport"
+	"github.com/soukengo/gopkg/component/transport/event"
 	"github.com/soukengo/gopkg/infra/storage"
 	"github.com/soukengo/gopkg/infra/storage/mongo"
 	"github.com/soukengo/gopkg/infra/storage/redis"
@@ -45,7 +46,8 @@ type Config struct {
 }
 
 type Server struct {
-	Grpc *transport.Grpc
+	Grpc  *transport.Grpc
+	Event *event.Config
 }
 
 func defaultConfig() *Config {
@@ -53,6 +55,9 @@ func defaultConfig() *Config {
 		Log: log.Default(),
 		Server: &Server{
 			Grpc: &transport.Grpc{Addr: ":6103"},
+			Event: &event.Config{
+				Memory: &event.Memory{Size: 1024},
+			},
 		},
 		Database: &database.Config{
 			Mongodb: &mongo.Reference{Key: storage.DefaultKey},
@@ -67,6 +72,7 @@ func defaultConfig() *Config {
 }
 
 func (c *Config) Parse() (err error) {
+	c.Server.Event.Parse(c.Global.Storage)
 	c.Database.Parse(c.Global.Storage)
 	c.Cache.Parse(c.Global.Storage)
 	c.Lock.Parse(c.Global.Storage)

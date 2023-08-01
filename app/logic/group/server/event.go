@@ -1,5 +1,11 @@
 package server
 
-//func NewEventServer(c *transport.Config, group *ServiceGroup) *event.Server {
-//
-//}
+import (
+	"github.com/soukengo/gopkg/component/transport/event"
+	"github.com/soukengo/gopkg/log"
+	"rockimserver/app/logic/group/conf"
+)
+
+func NewEventServer(cfg *conf.Server, logger log.Logger) event.Server {
+	return event.NewMemoryServer(cfg.Event.Memory, logger)
+}

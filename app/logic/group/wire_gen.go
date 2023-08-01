@@ -19,6 +19,7 @@ import (
 	cache2 "rockimserver/app/logic/group/data/cache"
 	database2 "rockimserver/app/logic/group/data/database"
 	"rockimserver/app/logic/group/infra"
+	"rockimserver/app/logic/group/listener"
 	"rockimserver/app/logic/group/server"
 	"rockimserver/app/logic/group/service"
 )
@@ -27,6 +28,7 @@ import (
 
 // wireApp init kratos application.
 func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server, databaseConfig *database.Config, cacheConfig *cache.Config) (*kratos.App, error) {
+	eventServer := server.NewEventServer(confServer, logger)
 	manager := infra.NewDatabaseManager(config)
 	groupData := database2.NewChatRoomData(manager)
 	cacheManager := infra.NewCacheManager(config, logger)
@@ -45,14 +47,17 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	chatRoomMemberManager := biz.NewChatRoomMemberManager(groupRepo, chatRoomMemberRepo, generator)
 	chatRoomUseCase := biz.NewChatRoomUseCase(groupRepo, chatRoomMemberRepo, generator, builder, chatRoomMemberManager)
 	chatRoomService := service.NewChatRoomService(chatRoomUseCase)
-	chatRoomMemberUseCase := biz.NewChatRoomMemberUseCase(groupRepo, chatRoomMemberRepo, builder, generator, chatRoomMemberManager)
+	chatRoomMemberUseCase := biz.NewChatRoomMemberUseCase(groupRepo, chatRoomMemberRepo, builder, generator, chatRoomMemberManager, eventServer)
 	chatRoomMemberService := service.NewChatRoomMemberService(chatRoomMemberUseCase)
-	serviceGroup := server.NewServiceGroup(groupService, groupMemberService, chatRoomService, chatRoomMemberService)
-	grpcServer := server.NewGRPCServer(confServer, serviceGroup)
+	serviceRegistry := server.NewServiceRegistry(groupService, groupMemberService, chatRoomService, chatRoomMemberService)
+	grpcServer := server.NewGRPCServer(confServer, serviceRegistry)
+	groupEventListener := listener.NewGroupEventListener(groupUseCase)
+	listenerRegistry := server.NewListenerRegistry(groupEventListener)
+	serverGroup := server.NewServerGroup(eventServer, grpcServer, serviceRegistry, listenerRegistry)
 	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {
 		return nil, err
 	}
-	app := newApp(logger, config, grpcServer, registrar)
+	app := newApp(config, serverGroup, registrar)
 	return app, nil
 }

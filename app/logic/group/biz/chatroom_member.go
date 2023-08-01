@@ -4,10 +4,12 @@ import (
 	"context"
 	"github.com/soukengo/gopkg/component/idgen"
 	"github.com/soukengo/gopkg/component/lock"
+	"github.com/soukengo/gopkg/component/transport/event"
 	"rockimserver/apis/rockim/service/group/v1/types"
 	"rockimserver/apis/rockim/shared"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/logic/group/biz/consts"
+	bizevent "rockimserver/app/logic/group/biz/event"
 	"rockimserver/app/logic/group/biz/options"
 	"time"
 )
@@ -30,10 +32,11 @@ type ChatRoomMemberUseCase struct {
 	lockBdr   lock.Builder
 	idgen     idgen.Generator
 	memberMgr *ChatRoomMemberManager
+	eventbus  event.Server
 }
 
-func NewChatRoomMemberUseCase(groupRepo GroupRepo, repo ChatRoomMemberRepo, lockBdr lock.Builder, idgen idgen.Generator, memberMgr *ChatRoomMemberManager) *ChatRoomMemberUseCase {
-	return &ChatRoomMemberUseCase{groupRepo: groupRepo, repo: repo, lockBdr: lockBdr, idgen: idgen, memberMgr: memberMgr}
+func NewChatRoomMemberUseCase(groupRepo GroupRepo, repo ChatRoomMemberRepo, lockBdr lock.Builder, idgen idgen.Generator, memberMgr *ChatRoomMemberManager, eventbus event.Server) *ChatRoomMemberUseCase {
+	return &ChatRoomMemberUseCase{groupRepo: groupRepo, repo: repo, lockBdr: lockBdr, idgen: idgen, memberMgr: memberMgr, eventbus: eventbus}
 }
 
 func (uc *ChatRoomMemberUseCase) Join(ctx context.Context, opts *options.ChatRoomJoinOptions) (err error) {
@@ -61,7 +64,8 @@ func (uc *ChatRoomMemberUseCase) Join(ctx context.Context, opts *options.ChatRoo
 	if err != nil {
 		return
 	}
-	//uc.eventRepo.Publish(ctx,&)
+	ev := bizevent.NewGroupJoinedEvent(groupId)
+	uc.eventbus.Publish(ctx, event.NewEvent(ev.Key(), ev), &event.ProducerOptions{})
 	return
 }
 func (uc *ChatRoomMemberUseCase) Quit(ctx context.Context, opts *options.ChatRoomQuitOptions) (err error) {

@@ -2,6 +2,9 @@ server:
   grpc:
     addr: :6103
     timeout: "10s"
+  event:
+    memory:
+      size: 1024
 
 database:
   mongodb:

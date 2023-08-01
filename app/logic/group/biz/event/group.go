@@ -1,27 +1,21 @@
 package event
 
 import (
-	"context"
-	"rockimserver/app/logic/group/biz"
-	"rockimserver/pkg/component/event"
+	"github.com/soukengo/gopkg/component/transport/event"
 )
 
-type GroupEventListener struct {
-	repo biz.EventRepo
-}
+const (
+	KeyGroupJoined = event.Key("GroupJoined")
+)
 
 type GroupJoinedEvent struct {
+	GroupId string
+}
+
+func NewGroupJoinedEvent(groupId string) *GroupJoinedEvent {
+	return &GroupJoinedEvent{GroupId: groupId}
 }
 
 func (g GroupJoinedEvent) Key() event.Key {
-	return "GroupJoined"
-}
-
-func (lis *GroupEventListener) name() {
-	lis.repo.Subscribe("GroupJoined", event.Listener{
-		Mode: event.Async,
-		Handler: event.Wrap(func(ctx context.Context, t *GroupJoinedEvent) {
-
-		}),
-	})
+	return KeyGroupJoined
 }
