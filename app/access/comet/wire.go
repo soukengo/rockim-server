@@ -9,7 +9,6 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
 	"github.com/soukengo/gopkg/component/discovery"
-	servercomponent "github.com/soukengo/gopkg/component/server"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/access/comet/conf"
 	"rockimserver/app/access/comet/infra"
@@ -18,6 +17,6 @@ import (
 )
 
 // wireApp init kratos application.
-func wireApp(log.Logger, *conf.Config, *discovery.Config, *servercomponent.Config, *conf.Protocol) (*kratos.App, error) {
+func wireApp(log.Logger, *conf.Config, *discovery.Config, *conf.Server, *conf.Protocol) (*kratos.App, error) {
 	panic(wire.Build(server.ProviderSet, module.ProviderSet, infra.ProviderSet, newApp))
 }

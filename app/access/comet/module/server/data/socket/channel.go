@@ -3,8 +3,8 @@ package socket
 import (
 	"context"
 	"github.com/golang/protobuf/proto"
-	"github.com/soukengo/gopkg/component/server/socket"
-	"github.com/soukengo/gopkg/component/server/socket/packet"
+	"github.com/soukengo/gopkg/component/transport/socket"
+	"github.com/soukengo/gopkg/component/transport/socket/packet"
 	"github.com/soukengo/gopkg/log"
 	v1 "rockimserver/apis/rockim/api/client/v1/protocol/socket"
 	"rockimserver/apis/rockim/service/comet/v1/types"

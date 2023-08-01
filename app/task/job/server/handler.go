@@ -2,39 +2,20 @@ package server
 
 import (
 	"context"
-	"github.com/golang/protobuf/proto"
-	"github.com/soukengo/gopkg/component/server/job"
-	"github.com/soukengo/gopkg/errors"
+	"github.com/soukengo/gopkg/component/transport/queue"
+	"github.com/soukengo/gopkg/component/transport/queue/iface"
+	"github.com/soukengo/gopkg/component/transport/queue/options"
+	"github.com/soukengo/gopkg/log"
+	"github.com/soukengo/gopkg/util/codec"
 )
 
-var (
-	ErrInvalidData = errors.BadRequest("INVALID_DATA", "invalid data")
-)
-
-func wrapAction[Request any, Response any](fn func(context.Context, *Request) (*Response, error)) job.Handler {
-	return func(ctx context.Context, topic string, data []byte) (err error) {
-		var req = new(Request)
-		err = decode(data, req)
+func handleAndAck[Request any, Response any](fn func(context.Context, *Request) (*Response, error), decoder codec.Decoder) *queue.Handler {
+	return queue.HandleWithOptions(func(ctx context.Context, req *Request) queue.Action {
+		_, err := fn(ctx, req)
 		if err != nil {
-			return
+			log.WithContext(ctx).Error("handle failed", log.Pairs{"err": err})
+			return iface.ReconsumeLater
 		}
-		_, err = fn(ctx, req)
-		return
-	}
-}
-
-func decode(data []byte, v any) error {
-	in, ok := v.(proto.Message)
-	if !ok {
-		return ErrInvalidData
-	}
-	return proto.Unmarshal(data, in)
-}
-
-func encode(v any) ([]byte, error) {
-	in, ok := v.(proto.Message)
-	if !ok {
-		return nil, ErrInvalidData
-	}
-	return proto.Marshal(in)
+		return iface.CommitMessage
+	}, options.Consumer().SetMode(options.Async).SetDecoder(decoder))
 }

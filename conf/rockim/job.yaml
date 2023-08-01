@@ -1,1 +1,9 @@
+server:
+  grpc:
+    addr: :6108
+    timeout: "10s"
+  queue:
+    kafka:
+      key: default
+
 

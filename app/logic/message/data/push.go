@@ -5,18 +5,18 @@ import (
 	"google.golang.org/protobuf/proto"
 	clienttypes "rockimserver/apis/rockim/api/client/v1/types"
 	comettypes "rockimserver/apis/rockim/service/comet/v1/types"
+	v1 "rockimserver/apis/rockim/service/job/v1"
 	"rockimserver/apis/rockim/service/job/v1/types"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/logic/message/biz"
-	"rockimserver/app/logic/message/data/mq"
 )
 
 type pushMessageRepo struct {
-	mq *mq.PushMessageData
+	ac v1.CometAPIClient
 }
 
-func NewPushMessageRepo(mq *mq.PushMessageData) biz.PushRepo {
-	return &pushMessageRepo{mq: mq}
+func NewPushMessageRepo(ac v1.CometAPIClient) biz.PushRepo {
+	return &pushMessageRepo{ac: ac}
 }
 
 func (r *pushMessageRepo) PushUsers(ctx context.Context, productId string, uids []string, packet *clienttypes.IMMessagePacket) (err error) {
@@ -38,7 +38,8 @@ func (r *pushMessageRepo) PushUsers(ctx context.Context, productId string, uids 
 			},
 		},
 	}
-	return r.mq.SavePushMessage(ctx, []*types.CometMessage{message})
+	_, err = r.ac.DispatchAsync(ctx, &v1.CometDispatchRequest{Message: message})
+	return
 }
 
 func (r *pushMessageRepo) PushGroup(ctx context.Context, productId string, groupId string, packet *clienttypes.IMMessagePacket) (err error) {
@@ -60,5 +61,6 @@ func (r *pushMessageRepo) PushGroup(ctx context.Context, productId string, group
 			},
 		},
 	}
-	return r.mq.SavePushMessage(ctx, []*types.CometMessage{message})
+	_, err = r.ac.DispatchAsync(ctx, &v1.CometDispatchRequest{Message: message})
+	return
 }

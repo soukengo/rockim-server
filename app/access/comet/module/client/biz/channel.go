@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 	"github.com/antlabs/timer"
-	"github.com/soukengo/gopkg/component/server/socket"
+	"github.com/soukengo/gopkg/component/transport/socket"
 	"github.com/soukengo/gopkg/errors"
 	"github.com/soukengo/gopkg/log"
 	"github.com/soukengo/gopkg/util/runtimes"

@@ -12,7 +12,6 @@ import (
 	"github.com/soukengo/gopkg/component/database"
 	"github.com/soukengo/gopkg/component/discovery"
 	"github.com/soukengo/gopkg/component/idgen"
-	"github.com/soukengo/gopkg/component/server"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/logic/group/biz"
 	"rockimserver/app/logic/group/conf"
@@ -20,14 +19,14 @@ import (
 	cache2 "rockimserver/app/logic/group/data/cache"
 	database2 "rockimserver/app/logic/group/data/database"
 	"rockimserver/app/logic/group/infra"
-	server2 "rockimserver/app/logic/group/server"
+	"rockimserver/app/logic/group/server"
 	"rockimserver/app/logic/group/service"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, databaseConfig *database.Config, cacheConfig *cache.Config) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server, databaseConfig *database.Config, cacheConfig *cache.Config) (*kratos.App, error) {
 	manager := infra.NewDatabaseManager(config)
 	groupData := database2.NewChatRoomData(manager)
 	cacheManager := infra.NewCacheManager(config, logger)
@@ -48,8 +47,8 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	chatRoomService := service.NewChatRoomService(chatRoomUseCase)
 	chatRoomMemberUseCase := biz.NewChatRoomMemberUseCase(groupRepo, chatRoomMemberRepo, builder, generator, chatRoomMemberManager)
 	chatRoomMemberService := service.NewChatRoomMemberService(chatRoomMemberUseCase)
-	serviceGroup := server2.NewServiceGroup(groupService, groupMemberService, chatRoomService, chatRoomMemberService)
-	grpcServer := server2.NewGRPCServer(serverConfig, serviceGroup)
+	serviceGroup := server.NewServiceGroup(groupService, groupMemberService, chatRoomService, chatRoomMemberService)
+	grpcServer := server.NewGRPCServer(confServer, serviceGroup)
 	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {
 		return nil, err

@@ -2,7 +2,8 @@ package job
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/soukengo/gopkg/component/server/job"
+	"github.com/go-kratos/kratos/v2/registry"
+	"github.com/soukengo/gopkg/component/transport"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver"
 	"rockimserver/app/task/job/conf"
@@ -39,13 +40,14 @@ func configure(cfg *conf.Config) (err error) {
 	return
 }
 
-func newApp(logger log.Logger, cfg *conf.Config, js job.Server) *kratos.App {
+func newApp(cfg *conf.Config, group transport.ServerGroup, registrar registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.Name(cfg.Global.AppId),
 		kratos.Version(cfg.Global.Version),
 		kratos.Metadata(map[string]string{}),
+		kratos.Registrar(registrar),
 		kratos.Server(
-			js,
+			group.Servers()...,
 		),
 	)
 }

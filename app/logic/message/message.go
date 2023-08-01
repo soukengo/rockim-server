@@ -3,8 +3,7 @@ package message
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/registry"
-	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/soukengo/gopkg/component/server/job"
+	"github.com/soukengo/gopkg/component/transport"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver"
 	"rockimserver/app/logic/message/conf"
@@ -26,7 +25,7 @@ func New(version string) (app *kratos.App, logger log.Logger, err error) {
 	if err != nil {
 		return
 	}
-	app, err = wireApp(logger, cfg, cfg.Global.Discovery, cfg.Server, cfg.Database, cfg.Cache, cfg.Queue)
+	app, err = wireApp(logger, cfg, cfg.Global.Discovery, cfg.Server, cfg.Database, cfg.Cache)
 	if err != nil {
 		//err = errors.New(errors.UnknownCode, "", "wireApp error")
 		return
@@ -41,15 +40,14 @@ func configure(cfg *conf.Config) (err error) {
 	}
 	return
 }
-func newApp(logger log.Logger, cfg *conf.Config, gs *grpc.Server, js job.Server, registrar registry.Registrar) *kratos.App {
+func newApp(cfg *conf.Config, group transport.ServerGroup, registrar registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.Name(cfg.Global.AppId),
 		kratos.Version(cfg.Global.Version),
 		kratos.Registrar(registrar),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(
-			gs,
-			js,
+			group.Servers()...,
 		),
 	)
 }

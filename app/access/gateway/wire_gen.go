@@ -9,7 +9,6 @@ package gateway
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/server"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/access/gateway/conf"
 	"rockimserver/app/access/gateway/infra/grpc"
@@ -19,13 +18,13 @@ import (
 	biz2 "rockimserver/app/access/gateway/module/openapi/biz"
 	data2 "rockimserver/app/access/gateway/module/openapi/data"
 	service2 "rockimserver/app/access/gateway/module/openapi/service"
-	server2 "rockimserver/app/access/gateway/server"
+	"rockimserver/app/access/gateway/server"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server) (*kratos.App, error) {
 	registryDiscovery, err := discovery.NewDiscovery(discoveryConfig)
 	if err != nil {
 		return nil, err
@@ -76,7 +75,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	messageRepo := data.NewMessageRepo(messageAPIClient)
 	messageUseCase := biz.NewMessageUseCase(messageRepo)
 	messageService := service.NewMessageService(messageUseCase)
-	clientServiceGroup := server2.NewClientServiceGroup(productUseCase, authUseCase, productService, userService, authService, chatRoomService, chatRoomMemberService, messageService)
+	clientServiceGroup := server.NewClientServiceGroup(productUseCase, authUseCase, productService, userService, authService, chatRoomService, chatRoomMemberService, messageService)
 	bizProductRepo := data2.NewProductRepo(productAPIClient)
 	bizProductUseCase := biz2.NewProductUseCase(bizProductRepo)
 	bizUserRepo := data2.NewUserRepo(userAPIClient, authAPIClient)
@@ -88,8 +87,8 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	bizChatRoomRepo := data2.NewChatRoomRepo(chatRoomAPIClient)
 	bizChatRoomUseCase := biz2.NewChatRoomUseCase(bizChatRoomRepo)
 	serviceChatRoomService := service2.NewChatRoomService(bizChatRoomUseCase, bizUserUseCase)
-	openApiServiceGroup := server2.NewOpenApiServiceGroup(bizProductUseCase, serviceUserService, serviceAuthService, serviceChatRoomService)
-	httpServer := server2.NewHTTPServer(serverConfig, clientServiceGroup, openApiServiceGroup, logger)
+	openApiServiceGroup := server.NewOpenApiServiceGroup(bizProductUseCase, serviceUserService, serviceAuthService, serviceChatRoomService)
+	httpServer := server.NewHTTPServer(confServer, clientServiceGroup, openApiServiceGroup, logger)
 	app := newApp(logger, config, httpServer)
 	return app, nil
 }

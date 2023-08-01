@@ -9,21 +9,26 @@ package job
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/server"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/task/job/biz"
 	"rockimserver/app/task/job/conf"
 	"rockimserver/app/task/job/data"
 	"rockimserver/app/task/job/data/grpc"
 	"rockimserver/app/task/job/data/grpc/comet"
-	server2 "rockimserver/app/task/job/server"
+	"rockimserver/app/task/job/data/mq"
+	"rockimserver/app/task/job/server"
 	"rockimserver/app/task/job/service"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server) (*kratos.App, error) {
+	queueServer, err := server.NewQueueServer(confServer, logger)
+	if err != nil {
+		return nil, err
+	}
+	grpcServer := server.NewGRPCServer(confServer)
 	registryDiscovery, err := discovery.NewDiscovery(discoveryConfig)
 	if err != nil {
 		return nil, err
@@ -32,7 +37,8 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	if err != nil {
 		return nil, err
 	}
-	cometRepo := data.NewCometRepo(manager)
+	cometMessageManager := mq.NewCometMessageManager(queueServer)
+	cometRepo := data.NewCometRepo(manager, cometMessageManager)
 	channelQueryAPIClient, err := grpc.NewChannelQueryAPIClient(registryDiscovery)
 	if err != nil {
 		return nil, err
@@ -40,11 +46,12 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	channelRepo := data.NewChannelRepo(channelQueryAPIClient)
 	cometUseCase := biz.NewCometUseCase(cometRepo, channelRepo)
 	cometService := service.NewCometService(cometUseCase)
-	serviceGroup := server2.NewServiceGroup(cometService)
-	jobServer, err := server2.NewJobServer(serverConfig, serviceGroup, logger)
+	serviceRegistry := server.NewServiceRegistry(cometService)
+	serverGroup := server.NewServerGroup(queueServer, grpcServer, serviceRegistry)
+	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {
 		return nil, err
 	}
-	app := newApp(logger, config, jobServer)
+	app := newApp(config, serverGroup, registrar)
 	return app, nil
 }

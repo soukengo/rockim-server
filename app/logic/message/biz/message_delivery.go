@@ -20,7 +20,9 @@ func NewMessageDeliveryUseCase(repo MessageDeliveryRepo, queryRepo MessageQueryR
 	return &MessageDeliveryUseCase{repo: repo, queryRepo: queryRepo, pushRepo: pushRepo}
 }
 
-func (uc *MessageDeliveryUseCase) Delivery(ctx context.Context, productId string, conversationId *types.ConversationID) (err error) {
+func (uc *MessageDeliveryUseCase) Delivery(ctx context.Context, task *types.DeliveryTask) (err error) {
+	productId := task.ProductId
+	conversationId := task.ConversationId
 	list, err := uc.repo.Pop(ctx, productId, conversationId, 10)
 	if err != nil {
 		return

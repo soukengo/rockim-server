@@ -1,7 +1,7 @@
 package consts
 
 import (
-	"github.com/soukengo/gopkg/component/queue"
+	"github.com/soukengo/gopkg/component/transport/queue"
 )
 
 var (

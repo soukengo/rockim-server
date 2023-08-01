@@ -57,38 +57,33 @@ func (m *CometDispatchRequest) validate(all bool) error {
 
 	var errors []error
 
-	for idx, item := range m.GetList() {
-		_, _ = idx, item
-
-		if all {
-			switch v := interface{}(item).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, CometDispatchRequestValidationError{
-						field:  fmt.Sprintf("List[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, CometDispatchRequestValidationError{
-						field:  fmt.Sprintf("List[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return CometDispatchRequestValidationError{
-					field:  fmt.Sprintf("List[%v]", idx),
+	if all {
+		switch v := interface{}(m.GetMessage()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, CometDispatchRequestValidationError{
+					field:  "Message",
 					reason: "embedded message failed validation",
 					cause:  err,
-				}
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, CometDispatchRequestValidationError{
+					field:  "Message",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
 			}
 		}
-
+	} else if v, ok := interface{}(m.GetMessage()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return CometDispatchRequestValidationError{
+				field:  "Message",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
 	}
 
 	if len(errors) > 0 {

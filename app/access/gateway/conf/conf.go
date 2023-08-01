@@ -2,7 +2,7 @@ package conf
 
 import (
 	"github.com/soukengo/gopkg/component/config"
-	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/component/transport"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service"
 	"rockimserver/conf"
@@ -33,9 +33,13 @@ func Load() (cfg *Config, err error) {
 
 type Config struct {
 	Global *conf.Global
-	Server *server.Config
+	Server *Server
 	Log    *log.Config
 	Comet  Comet
+}
+
+type Server struct {
+	Http *transport.Http
 }
 
 type Comet struct {

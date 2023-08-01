@@ -6,14 +6,14 @@ import (
 	"rockimserver/app/logic/message/service"
 )
 
-type ServiceGroup struct {
+type ServiceRegistry struct {
 	message *service.MessageService
 }
 
-func NewServiceGroup(message *service.MessageService) *ServiceGroup {
-	return &ServiceGroup{message: message}
+func NewServiceRegistry(message *service.MessageService) *ServiceRegistry {
+	return &ServiceRegistry{message: message}
 }
 
-func (g *ServiceGroup) RegisterGrpc(srv *grpc.Server) {
+func (g *ServiceRegistry) RegisterGrpc(srv *grpc.Server) {
 	v1.RegisterMessageAPIServer(srv, g.message)
 }

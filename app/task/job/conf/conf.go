@@ -2,15 +2,13 @@ package conf
 
 import (
 	"github.com/soukengo/gopkg/component/config"
-	"github.com/soukengo/gopkg/component/queue"
-	kafkaqueue "github.com/soukengo/gopkg/component/queue/core/kafka"
-	"github.com/soukengo/gopkg/component/server"
-	"github.com/soukengo/gopkg/component/server/job"
+	"github.com/soukengo/gopkg/component/transport"
+	"github.com/soukengo/gopkg/component/transport/queue"
+	kafkaqueue "github.com/soukengo/gopkg/component/transport/queue/provider/kafka"
 	"github.com/soukengo/gopkg/infra/storage"
 	"github.com/soukengo/gopkg/infra/storage/kafka"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service"
-	v1 "rockimserver/apis/rockim/service/job/v1"
 	"rockimserver/conf"
 	"time"
 )
@@ -33,7 +31,6 @@ func Load() (cfg *Config, err error) {
 		return
 	}
 	cfg.Global = global
-	//  这里写死，不使用配置文件的内容
 	return
 }
 
@@ -45,20 +42,19 @@ func defaultConfig() *Config {
 			Signal: time.Second,
 			Idle:   time.Minute * 15,
 		}},
-		Server: &server.Config{
-			Job: &job.Config{
-				Queue: &queue.Config{
-					General: &queue.GeneralConfig{
-						Kafka: &kafkaqueue.Config{
-							Reference: kafka.Reference{Key: storage.DefaultKey},
-							Consumer: &kafkaqueue.ConsumerConfig{
-								GroupId: service.AppJob,
-								Topics:  []queue.Topic{queue.Topic(v1.TaskType_COMET_DISPATCH.String())},
-								Workers: 10,
-							},
-						},
+		Server: &Server{
+			Queue: &queue.GeneralConfig{
+				Kafka: &kafkaqueue.Config{
+					Reference: kafka.Reference{Key: storage.DefaultKey},
+					Consumer: &kafka.ConsumerConfig{
+						GroupId: service.AppJob,
+						Workers: 10,
 					},
 				},
+			},
+			Grpc: &transport.Grpc{
+				Addr:    ":6108",
+				Timeout: time.Second * 10,
 			},
 		},
 	}
@@ -66,7 +62,7 @@ func defaultConfig() *Config {
 
 type Config struct {
 	Global *conf.Global
-	Server *server.Config
+	Server *Server
 	Log    *log.Config
 	Comet  *Comet
 }
@@ -84,7 +80,12 @@ type Room struct {
 	Idle   time.Duration
 }
 
+type Server struct {
+	Queue *queue.GeneralConfig
+	Grpc  *transport.Grpc
+}
+
 func (c *Config) Parse() (err error) {
-	c.Server.Job.Parse(c.Global.Storage)
+	c.Server.Queue.Parse(c.Global.Storage)
 	return
 }

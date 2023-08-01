@@ -5,11 +5,11 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/gorilla/handlers"
-	"github.com/soukengo/gopkg/component/server"
+	"rockimserver/app/access/admin/conf"
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *server.Config, managerGroup *ManagerServiceGroup, tenantGroup *TenantServiceGroup) *http.Server {
+func NewHTTPServer(c *conf.Server, managerGroup *ManagerServiceGroup, tenantGroup *TenantServiceGroup) *http.Server {
 	var opts = []http.ServerOption{
 		http.Filter(
 			handlers.CORS(

@@ -24,6 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type CometAPIClient interface {
 	// 分发comet消息
 	Dispatch(ctx context.Context, in *CometDispatchRequest, opts ...grpc.CallOption) (*CometDispatchResponse, error)
+	// 异步分发消息
+	DispatchAsync(ctx context.Context, in *CometDispatchRequest, opts ...grpc.CallOption) (*CometDispatchResponse, error)
 }
 
 type cometAPIClient struct {
@@ -43,12 +45,23 @@ func (c *cometAPIClient) Dispatch(ctx context.Context, in *CometDispatchRequest,
 	return out, nil
 }
 
+func (c *cometAPIClient) DispatchAsync(ctx context.Context, in *CometDispatchRequest, opts ...grpc.CallOption) (*CometDispatchResponse, error) {
+	out := new(CometDispatchResponse)
+	err := c.cc.Invoke(ctx, "/rockim.service.job.v1.CometAPI/DispatchAsync", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CometAPIServer is the server API for CometAPI service.
 // All implementations must embed UnimplementedCometAPIServer
 // for forward compatibility
 type CometAPIServer interface {
 	// 分发comet消息
 	Dispatch(context.Context, *CometDispatchRequest) (*CometDispatchResponse, error)
+	// 异步分发消息
+	DispatchAsync(context.Context, *CometDispatchRequest) (*CometDispatchResponse, error)
 	mustEmbedUnimplementedCometAPIServer()
 }
 
@@ -58,6 +71,9 @@ type UnimplementedCometAPIServer struct {
 
 func (UnimplementedCometAPIServer) Dispatch(context.Context, *CometDispatchRequest) (*CometDispatchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Dispatch not implemented")
+}
+func (UnimplementedCometAPIServer) DispatchAsync(context.Context, *CometDispatchRequest) (*CometDispatchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DispatchAsync not implemented")
 }
 func (UnimplementedCometAPIServer) mustEmbedUnimplementedCometAPIServer() {}
 
@@ -90,6 +106,24 @@ func _CometAPI_Dispatch_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CometAPI_DispatchAsync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CometDispatchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CometAPIServer).DispatchAsync(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rockim.service.job.v1.CometAPI/DispatchAsync",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CometAPIServer).DispatchAsync(ctx, req.(*CometDispatchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CometAPI_ServiceDesc is the grpc.ServiceDesc for CometAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +134,10 @@ var CometAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Dispatch",
 			Handler:    _CometAPI_Dispatch_Handler,
+		},
+		{
+			MethodName: "DispatchAsync",
+			Handler:    _CometAPI_DispatchAsync_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

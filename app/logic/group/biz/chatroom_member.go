@@ -58,6 +58,10 @@ func (uc *ChatRoomMemberUseCase) Join(ctx context.Context, opts *options.ChatRoo
 		return
 	}
 	err = uc.memberMgr.addMember(ctx, group, &options.ChatRoomMemberAddItem{Uid: uid, Role: enums.Group_ORDINARY})
+	if err != nil {
+		return
+	}
+	//uc.eventRepo.Publish(ctx,&)
 	return
 }
 func (uc *ChatRoomMemberUseCase) Quit(ctx context.Context, opts *options.ChatRoomQuitOptions) (err error) {

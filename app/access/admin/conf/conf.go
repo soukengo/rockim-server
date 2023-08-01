@@ -4,7 +4,7 @@ import (
 	"github.com/soukengo/gopkg/component/auth"
 	"github.com/soukengo/gopkg/component/config"
 	"github.com/soukengo/gopkg/component/database"
-	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/component/transport"
 	"github.com/soukengo/gopkg/infra/storage"
 	"github.com/soukengo/gopkg/infra/storage/mongo"
 	"github.com/soukengo/gopkg/log"
@@ -45,9 +45,13 @@ func defaultConfig() *Config {
 type Config struct {
 	Global   *conf.Global
 	Log      *log.Config
-	Server   *server.Config
+	Server   *Server
 	Auth     *auth.Config
 	Database *database.Config
+}
+
+type Server struct {
+	Http *transport.Http
 }
 
 func (c *Config) Parse() (err error) {

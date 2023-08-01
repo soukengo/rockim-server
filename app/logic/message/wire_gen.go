@@ -12,18 +12,15 @@ import (
 	"github.com/soukengo/gopkg/component/database"
 	"github.com/soukengo/gopkg/component/discovery"
 	"github.com/soukengo/gopkg/component/idgen"
-	"github.com/soukengo/gopkg/component/queue"
-	"github.com/soukengo/gopkg/component/server"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/logic/message/biz"
 	"rockimserver/app/logic/message/conf"
 	"rockimserver/app/logic/message/data"
 	cache2 "rockimserver/app/logic/message/data/cache"
 	database2 "rockimserver/app/logic/message/data/database"
-	"rockimserver/app/logic/message/data/mq"
 	"rockimserver/app/logic/message/infra"
 	"rockimserver/app/logic/message/infra/grpc"
-	server2 "rockimserver/app/logic/message/server"
+	"rockimserver/app/logic/message/server"
 	"rockimserver/app/logic/message/service"
 	"rockimserver/app/logic/message/task"
 )
@@ -31,7 +28,11 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, databaseConfig *database.Config, cacheConfig *cache.Config, queueConfig *queue.Config) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server, databaseConfig *database.Config, cacheConfig *cache.Config) (*kratos.App, error) {
+	delayed, err := server.NewQueueServer(confServer, logger)
+	if err != nil {
+		return nil, err
+	}
 	manager := infra.NewCacheManager(config, logger)
 	messageData := cache2.NewMessageData(manager, cacheConfig)
 	databaseManager := infra.NewDatabaseManager(config)
@@ -60,32 +61,24 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	}
 	groupRepo := data.NewGroupRepo(groupAPIClient, groupMemberAPIClient)
 	generator := idgen.NewMongoGenerator()
-	delayedProducer, err := infra.NewDelayedQueueProducer(queueConfig, logger)
-	if err != nil {
-		return nil, err
-	}
-	messageUseCase := biz.NewMessageUseCase(messageRepo, messageDeliveryRepo, messageBoxRepo, userRepo, groupRepo, generator, delayedProducer)
+	messageUseCase := biz.NewMessageUseCase(messageRepo, messageDeliveryRepo, messageBoxRepo, userRepo, groupRepo, generator, delayed)
 	messageService := service.NewMessageService(messageUseCase)
-	serviceGroup := server2.NewServiceGroup(messageService)
-	grpcServer := server2.NewGRPCServer(serverConfig, serviceGroup)
+	serviceRegistry := server.NewServiceRegistry(messageService)
+	grpcServer := server.NewGRPCServer(confServer, serviceRegistry)
 	messageQueryRepo := data.NewMessageQueryRepo(messageData)
-	producer, err := infra.NewGeneralQueueProducer(queueConfig, logger)
+	cometAPIClient, err := grpc.NewCometAPIClient(registryDiscovery)
 	if err != nil {
 		return nil, err
 	}
-	pushMessageData := mq.NewPushMessageData(producer)
-	pushRepo := data.NewPushMessageRepo(pushMessageData)
+	pushRepo := data.NewPushMessageRepo(cometAPIClient)
 	messageDeliveryUseCase := biz.NewMessageDeliveryUseCase(messageDeliveryRepo, messageQueryRepo, pushRepo)
 	messageTask := task.NewMessageTask(messageDeliveryUseCase)
-	taskGroup := server2.NewTaskGroup(messageTask)
-	jobServer, err := server2.NewJobServer(serverConfig, taskGroup, logger)
-	if err != nil {
-		return nil, err
-	}
+	taskRegistry := server.NewTaskRegistry(messageTask)
+	serverGroup := server.NewServerGroup(delayed, grpcServer, serviceRegistry, taskRegistry)
 	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {
 		return nil, err
 	}
-	app := newApp(logger, config, grpcServer, jobServer, registrar)
+	app := newApp(config, serverGroup, registrar)
 	return app, nil
 }

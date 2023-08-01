@@ -5,11 +5,11 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/soukengo/gopkg/component/server"
+	"rockimserver/app/logic/user/conf"
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *server.Config, group *ServiceGroup) *grpc.Server {
+func NewGRPCServer(c *conf.Server, group *ServiceGroup) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),

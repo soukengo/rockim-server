@@ -4,7 +4,7 @@ import (
 	"github.com/soukengo/gopkg/component/cache"
 	"github.com/soukengo/gopkg/component/config"
 	"github.com/soukengo/gopkg/component/lock"
-	"github.com/soukengo/gopkg/component/server"
+	"github.com/soukengo/gopkg/component/transport"
 	"github.com/soukengo/gopkg/infra/storage"
 	"github.com/soukengo/gopkg/infra/storage/redis"
 	"github.com/soukengo/gopkg/log"
@@ -36,8 +36,10 @@ func Load() (cfg *Config, err error) {
 
 func defaultConfig() *Config {
 	return &Config{
-		Log:    log.Default(),
-		Server: &server.Config{},
+		Log: log.Default(),
+		Server: &Server{
+			Grpc: &transport.Grpc{Addr: ":6107"},
+		},
 		Cache: &cache.Config{
 			Redis: &redis.Reference{Key: storage.DefaultKey},
 		},
@@ -49,10 +51,14 @@ func defaultConfig() *Config {
 
 type Config struct {
 	Global *conf.Global
-	Server *server.Config
+	Server *Server
 	Log    *log.Config
 	Cache  *cache.Config
 	Lock   *lock.Config
+}
+
+type Server struct {
+	Grpc *transport.Grpc
 }
 
 func (c *Config) Parse() (err error) {

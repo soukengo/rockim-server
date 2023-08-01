@@ -1,4 +1,4 @@
-package grpc
+package server
 
 import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -6,14 +6,14 @@ import (
 	"rockimserver/app/access/comet/module/server/service"
 )
 
-type ServiceGroup struct {
+type GrpcRegistry struct {
 	channelSrv *service.ChannelService
 }
 
-func NewServiceGroup(channelSrv *service.ChannelService) *ServiceGroup {
-	return &ServiceGroup{channelSrv: channelSrv}
+func NewServiceRegistry(channelSrv *service.ChannelService) *GrpcRegistry {
+	return &GrpcRegistry{channelSrv: channelSrv}
 }
 
-func (g *ServiceGroup) RegisterGrpc(srv *grpc.Server) {
+func (g *GrpcRegistry) RegisterGrpc(srv *grpc.Server) {
 	v1.RegisterChannelAPIServer(srv, g.channelSrv)
 }

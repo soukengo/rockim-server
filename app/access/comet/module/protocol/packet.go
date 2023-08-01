@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"encoding/binary"
 	"fmt"
-	"github.com/soukengo/gopkg/component/server/socket/packet"
+	"github.com/soukengo/gopkg/component/transport/socket/packet"
 	"io"
 )
 

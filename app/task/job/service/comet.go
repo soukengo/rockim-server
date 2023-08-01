@@ -17,5 +17,17 @@ func NewCometService(uc *biz.CometUseCase) *CometService {
 
 func (t *CometService) Dispatch(ctx context.Context, in *v1.CometDispatchRequest) (out *v1.CometDispatchResponse, err error) {
 	err = t.uc.Dispatch(ctx, in)
+	if err != nil {
+		return
+	}
+	out = &v1.CometDispatchResponse{}
+	return
+}
+func (t *CometService) DispatchAsync(ctx context.Context, in *v1.CometDispatchRequest) (out *v1.CometDispatchResponse, err error) {
+	err = t.uc.Dispatch(ctx, in)
+	if err != nil {
+		return
+	}
+	out = &v1.CometDispatchResponse{}
 	return
 }

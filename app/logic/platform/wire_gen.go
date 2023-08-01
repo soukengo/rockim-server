@@ -11,7 +11,6 @@ import (
 	"github.com/soukengo/gopkg/component/cache"
 	"github.com/soukengo/gopkg/component/database"
 	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/server"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/logic/platform/biz"
 	"rockimserver/app/logic/platform/conf"
@@ -19,14 +18,14 @@ import (
 	cache2 "rockimserver/app/logic/platform/data/cache"
 	database2 "rockimserver/app/logic/platform/data/database"
 	"rockimserver/app/logic/platform/infra"
-	server2 "rockimserver/app/logic/platform/server"
+	"rockimserver/app/logic/platform/server"
 	"rockimserver/app/logic/platform/service"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, databaseConfig *database.Config, cacheConfig *cache.Config) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server, databaseConfig *database.Config, cacheConfig *cache.Config) (*kratos.App, error) {
 	manager := infra.NewDatabaseManager(config)
 	tenantData := database2.NewTenantData(manager)
 	tenantRepo := data.NewTenantRepo(tenantData)
@@ -38,8 +37,8 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	productRepo := data.NewProductRepo(productData, cacheProductData)
 	productUseCase := biz.NewProductUseCase(productRepo)
 	productService := service.NewProductService(productUseCase)
-	serviceGroup := server2.NewServiceGroup(tenantService, productService)
-	grpcServer := server2.NewGRPCServer(serverConfig, serviceGroup)
+	serviceGroup := server.NewServiceGroup(tenantService, productService)
+	grpcServer := server.NewGRPCServer(confServer, serviceGroup)
 	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {
 		return nil, err

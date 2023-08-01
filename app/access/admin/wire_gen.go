@@ -11,7 +11,6 @@ import (
 	"github.com/soukengo/gopkg/component/auth"
 	"github.com/soukengo/gopkg/component/database"
 	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/server"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/access/admin/conf"
 	database2 "rockimserver/app/access/admin/infra/database"
@@ -24,13 +23,13 @@ import (
 	data2 "rockimserver/app/access/admin/module/tenant/data"
 	database4 "rockimserver/app/access/admin/module/tenant/data/database"
 	service2 "rockimserver/app/access/admin/module/tenant/service"
-	server2 "rockimserver/app/access/admin/server"
+	"rockimserver/app/access/admin/server"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, authConfig *auth.Config, databaseConfig *database.Config) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server, authConfig *auth.Config, databaseConfig *database.Config) (*kratos.App, error) {
 	manager := database2.NewDatabaseManager(config)
 	sysUserData := database3.NewSysUserData(manager)
 	sysUserRepo := data.NewSysUserRepo(sysUserData)
@@ -63,7 +62,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	sysTenantResourceRepo := data.NewSysTenantResourceRepo(sysTenantResourceData)
 	sysTenantResourceUseCase := biz.NewSysTenantResourceUseCase(sysTenantResourceRepo)
 	sysTenantResourceService := service.NewSysTenantResourceService(sysTenantResourceUseCase)
-	managerServiceGroup := server2.NewManagerServiceGroup(authConfig, authService, sessionService, sysUserService, sysRoleService, sysResourceService, tenantService, sysTenantResourceService)
+	managerServiceGroup := server.NewManagerServiceGroup(authConfig, authService, sessionService, sysUserService, sysRoleService, sysResourceService, tenantService, sysTenantResourceService)
 	bizTenantRepo := data2.NewTenantRepo(tenantAPIClient)
 	bizAuthUseCase := biz2.NewAuthUseCase(authConfig, bizTenantRepo)
 	serviceAuthService := service2.NewAuthService(bizAuthUseCase)
@@ -78,8 +77,8 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	productRepo := data2.NewProductRepo(productAPIClient)
 	productUseCase := biz2.NewProductUseCase(productRepo)
 	productService := service2.NewProductService(productUseCase, bizSessionUseCase)
-	tenantServiceGroup := server2.NewTenantServiceGroup(authConfig, serviceAuthService, serviceSessionService, productService)
-	httpServer := server2.NewHTTPServer(serverConfig, managerServiceGroup, tenantServiceGroup)
+	tenantServiceGroup := server.NewTenantServiceGroup(authConfig, serviceAuthService, serviceSessionService, productService)
+	httpServer := server.NewHTTPServer(confServer, managerServiceGroup, tenantServiceGroup)
 	app := newApp(logger, config, httpServer)
 	return app, nil
 }

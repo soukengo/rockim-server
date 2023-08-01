@@ -9,7 +9,6 @@ package comet
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/soukengo/gopkg/component/discovery"
-	"github.com/soukengo/gopkg/component/server"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/access/comet/conf"
 	"rockimserver/app/access/comet/infra/grpc"
@@ -18,16 +17,17 @@ import (
 	"rockimserver/app/access/comet/module/client/service"
 	biz2 "rockimserver/app/access/comet/module/server/biz"
 	data2 "rockimserver/app/access/comet/module/server/data"
-	socket2 "rockimserver/app/access/comet/module/server/data/socket"
+	"rockimserver/app/access/comet/module/server/data/socket"
 	service2 "rockimserver/app/access/comet/module/server/service"
-	grpc2 "rockimserver/app/access/comet/server/grpc"
-	"rockimserver/app/access/comet/server/socket"
+	"rockimserver/app/access/comet/server"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, serverConfig *server.Config, protocol *conf.Protocol) (*kratos.App, error) {
+func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server, protocol *conf.Protocol) (*kratos.App, error) {
+	socketServer := server.NewSocketServer(confServer)
+	grpcServer := server.NewGRPCServer(confServer)
 	registryDiscovery, err := discovery.NewDiscovery(discoveryConfig)
 	if err != nil {
 		return nil, err
@@ -49,17 +49,17 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	roomRepo := data.NewRoomRepo(groupMemberAPIClient)
 	channelUseCase := biz.NewChannelUseCase(config, tokenRepo, channelRepo, roomRepo)
 	channelService := service.NewClientService(channelUseCase)
-	socketServer := socket.NewSocketServer(serverConfig, protocol, channelService)
-	channelManager := socket2.NewChannelManager(logger, socketServer)
+	socketRegistry := server.NewSocketRegistry(protocol, channelService)
+	channelManager := socket.NewChannelManager(logger, socketServer)
 	bizChannelRepo := data2.NewChannelRepo(channelManager)
 	bizChannelUseCase := biz2.NewChannelUseCase(bizChannelRepo)
 	serviceChannelService := service2.NewChannelService(bizChannelUseCase)
-	serviceGroup := grpc2.NewServiceGroup(serviceChannelService)
-	grpcServer := grpc2.NewGRPCServer(serverConfig, serviceGroup)
+	grpcRegistry := server.NewServiceRegistry(serviceChannelService)
+	serverGroup := server.NewServerGroup(socketServer, grpcServer, socketRegistry, grpcRegistry)
 	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {
 		return nil, err
 	}
-	app := newApp(logger, config, socketServer, grpcServer, registrar)
+	app := newApp(config, serverGroup, registrar)
 	return app, nil
 }

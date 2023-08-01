@@ -2,13 +2,13 @@ server:
   grpc:
     addr: :6105
     timeout: "10s"
-  job:
-    queue:
-      delayed:
-        redis:
-          key: default
-          consumer:
-            worker: 10
+  delayQueue:
+    redis:
+      key: default
+      consumer:
+        worker: 10
+
+
 
 database:
   mongodb:
@@ -21,13 +21,6 @@ cache:
   redis:
     key: default
 
-queue:
-  general:
-    kafka:
-      key: default
-  delay:
-    redis:
-      key: default
 lock:
   redis:
     key: default

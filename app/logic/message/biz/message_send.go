@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 	"github.com/soukengo/gopkg/component/idgen"
-	"github.com/soukengo/gopkg/component/queue"
+	"github.com/soukengo/gopkg/component/transport/queue"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service/message/v1/types"
 	usertypes "rockimserver/apis/rockim/service/user/v1/types"
@@ -21,10 +21,10 @@ type MessageUseCase struct {
 	userRepo     UserRepo
 	groupRepo    GroupRepo
 	idgen        idgen.Generator
-	delayed      queue.DelayedProducer
+	delayed      queue.Delayed
 }
 
-func NewMessageUseCase(repo MessageRepo, deliveryRepo MessageDeliveryRepo, boxRepo MessageBoxRepo, userRepo UserRepo, groupRepo GroupRepo, idgen idgen.Generator, delayed queue.DelayedProducer) *MessageUseCase {
+func NewMessageUseCase(repo MessageRepo, deliveryRepo MessageDeliveryRepo, boxRepo MessageBoxRepo, userRepo UserRepo, groupRepo GroupRepo, idgen idgen.Generator, delayed queue.Delayed) *MessageUseCase {
 	return &MessageUseCase{repo: repo, deliveryRepo: deliveryRepo, boxRepo: boxRepo, userRepo: userRepo, groupRepo: groupRepo, idgen: idgen, delayed: delayed}
 }
 
@@ -183,12 +183,12 @@ func (uc *MessageUseCase) dispatchMessage(ctx context.Context, meta *biztypes.Me
 	if err != nil {
 		return
 	}
-	conversationId := biztypes.EncodeConversationID(message.ProductId, message.ConversationId)
+	task := &types.DeliveryTask{ProductId: meta.ProductId, ConversationId: message.ConversationId}
 	// 群消息延时投递
 	if message.ConversationId.Category == enums.MessageTarget_GROUP {
-		return uc.delayed.SubmitDelay(ctx, consts.QueueMessageDelivery, []queue.Value{queue.Value(conversationId)}, groupMessageDelay.Milliseconds(), false)
+		return uc.delayed.PublishDelay(ctx, queue.NewRawMessage(consts.QueueMessageDelivery, task), queue.DelayedOptions().SetDelay(groupMessageDelay))
 	}
-	err = uc.delayed.Submit(ctx, consts.QueueMessageDelivery, []queue.Value{queue.Value(conversationId)})
+	err = uc.delayed.Publish(ctx, queue.NewRawMessage(consts.QueueMessageDelivery, task), queue.ProducerOptions())
 	return
 }
 

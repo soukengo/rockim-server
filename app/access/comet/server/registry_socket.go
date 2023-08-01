@@ -1,11 +1,11 @@
-package socket
+package server
 
 import (
 	"context"
 	"github.com/golang/protobuf/proto"
-	"github.com/soukengo/gopkg/component/server/socket"
-	"github.com/soukengo/gopkg/component/server/socket/packet"
 	"github.com/soukengo/gopkg/component/trace"
+	"github.com/soukengo/gopkg/component/transport/socket"
+	"github.com/soukengo/gopkg/component/transport/socket/packet"
 	"github.com/soukengo/gopkg/errors"
 	"github.com/soukengo/gopkg/log"
 	v1 "rockimserver/apis/rockim/api/client/v1/protocol/socket"
@@ -24,30 +24,29 @@ var (
 
 type HandleFunc func(context.Context, socket.Channel, []byte) (any, error)
 
-type ClientHandler struct {
-	server  socket.Server
+type SocketRegistry struct {
 	actions map[v1.Operation]HandleFunc
 
 	cfg        *conf.Protocol
 	channelSrv *service.ChannelService
 }
 
-func NewClientHandler(cfg *conf.Protocol, channelSrv *service.ChannelService) *ClientHandler {
-	ins := &ClientHandler{
+func NewSocketRegistry(cfg *conf.Protocol, channelSrv *service.ChannelService) *SocketRegistry {
+	ins := &SocketRegistry{
 		actions:    map[v1.Operation]HandleFunc{},
 		cfg:        cfg,
 		channelSrv: channelSrv,
 	}
-	ins.register()
 	return ins
 }
 
-func (h *ClientHandler) register() {
+func (h *SocketRegistry) RegisterSocket(srv socket.Server) {
+	srv.SetHandler(h)
 	h.actions[v1.Operation_AUTH] = wrapAction[v1.AuthRequest, v1.AuthResponse](h.channelSrv.Auth)
 	h.actions[v1.Operation_HEARTBEAT] = wrapAction[v1.HeartBeatRequest, v1.HeartBeatResponse](h.channelSrv.HeartBeat)
 }
 
-func (h *ClientHandler) OnCreated(ctx *socket.Context) {
+func (h *SocketRegistry) OnCreated(ctx *socket.Context) {
 	ch := ctx.Channel()
 	channelId := ch.Id()
 	log.WithContext(ctx).Debugf("channel created: %v", channelId)
@@ -55,11 +54,11 @@ func (h *ClientHandler) OnCreated(ctx *socket.Context) {
 	_ = h.channelSrv.Connect(ctx)
 }
 
-func (h *ClientHandler) OnClosed(ctx *socket.Context) {
+func (h *SocketRegistry) OnClosed(ctx *socket.Context) {
 	_ = h.channelSrv.DisConnect(ctx)
 }
 
-func (h *ClientHandler) OnReceived(ctx *socket.Context, p packet.IPacket) {
+func (h *SocketRegistry) OnReceived(ctx *socket.Context, p packet.IPacket) {
 	ch := ctx.Channel()
 	pkt, ok := p.(*protocol.Packet)
 	if !ok {
@@ -86,7 +85,7 @@ func (h *ClientHandler) OnReceived(ctx *socket.Context, p packet.IPacket) {
 	h.handle(ctx, ch, header, body)
 }
 
-func (h *ClientHandler) handle(ctx context.Context, channel socket.Channel, header *v1.RequestPacketHeader, body *v1.RequestPacketBody) {
+func (h *SocketRegistry) handle(ctx context.Context, channel socket.Channel, header *v1.RequestPacketHeader, body *v1.RequestPacketBody) {
 	var (
 		data any
 		err  error
@@ -108,7 +107,7 @@ func (h *ClientHandler) handle(ctx context.Context, channel socket.Channel, head
 	h.render(ctx, channel, respHeader, data, err)
 }
 
-func (h *ClientHandler) render(ctx context.Context, ch socket.Channel, header *v1.ResponsePacketHeader, data any, err error) {
+func (h *SocketRegistry) render(ctx context.Context, ch socket.Channel, header *v1.ResponsePacketHeader, data any, err error) {
 	if err != nil {
 		var e = errors.FromError(err)
 		data = &shared.Error{

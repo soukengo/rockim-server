@@ -3,7 +3,7 @@ package protocol
 import (
 	"errors"
 	"github.com/antlabs/timer"
-	"github.com/soukengo/gopkg/component/server/socket"
+	"github.com/soukengo/gopkg/component/transport/socket"
 	"sync/atomic"
 )
 

@@ -491,6 +491,64 @@ func (x *IMMessageReceipt) GetPersonRead() bool {
 	return false
 }
 
+// DeliveryTask 消息投递任务
+type DeliveryTask struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// 应用ID
+	ProductId string `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	// 会话ID
+	ConversationId *ConversationID `protobuf:"bytes,2,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+}
+
+func (x *DeliveryTask) Reset() {
+	*x = DeliveryTask{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_rockim_service_message_v1_types_message_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeliveryTask) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeliveryTask) ProtoMessage() {}
+
+func (x *DeliveryTask) ProtoReflect() protoreflect.Message {
+	mi := &file_rockim_service_message_v1_types_message_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeliveryTask.ProtoReflect.Descriptor instead.
+func (*DeliveryTask) Descriptor() ([]byte, []int) {
+	return file_rockim_service_message_v1_types_message_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *DeliveryTask) GetProductId() string {
+	if x != nil {
+		return x.ProductId
+	}
+	return ""
+}
+
+func (x *DeliveryTask) GetConversationId() *ConversationID {
+	if x != nil {
+		return x.ConversationId
+	}
+	return nil
+}
+
 var File_rockim_service_message_v1_types_message_proto protoreflect.FileDescriptor
 
 var file_rockim_service_message_v1_types_message_proto_rawDesc = []byte{
@@ -590,11 +648,20 @@ var file_rockim_service_message_v1_types_message_proto_rawDesc = []byte{
 	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x75, 0x6e, 0x72,
 	0x65, 0x61, 0x64, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x70, 0x65, 0x72, 0x73,
 	0x6f, 0x6e, 0x5f, 0x72, 0x65, 0x61, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a, 0x70,
-	0x65, 0x72, 0x73, 0x6f, 0x6e, 0x52, 0x65, 0x61, 0x64, 0x42, 0x39, 0x5a, 0x37, 0x72, 0x6f, 0x63,
-	0x6b, 0x69, 0x6d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x73, 0x2f, 0x72,
-	0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x6d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x2f, 0x76, 0x31, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x3b, 0x74,
-	0x79, 0x70, 0x65, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x72, 0x73, 0x6f, 0x6e, 0x52, 0x65, 0x61, 0x64, 0x22, 0x87, 0x01, 0x0a, 0x0c, 0x44, 0x65,
+	0x6c, 0x69, 0x76, 0x65, 0x72, 0x79, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x72,
+	0x6f, 0x64, 0x75, 0x63, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x49, 0x64, 0x12, 0x58, 0x0a, 0x0f, 0x63, 0x6f, 0x6e,
+	0x76, 0x65, 0x72, 0x73, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x2f, 0x2e, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2e, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x2e, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x74,
+	0x79, 0x70, 0x65, 0x73, 0x2e, 0x43, 0x6f, 0x6e, 0x76, 0x65, 0x72, 0x73, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x49, 0x44, 0x52, 0x0e, 0x63, 0x6f, 0x6e, 0x76, 0x65, 0x72, 0x73, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x49, 0x64, 0x42, 0x39, 0x5a, 0x37, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x73, 0x65, 0x72,
+	0x76, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x73, 0x2f, 0x72, 0x6f, 0x63, 0x6b, 0x69, 0x6d, 0x2f,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2f,
+	0x76, 0x31, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x3b, 0x74, 0x79, 0x70, 0x65, 0x73, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -609,34 +676,36 @@ func file_rockim_service_message_v1_types_message_proto_rawDescGZIP() []byte {
 	return file_rockim_service_message_v1_types_message_proto_rawDescData
 }
 
-var file_rockim_service_message_v1_types_message_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_rockim_service_message_v1_types_message_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_rockim_service_message_v1_types_message_proto_goTypes = []interface{}{
 	(*IMMessage)(nil),              // 0: rockim.service.message.v1.types.IMMessage
 	(*IMMessageBody)(nil),          // 1: rockim.service.message.v1.types.IMMessageBody
 	(*IMMessageRelation)(nil),      // 2: rockim.service.message.v1.types.IMMessageRelation
 	(*IMMessageSender)(nil),        // 3: rockim.service.message.v1.types.IMMessageSender
 	(*IMMessageReceipt)(nil),       // 4: rockim.service.message.v1.types.IMMessageReceipt
-	nil,                            // 5: rockim.service.message.v1.types.IMMessageBody.PayloadEntry
-	(*ConversationID)(nil),         // 6: rockim.service.message.v1.types.ConversationID
-	(*TargetID)(nil),               // 7: rockim.service.message.v1.types.TargetID
-	(enums.Message_Status)(0),      // 8: rockim.shared.enums.Message.Status
-	(enums.Message_MessageType)(0), // 9: rockim.shared.enums.Message.MessageType
+	(*DeliveryTask)(nil),           // 5: rockim.service.message.v1.types.DeliveryTask
+	nil,                            // 6: rockim.service.message.v1.types.IMMessageBody.PayloadEntry
+	(*ConversationID)(nil),         // 7: rockim.service.message.v1.types.ConversationID
+	(*TargetID)(nil),               // 8: rockim.service.message.v1.types.TargetID
+	(enums.Message_Status)(0),      // 9: rockim.shared.enums.Message.Status
+	(enums.Message_MessageType)(0), // 10: rockim.shared.enums.Message.MessageType
 }
 var file_rockim_service_message_v1_types_message_proto_depIdxs = []int32{
-	6, // 0: rockim.service.message.v1.types.IMMessage.conversation_id:type_name -> rockim.service.message.v1.types.ConversationID
-	3, // 1: rockim.service.message.v1.types.IMMessage.sender:type_name -> rockim.service.message.v1.types.IMMessageSender
-	7, // 2: rockim.service.message.v1.types.IMMessage.from:type_name -> rockim.service.message.v1.types.TargetID
-	7, // 3: rockim.service.message.v1.types.IMMessage.to:type_name -> rockim.service.message.v1.types.TargetID
-	1, // 4: rockim.service.message.v1.types.IMMessage.body:type_name -> rockim.service.message.v1.types.IMMessageBody
-	8, // 5: rockim.service.message.v1.types.IMMessage.status:type_name -> rockim.shared.enums.Message.Status
-	9, // 6: rockim.service.message.v1.types.IMMessageBody.message_type:type_name -> rockim.shared.enums.Message.MessageType
-	5, // 7: rockim.service.message.v1.types.IMMessageBody.payload:type_name -> rockim.service.message.v1.types.IMMessageBody.PayloadEntry
-	6, // 8: rockim.service.message.v1.types.IMMessageRelation.conversation_id:type_name -> rockim.service.message.v1.types.ConversationID
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	9, // [9:9] is the sub-list for extension type_name
-	9, // [9:9] is the sub-list for extension extendee
-	0, // [0:9] is the sub-list for field type_name
+	7,  // 0: rockim.service.message.v1.types.IMMessage.conversation_id:type_name -> rockim.service.message.v1.types.ConversationID
+	3,  // 1: rockim.service.message.v1.types.IMMessage.sender:type_name -> rockim.service.message.v1.types.IMMessageSender
+	8,  // 2: rockim.service.message.v1.types.IMMessage.from:type_name -> rockim.service.message.v1.types.TargetID
+	8,  // 3: rockim.service.message.v1.types.IMMessage.to:type_name -> rockim.service.message.v1.types.TargetID
+	1,  // 4: rockim.service.message.v1.types.IMMessage.body:type_name -> rockim.service.message.v1.types.IMMessageBody
+	9,  // 5: rockim.service.message.v1.types.IMMessage.status:type_name -> rockim.shared.enums.Message.Status
+	10, // 6: rockim.service.message.v1.types.IMMessageBody.message_type:type_name -> rockim.shared.enums.Message.MessageType
+	6,  // 7: rockim.service.message.v1.types.IMMessageBody.payload:type_name -> rockim.service.message.v1.types.IMMessageBody.PayloadEntry
+	7,  // 8: rockim.service.message.v1.types.IMMessageRelation.conversation_id:type_name -> rockim.service.message.v1.types.ConversationID
+	7,  // 9: rockim.service.message.v1.types.DeliveryTask.conversation_id:type_name -> rockim.service.message.v1.types.ConversationID
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_rockim_service_message_v1_types_message_proto_init() }
@@ -706,6 +775,18 @@ func file_rockim_service_message_v1_types_message_proto_init() {
 				return nil
 			}
 		}
+		file_rockim_service_message_v1_types_message_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeliveryTask); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -713,7 +794,7 @@ func file_rockim_service_message_v1_types_message_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_rockim_service_message_v1_types_message_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

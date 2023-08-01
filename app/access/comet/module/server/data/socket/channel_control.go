@@ -2,7 +2,7 @@ package socket
 
 import (
 	"context"
-	"github.com/soukengo/gopkg/component/server/socket"
+	"github.com/soukengo/gopkg/component/transport/socket"
 	"github.com/soukengo/gopkg/errors"
 	"github.com/soukengo/gopkg/log"
 	"google.golang.org/protobuf/proto"
@@ -68,7 +68,7 @@ func (m *ChannelManager) KickOff(ctx context.Context, ch socket.Channel, in *typ
 	return
 }
 
-func wrapControl[T any](fn func(context.Context, socket.Channel, *T) error) func(ctx context.Context, ch socket.Channel, data []byte) (err error) {
+func wrapControl[T any](fn func(context.Context, socket.Channel, *T) error) ControlFunc {
 	return func(ctx context.Context, ch socket.Channel, data []byte) (err error) {
 		var req = new(T)
 		err = decode(data, req)

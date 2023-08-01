@@ -11,7 +11,6 @@ import (
 	"github.com/soukengo/gopkg/component/cache"
 	"github.com/soukengo/gopkg/component/database"
 	"github.com/soukengo/gopkg/component/discovery"
-	servercomponent "github.com/soukengo/gopkg/component/server"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/app/logic/group/biz"
 	"rockimserver/app/logic/group/conf"
@@ -22,6 +21,6 @@ import (
 )
 
 // wireApp init kratos application.
-func wireApp(log.Logger, *conf.Config, *discovery.Config, *servercomponent.Config, *database.Config, *cache.Config) (*kratos.App, error) {
+func wireApp(log.Logger, *conf.Config, *discovery.Config, *conf.Server, *database.Config, *cache.Config) (*kratos.App, error) {
 	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, infra.ProviderSet, newApp))
 }

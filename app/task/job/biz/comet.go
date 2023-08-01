@@ -11,6 +11,7 @@ import (
 
 type CometRepo interface {
 	Dispatch(ctx context.Context, message *types.CometMessage) error
+	DispatchAsync(ctx context.Context, message *types.CometMessage) error
 }
 
 type ChannelRepo interface {
@@ -27,8 +28,36 @@ func NewCometUseCase(repo CometRepo, sessionRepo ChannelRepo) *CometUseCase {
 }
 
 func (uc *CometUseCase) Dispatch(ctx context.Context, in *v1.CometDispatchRequest) (err error) {
-	for _, message := range in.List {
-		err1 := uc.dispatch(ctx, message)
+	message := in.Message
+	if message.Target.TargetType != types.CometMessage_Target_USER {
+		return uc.repo.Dispatch(ctx, message)
+	}
+	messages, err := uc.convertUserMessage(ctx, message)
+	if err != nil {
+		return
+	}
+	for _, item := range messages {
+		err1 := uc.repo.Dispatch(ctx, item)
+		if err1 != nil {
+			log.WithContext(ctx).Error("dispatch message error", log.Pairs{"err": err1})
+			return
+		}
+	}
+	return
+
+}
+
+func (uc *CometUseCase) DispatchAsync(ctx context.Context, in *v1.CometDispatchRequest) (err error) {
+	message := in.Message
+	if message.Target.TargetType != types.CometMessage_Target_USER {
+		return uc.repo.DispatchAsync(ctx, message)
+	}
+	messages, err := uc.convertUserMessage(ctx, message)
+	if err != nil {
+		return
+	}
+	for _, item := range messages {
+		err1 := uc.repo.DispatchAsync(ctx, item)
 		if err1 != nil {
 			log.WithContext(ctx).Error("dispatch message error", log.Pairs{"err": err1})
 			return
@@ -36,14 +65,8 @@ func (uc *CometUseCase) Dispatch(ctx context.Context, in *v1.CometDispatchReques
 	}
 	return
 }
-func (uc *CometUseCase) dispatch(ctx context.Context, message *types.CometMessage) (err error) {
-	if message.Target.TargetType == types.CometMessage_Target_USER {
-		return uc.dispatchUser(ctx, message)
-	}
-	return uc.repo.Dispatch(ctx, message)
-}
 
-func (uc *CometUseCase) dispatchUser(ctx context.Context, message *types.CometMessage) (err error) {
+func (uc *CometUseCase) convertUserMessage(ctx context.Context, message *types.CometMessage) (list []*types.CometMessage, err error) {
 	userChannels, err := uc.sessionRepo.ListChannels(ctx, message.ProductId, message.Target.Uids)
 	if err != nil {
 		return
@@ -59,7 +82,7 @@ func (uc *CometUseCase) dispatchUser(ctx context.Context, message *types.CometMe
 		cids := lo.Map(chs, func(item *sessiontypes.Channel, index int) string {
 			return item.ChannelId
 		})
-		newMessage := &types.CometMessage{
+		list = append(list, &types.CometMessage{
 			ProductId: message.ProductId,
 			Target: &types.CometMessage_Target{
 				TargetType: types.CometMessage_Target_CHANNEL,
@@ -67,12 +90,7 @@ func (uc *CometUseCase) dispatchUser(ctx context.Context, message *types.CometMe
 				Channels:   cids,
 			},
 			Message: message.Message,
-		}
-		err1 := uc.repo.Dispatch(ctx, newMessage)
-		if err1 != nil {
-			log.WithContext(ctx).Error("dispatch message error", log.Pairs{"err": err1})
-			return
-		}
+		})
 	}
 	return
 }

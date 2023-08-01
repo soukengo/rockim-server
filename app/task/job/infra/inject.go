@@ -7,5 +7,6 @@ import (
 
 // ProviderSet is biz providers.
 var ProviderSet = wire.NewSet(
+	discovery.NewRegistrar,
 	discovery.NewDiscovery,
 )

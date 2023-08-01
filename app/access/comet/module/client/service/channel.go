@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/soukengo/gopkg/component/server/socket"
+	"github.com/soukengo/gopkg/component/transport/socket"
 	v1 "rockimserver/apis/rockim/api/client/v1/protocol/socket"
 	"rockimserver/app/access/comet/module/client/biz"
 	"rockimserver/app/access/comet/module/client/biz/options"

@@ -5,19 +5,16 @@ import (
 	"github.com/soukengo/gopkg/component/config"
 	"github.com/soukengo/gopkg/component/database"
 	"github.com/soukengo/gopkg/component/lock"
-	"github.com/soukengo/gopkg/component/queue"
-	kafkaqueue "github.com/soukengo/gopkg/component/queue/core/kafka"
-	redisqueue "github.com/soukengo/gopkg/component/queue/core/redis"
-	"github.com/soukengo/gopkg/component/server"
-	"github.com/soukengo/gopkg/component/server/job"
+	"github.com/soukengo/gopkg/component/transport"
+	"github.com/soukengo/gopkg/component/transport/queue"
+	redisqueue "github.com/soukengo/gopkg/component/transport/queue/provider/redis"
 	"github.com/soukengo/gopkg/infra/storage"
-	"github.com/soukengo/gopkg/infra/storage/kafka"
 	"github.com/soukengo/gopkg/infra/storage/mongo"
 	"github.com/soukengo/gopkg/infra/storage/redis"
 	"github.com/soukengo/gopkg/log"
 	"rockimserver/apis/rockim/service"
-	"rockimserver/app/logic/message/biz/consts"
 	"rockimserver/conf"
+	"time"
 )
 
 const (
@@ -27,10 +24,9 @@ const (
 type Config struct {
 	Global   *conf.Global
 	Log      *log.Config
-	Server   *server.Config
+	Server   *Server
 	Database *database.Config
 	Cache    *cache.Config
-	Queue    *queue.Config
 	Lock     *lock.Config
 }
 
@@ -51,20 +47,24 @@ func Load() (cfg *Config, err error) {
 	return
 }
 
+type Server struct {
+	Grpc       *transport.Grpc
+	DelayQueue *queue.DelayedConfig
+}
+
 func defaultConfig() *Config {
 	return &Config{
 		Log: log.Default(),
-		Server: &server.Config{
-			Job: &job.Config{
-				Queue: &queue.Config{
-					Delayed: &queue.DelayedConfig{
-						Redis: &redisqueue.Config{
-							Reference: redis.Reference{Key: storage.DefaultKey},
-							Consumer: &redisqueue.ConsumerConfig{
-								Topics:  []queue.Topic{consts.QueueMessageDelivery},
-								Workers: 10,
-							},
-						},
+		Server: &Server{
+			Grpc: &transport.Grpc{
+				Addr:    ":6105",
+				Timeout: time.Second * 10,
+			},
+			DelayQueue: &queue.DelayedConfig{
+				Redis: &redisqueue.Config{
+					Reference: redis.Reference{Key: storage.DefaultKey},
+					Consumer: &redisqueue.ConsumerConfig{
+						Workers: 10,
 					},
 				},
 			},
@@ -75,21 +75,6 @@ func defaultConfig() *Config {
 		Cache: &cache.Config{
 			Redis: &redis.Reference{Key: storage.DefaultKey},
 		},
-		Queue: &queue.Config{
-			General: &queue.GeneralConfig{
-				Kafka: &kafkaqueue.Config{
-					Reference: kafka.Reference{Key: storage.DefaultKey},
-				},
-			},
-			Delayed: &queue.DelayedConfig{
-				Redis: &redisqueue.Config{
-					Reference: redis.Reference{Key: storage.DefaultKey},
-					Consumer: &redisqueue.ConsumerConfig{
-						Topics: []queue.Topic{consts.QueueMessageDelivery},
-					},
-				},
-			},
-		},
 		Lock: &lock.Config{
 			Redis: &redis.Reference{Key: storage.DefaultKey},
 		},
@@ -97,10 +82,9 @@ func defaultConfig() *Config {
 }
 
 func (c *Config) Parse() (err error) {
-	c.Server.Job.Parse(c.Global.Storage)
+	c.Server.DelayQueue.Parse(c.Global.Storage)
 	c.Database.Parse(c.Global.Storage)
 	c.Cache.Parse(c.Global.Storage)
-	c.Queue.Parse(c.Global.Storage)
 	c.Lock.Parse(c.Global.Storage)
 	return
 }
