@@ -105,6 +105,7 @@ func (c *Comet) process(pushChan chan *v1.DispatchRequest, roomChan chan *v1.Dis
 			_, err := c.client.Dispatch(context.Background(), &v1.DispatchRequest{
 				Base:       pushArg.Base,
 				ChannelIds: pushArg.ChannelIds,
+				DataType:   pushArg.DataType,
 				Push:       pushArg.Push,
 				Control:    pushArg.Control,
 			})

@@ -64,8 +64,8 @@ func (uc *ChatRoomMemberUseCase) Join(ctx context.Context, opts *options.ChatRoo
 	if err != nil {
 		return
 	}
-	ev := bizevent.NewGroupJoinedEvent(groupId)
-	uc.eventbus.Publish(ctx, event.NewEvent(ev.Key(), ev), &event.ProducerOptions{})
+	ev := bizevent.NewGroupJoinedEvent(productId, groupId, uid)
+	uc.eventbus.Publish(ctx, event.NewEvent(ev.Key(), ev), event.Producer())
 	return
 }
 func (uc *ChatRoomMemberUseCase) Quit(ctx context.Context, opts *options.ChatRoomQuitOptions) (err error) {

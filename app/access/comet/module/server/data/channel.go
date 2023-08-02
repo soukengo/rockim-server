@@ -24,6 +24,5 @@ func (r *channelRepo) PushRoom(ctx context.Context, opts *options.PushRoomOption
 }
 
 func (r *channelRepo) Control(ctx context.Context, opts *options.ControlOptions) error {
-	//TODO implement me
-	panic("implement me")
+	return r.socket.Control(ctx, opts)
 }

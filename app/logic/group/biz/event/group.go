@@ -9,11 +9,13 @@ const (
 )
 
 type GroupJoinedEvent struct {
-	GroupId string
+	ProductId string
+	GroupId   string
+	Uid       string
 }
 
-func NewGroupJoinedEvent(groupId string) *GroupJoinedEvent {
-	return &GroupJoinedEvent{GroupId: groupId}
+func NewGroupJoinedEvent(productId string, groupId string, uid string) *GroupJoinedEvent {
+	return &GroupJoinedEvent{ProductId: productId, GroupId: groupId, Uid: uid}
 }
 
 func (g GroupJoinedEvent) Key() event.Key {

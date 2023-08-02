@@ -18,6 +18,7 @@ var ProviderSet = wire.NewSet(
 	NewChatRoomMemberManager,
 	NewChatRoomUseCase,
 	NewChatRoomMemberUseCase,
+	NewCometUseCase,
 )
 
 func NewLockBuilder(cfg *conf.Config, logger log.Logger) lock.Builder {

@@ -18,6 +18,7 @@ import (
 	"rockimserver/app/logic/group/data"
 	cache2 "rockimserver/app/logic/group/data/cache"
 	database2 "rockimserver/app/logic/group/data/database"
+	"rockimserver/app/logic/group/data/grpc"
 	"rockimserver/app/logic/group/listener"
 	"rockimserver/app/logic/group/server"
 	"rockimserver/app/logic/group/service"
@@ -50,7 +51,17 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	chatRoomMemberService := service.NewChatRoomMemberService(chatRoomMemberUseCase)
 	serviceRegistry := server.NewServiceRegistry(groupService, groupMemberService, chatRoomService, chatRoomMemberService)
 	grpcServer := server.NewGRPCServer(confServer, serviceRegistry)
-	groupEventListener := listener.NewGroupEventListener(groupUseCase)
+	registryDiscovery, err := discovery.NewDiscovery(discoveryConfig)
+	if err != nil {
+		return nil, err
+	}
+	cometAPIClient, err := grpc.NewCometAPIClient(registryDiscovery)
+	if err != nil {
+		return nil, err
+	}
+	cometRepo := data.NewCometRepo(cometAPIClient)
+	cometUseCase := biz.NewCometUseCase(cometRepo)
+	groupEventListener := listener.NewGroupEventListener(cometUseCase)
 	listenerRegistry := server.NewListenerRegistry(groupEventListener)
 	serverGroup := server.NewServerGroup(eventServer, grpcServer, serviceRegistry, listenerRegistry)
 	registrar, err := discovery.NewRegistrar(discoveryConfig)
