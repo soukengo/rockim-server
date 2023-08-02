@@ -17,7 +17,6 @@ import (
 	"rockimserver/app/logic/platform/data"
 	cache2 "rockimserver/app/logic/platform/data/cache"
 	database2 "rockimserver/app/logic/platform/data/database"
-	"rockimserver/app/logic/platform/infra"
 	"rockimserver/app/logic/platform/server"
 	"rockimserver/app/logic/platform/service"
 )
@@ -26,13 +25,13 @@ import (
 
 // wireApp init kratos application.
 func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server, databaseConfig *database.Config, cacheConfig *cache.Config) (*kratos.App, error) {
-	manager := infra.NewDatabaseManager(config)
+	manager := database2.NewDatabaseManager(config)
 	tenantData := database2.NewTenantData(manager)
 	tenantRepo := data.NewTenantRepo(tenantData)
 	tenantUseCase := biz.NewTenantUseCase(tenantRepo)
 	tenantService := service.NewTenantService(tenantUseCase)
 	productData := database2.NewProductData(manager)
-	cacheManager := infra.NewCacheManager(config, logger)
+	cacheManager := cache2.NewCacheManager(config, logger)
 	cacheProductData := cache2.NewProductData(cacheManager, cacheConfig)
 	productRepo := data.NewProductRepo(productData, cacheProductData)
 	productUseCase := biz.NewProductUseCase(productRepo)

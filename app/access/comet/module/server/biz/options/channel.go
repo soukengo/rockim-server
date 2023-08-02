@@ -36,7 +36,7 @@ type DispatchOptions struct {
 
 type ControlOptions struct {
 	// 控制类型
-	ControlType types.ControlMessage_ControlType
+	ControlType enums.Comet_ControlType
 	// 连接id
 	ChannelIds []string
 	// 推送内容

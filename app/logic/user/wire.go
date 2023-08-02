@@ -15,12 +15,11 @@ import (
 	"rockimserver/app/logic/user/biz"
 	"rockimserver/app/logic/user/conf"
 	"rockimserver/app/logic/user/data"
-	"rockimserver/app/logic/user/infra"
 	"rockimserver/app/logic/user/server"
 	"rockimserver/app/logic/user/service"
 )
 
 // wireApp init kratos application.
 func wireApp(log.Logger, *conf.Config, *discovery.Config, *conf.Server, *database.Config, *cache.Config) (*kratos.App, error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, infra.ProviderSet, newApp))
+	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
 }

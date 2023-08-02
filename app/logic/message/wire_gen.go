@@ -18,8 +18,7 @@ import (
 	"rockimserver/app/logic/message/data"
 	cache2 "rockimserver/app/logic/message/data/cache"
 	database2 "rockimserver/app/logic/message/data/database"
-	"rockimserver/app/logic/message/infra"
-	"rockimserver/app/logic/message/infra/grpc"
+	"rockimserver/app/logic/message/data/grpc"
 	"rockimserver/app/logic/message/server"
 	"rockimserver/app/logic/message/service"
 	"rockimserver/app/logic/message/task"
@@ -33,9 +32,9 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	if err != nil {
 		return nil, err
 	}
-	manager := infra.NewCacheManager(config, logger)
+	manager := cache2.NewCacheManager(config, logger)
 	messageData := cache2.NewMessageData(manager, cacheConfig)
-	databaseManager := infra.NewDatabaseManager(config)
+	databaseManager := database2.NewDatabaseManager(config)
 	databaseMessageData := database2.NewMessageSequenceData(databaseManager)
 	messageRepo := data.NewMessageRepo(messageData, databaseMessageData)
 	messageDeliveryData := cache2.NewMessageDeliveryData(manager, cacheConfig)

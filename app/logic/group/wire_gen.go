@@ -18,7 +18,6 @@ import (
 	"rockimserver/app/logic/group/data"
 	cache2 "rockimserver/app/logic/group/data/cache"
 	database2 "rockimserver/app/logic/group/data/database"
-	"rockimserver/app/logic/group/infra"
 	"rockimserver/app/logic/group/listener"
 	"rockimserver/app/logic/group/server"
 	"rockimserver/app/logic/group/service"
@@ -29,9 +28,9 @@ import (
 // wireApp init kratos application.
 func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server, databaseConfig *database.Config, cacheConfig *cache.Config) (*kratos.App, error) {
 	eventServer := server.NewEventServer(confServer, logger)
-	manager := infra.NewDatabaseManager(config)
+	manager := database2.NewDatabaseManager(config)
 	groupData := database2.NewChatRoomData(manager)
-	cacheManager := infra.NewCacheManager(config, logger)
+	cacheManager := cache2.NewCacheManager(config, logger)
 	cacheGroupData := cache2.NewGroupData(cacheManager, cacheConfig)
 	groupRepo := data.NewGroupRepo(groupData, cacheGroupData)
 	groupUseCase := biz.NewGroupUseCase(groupRepo)
@@ -43,7 +42,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	groupMemberUseCase := biz.NewGroupMemberUseCase(chatRoomMemberRepo, groupMemberRepo)
 	groupMemberService := service.NewGroupMemberService(groupMemberUseCase)
 	generator := idgen.NewMongoGenerator()
-	builder := infra.NewLockBuilder(config, logger)
+	builder := biz.NewLockBuilder(config, logger)
 	chatRoomMemberManager := biz.NewChatRoomMemberManager(groupRepo, chatRoomMemberRepo, generator)
 	chatRoomUseCase := biz.NewChatRoomUseCase(groupRepo, chatRoomMemberRepo, generator, builder, chatRoomMemberManager)
 	chatRoomService := service.NewChatRoomService(chatRoomUseCase)

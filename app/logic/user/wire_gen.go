@@ -18,7 +18,6 @@ import (
 	"rockimserver/app/logic/user/data"
 	cache2 "rockimserver/app/logic/user/data/cache"
 	database2 "rockimserver/app/logic/user/data/database"
-	"rockimserver/app/logic/user/infra"
 	"rockimserver/app/logic/user/server"
 	"rockimserver/app/logic/user/service"
 )
@@ -27,13 +26,13 @@ import (
 
 // wireApp init kratos application.
 func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server, databaseConfig *database.Config, cacheConfig *cache.Config) (*kratos.App, error) {
-	manager := infra.NewDatabaseManager(config)
+	manager := database2.NewDatabaseManager(config)
 	userData := database2.NewUserData(manager)
-	cacheManager := infra.NewCacheManager(config, logger)
+	cacheManager := cache2.NewCacheManager(config, logger)
 	cacheUserData := cache2.NewUserData(cacheManager, cacheConfig)
 	userRepo := data.NewUserRepo(userData, cacheUserData)
 	generator := idgen.NewMongoGenerator()
-	builder := infra.NewLockBuilder(config, logger)
+	builder := biz.NewLockBuilder(config, logger)
 	userUseCase := biz.NewUserUseCase(userRepo, generator, builder)
 	userService := service.NewUserService(userUseCase)
 	authCodeData := cache2.NewAuthCodeData(cacheManager, cacheConfig, logger)

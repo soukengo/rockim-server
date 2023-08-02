@@ -7,7 +7,6 @@ import (
 	"github.com/soukengo/gopkg/component/transport/socket/packet"
 	"github.com/soukengo/gopkg/log"
 	v1 "rockimserver/apis/rockim/api/client/v1/protocol/socket"
-	"rockimserver/apis/rockim/service/comet/v1/types"
 	"rockimserver/apis/rockim/shared/enums"
 	"rockimserver/app/access/comet/module/protocol"
 	"rockimserver/app/access/comet/module/server/biz/options"
@@ -17,19 +16,19 @@ type ChannelManager struct {
 	log    log.Logger
 	server socket.Server
 
-	controls map[types.ControlMessage_ControlType]ControlFunc
+	controls map[enums.Comet_ControlType]ControlFunc
 }
 
 func NewChannelManager(log log.Logger, server socket.Server) *ChannelManager {
 	ins := &ChannelManager{
 		log:      log,
 		server:   server,
-		controls: map[types.ControlMessage_ControlType]ControlFunc{},
+		controls: map[enums.Comet_ControlType]ControlFunc{},
 	}
 
-	ins.controls[types.ControlMessage_ROOM_JOIN] = wrapControl(ins.RoomJoin)
-	ins.controls[types.ControlMessage_ROOM_QUIT] = wrapControl(ins.RoomQuit)
-	ins.controls[types.ControlMessage_KICK_OFF] = wrapControl(ins.KickOff)
+	ins.controls[enums.Comet_ROOM_JOIN] = wrapControl(ins.RoomJoin)
+	ins.controls[enums.Comet_ROOM_QUIT] = wrapControl(ins.RoomQuit)
+	ins.controls[enums.Comet_KICK_OFF] = wrapControl(ins.KickOff)
 	return ins
 }
 

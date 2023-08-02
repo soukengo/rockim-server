@@ -3,12 +3,14 @@ package server
 import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/google/wire"
+	"github.com/soukengo/gopkg/component/discovery"
 	"github.com/soukengo/gopkg/component/transport"
 	"github.com/soukengo/gopkg/component/transport/event"
 )
 
 // ProviderSet is server providers.
 var ProviderSet = wire.NewSet(
+	discovery.NewRegistrar,
 	NewServiceRegistry,
 	NewListenerRegistry,
 	NewGRPCServer,

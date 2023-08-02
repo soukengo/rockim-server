@@ -15,7 +15,6 @@ import (
 	"rockimserver/app/logic/session/conf"
 	"rockimserver/app/logic/session/data"
 	cache2 "rockimserver/app/logic/session/data/cache"
-	"rockimserver/app/logic/session/infra"
 	"rockimserver/app/logic/session/server"
 	"rockimserver/app/logic/session/service"
 )
@@ -24,7 +23,7 @@ import (
 
 // wireApp init kratos application.
 func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.Config, confServer *conf.Server, cacheConfig *cache.Config) (*kratos.App, error) {
-	manager := infra.NewCacheManager(config, logger)
+	manager := cache2.NewCacheManager(config, logger)
 	channelData := cache2.NewChannelData(manager, cacheConfig)
 	channelRepo := data.NewChannelRepo(channelData)
 	channelUseCase := biz.NewChannelUseCase(channelRepo)
