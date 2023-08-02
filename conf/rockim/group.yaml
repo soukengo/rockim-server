@@ -22,5 +22,5 @@ cache:
 log:
   level: info
   appender:
-    fileName: ./log/rockim/group/app.log
+    fileName: ./logs/rockim/group/app.log
 

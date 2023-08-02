@@ -9,5 +9,5 @@ import (
 var ProviderSet = wire.NewSet(
 	discovery.NewRegistrar,
 	NewGRPCServer,
-	NewServiceGroup,
+	NewServiceRegistry,
 )

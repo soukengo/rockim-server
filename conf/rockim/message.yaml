@@ -28,4 +28,4 @@ lock:
 log:
   level: info
   appender:
-    fileName: ./log/rockim/message/app.log
+    fileName: ./logs/rockim/message/app.log

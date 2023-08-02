@@ -6,16 +6,16 @@ import (
 	"rockimserver/app/logic/session/service"
 )
 
-type ServiceGroup struct {
+type ServiceRegistry struct {
 	channelSrv      *service.ChannelService
 	channelQuerySrv *service.ChannelQueryService
 }
 
-func NewServiceGroup(channelSrv *service.ChannelService, channelQuerySrv *service.ChannelQueryService) *ServiceGroup {
-	return &ServiceGroup{channelSrv: channelSrv, channelQuerySrv: channelQuerySrv}
+func NewServiceRegistry(channelSrv *service.ChannelService, channelQuerySrv *service.ChannelQueryService) *ServiceRegistry {
+	return &ServiceRegistry{channelSrv: channelSrv, channelQuerySrv: channelQuerySrv}
 }
 
-func (g *ServiceGroup) RegisterGrpc(srv *grpc.Server) {
+func (g *ServiceRegistry) RegisterGrpc(srv *grpc.Server) {
 	v1.RegisterChannelAPIServer(srv, g.channelSrv)
 	v1.RegisterChannelQueryAPIServer(srv, g.channelQuerySrv)
 }

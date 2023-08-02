@@ -1,9 +1,3 @@
-discovery:
-  engine: etcd
-  etcd:
-    nodes:
-      - 127.0.0.1:2379
-
 server:
   http:
     addr: :6001
@@ -15,8 +9,4 @@ auth:
     expires: "24h"
 database:
   mongodb:
-    address: mongodb://127.0.0.1:27017
-    username: rockim
-    password: rockim2022
-    database: rockim
-    authSource: admin
+    key: default

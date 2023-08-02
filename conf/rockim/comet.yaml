@@ -19,4 +19,4 @@ protocol:
 log:
   level: info
   appender:
-    fileName: ./log/rockim/comet/app.log
+    fileName: ./logs/rockim/comet/app.log

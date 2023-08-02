@@ -31,7 +31,7 @@ func wireApp(logger log.Logger, config *conf.Config, discoveryConfig *discovery.
 	channelQueryRepo := data.NewChannelQueryRepo(channelData)
 	channelQueryUseCase := biz.NewChannelQueryUseCase(channelQueryRepo)
 	channelQueryService := service.NewChannelQueryService(channelQueryUseCase)
-	serviceGroup := server.NewServiceGroup(channelService, channelQueryService)
+	serviceGroup := server.NewServiceRegistry(channelService, channelQueryService)
 	grpcServer := server.NewGRPCServer(confServer, serviceGroup)
 	registrar, err := discovery.NewRegistrar(discoveryConfig)
 	if err != nil {

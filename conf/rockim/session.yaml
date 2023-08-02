@@ -15,4 +15,4 @@ cache:
 log:
   level: info
   appender:
-    fileName: ./log/rockim/session/app.log
+    fileName: ./logs/rockim/session/app.log

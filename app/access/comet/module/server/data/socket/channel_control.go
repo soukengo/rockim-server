@@ -32,7 +32,7 @@ func (m *ChannelManager) Control(ctx context.Context, opts *options.ControlOptio
 		}
 		err1 := fn(ctx, ch, opts.Body)
 		if err1 != nil {
-			log.WithContext(ctx).Errorf("Control error", log.Pairs{"channelId": cid, "controlType": opts.ControlType})
+			log.WithContext(ctx).Error("Control error", log.Pairs{"channelId": cid, "controlType": opts.ControlType})
 			continue
 		}
 	}
@@ -44,7 +44,7 @@ func (m *ChannelManager) RoomJoin(ctx context.Context, ch socket.Channel, in *ty
 		roomId := protocol.EncodeRoomId(room)
 		err1 := m.server.JoinRoom(roomId, ch)
 		if err1 != nil {
-			log.WithContext(ctx).Errorf("JoinRoom error", log.Pairs{"channelId": ch.Id(), "roomId": roomId})
+			log.WithContext(ctx).Error("JoinRoom error", log.Pairs{"channelId": ch.Id(), "roomId": roomId})
 			continue
 		}
 	}
@@ -56,7 +56,7 @@ func (m *ChannelManager) RoomQuit(ctx context.Context, ch socket.Channel, in *ty
 		roomId := protocol.EncodeRoomId(room)
 		err1 := m.server.QuitRoom(roomId, ch)
 		if err1 != nil {
-			log.WithContext(ctx).Errorf("QuitRoom error", log.Pairs{"channelId": ch.Id(), "roomId": roomId})
+			log.WithContext(ctx).Error("QuitRoom error", log.Pairs{"channelId": ch.Id(), "roomId": roomId})
 			continue
 		}
 	}

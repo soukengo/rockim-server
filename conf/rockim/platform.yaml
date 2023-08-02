@@ -17,4 +17,4 @@ database:
 log:
   level: info
   appender:
-    fileName: ./log/rockim/platform/app.log
+    fileName: ./logs/rockim/platform/app.log
